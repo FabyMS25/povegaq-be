@@ -1,0 +1,18 @@
+package com.gamq.ambiente.repository;
+
+import com.gamq.ambiente.model.TipoParametro;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
+
+public interface TipoParametroRepository extends JpaRepository<TipoParametro, Long> {
+    Optional<TipoParametro> findByUuid(String uuid);
+    @Query("SELECT t FROM TipoParametro t  WHERE LOWER(rtrim(ltrim(t.nombre))) = LOWER(rtrim(ltrim(:nombre)))")
+    Optional<TipoParametro> findByNombre(@Param("nombre") String nombre);
+    @Query("SELECT case when count(t) > 0 then true else false end FROM TipoParametro t WHERE lower(rtrim(ltrim(t.nombre))) = lower(rtrim(ltrim(:nombre))) AND t.activo = true AND t.uuid <> :uuid")
+    boolean exitsTipoParametroLikeNombre(@Param("nombre") String nombre,
+                                         @Param("uuid") String uuid);
+    boolean existsByNombreAndActivoTrue(@Param("nombre") String nombre);
+}

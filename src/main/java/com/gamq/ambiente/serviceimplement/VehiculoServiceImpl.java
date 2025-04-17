@@ -1,0 +1,90 @@
+package com.gamq.ambiente.serviceimplement;
+
+import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.dto.mapper.VehiculoMapper;
+import com.gamq.ambiente.exceptions.BlogAPIException;
+import com.gamq.ambiente.exceptions.ResourceNotFoundException;
+import com.gamq.ambiente.model.Vehiculo;
+import com.gamq.ambiente.repository.VehiculoRepository;
+import com.gamq.ambiente.service.VehiculoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Component
+public class VehiculoServiceImpl implements VehiculoService {
+    @Autowired
+    VehiculoRepository vehiculoRepository;
+    @Override
+    public VehiculoDto obtenerVehiculoPorUuid(String uuid) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuid);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "uuid", uuid);
+    }
+
+    @Override
+    public VehiculoDto obtenerVehiculoPorPlaca(String placa) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "placa", placa.toString());
+    }
+
+    @Override
+    public List<VehiculoDto> obtenerVehiculos() {
+        List<Vehiculo> vehiculoList = vehiculoRepository.findAll();
+        return  vehiculoList.stream().map( vehiculo -> {
+            return  VehiculoMapper.toVehiculoDto(vehiculo);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
+        String placa = vehiculoDto.getPlaca();
+        if(placa == null){ throw new ResourceNotFoundException("Vehiculo", "placa", placa);}
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
+        if(vehiculoOptional.isEmpty()){
+            Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+            return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(nuevoVehiculo));
+        }
+        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
+    }
+
+    @Override
+    public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(vehiculoDto.getUuid());
+        if(vehiculoOptional.isPresent()) {
+            if (!vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
+                Vehiculo updateVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+                updateVehiculo.setIdVehiculo(vehiculoOptional.get().getIdVehiculo());
+                return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(updateVehiculo));
+            } else {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
+            }
+        }
+        throw new ResourceNotFoundException("Vehiculo", "uuid",vehiculoDto.getUuid());
+    }
+
+    @Override
+    public VehiculoDto eliminarVehiculo(String uuid) {
+        Vehiculo vehiculoQBE = new Vehiculo(uuid);
+        Optional<Vehiculo> optionalVehiculo = vehiculoRepository.findOne(Example.of(vehiculoQBE));
+        if(optionalVehiculo.isPresent()){
+            Vehiculo vehiculo = optionalVehiculo.get();
+            if(!vehiculo.getInspeccionList().isEmpty()){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Vehiculo ya esta siendo usado por las inspecciones");
+            }
+            vehiculoRepository.delete(vehiculo);
+            return VehiculoMapper.toVehiculoDto(vehiculo);
+        }
+        throw new ResourceNotFoundException("Vehiculo","uuid", uuid);
+    }
+}

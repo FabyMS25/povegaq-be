@@ -1,0 +1,64 @@
+package com.gamq.ambiente.controller;
+
+import com.gamq.ambiente.dto.ActividadDto;
+import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.service.ActividadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+@RestController
+@RequestMapping("/api/actividad")
+public class ActividadController {
+    @Autowired
+    ActividadService actividadService;
+
+    @GetMapping("/uuid/{uuid}")
+    public Response getActividadByUuid(@PathVariable("uuid") String uuid) {
+        return Response.ok().setPayload(actividadService.obtenerActividadPorUuid(uuid));
+    }
+
+    @GetMapping("/tipoActividad/{tipoActividad}")
+    public Response getActividadByTipoActividad(@PathVariable("tipoActividad") String tipoActividad){
+        return Response.ok().setPayload(actividadService.obtenerActividadPorTipoActividad(tipoActividad));
+    }
+
+    @GetMapping()
+    public Response getAllActividades(){
+        return Response.ok().setPayload(actividadService.obtenerActividades());
+    }
+
+    @GetMapping("/activas")
+    public Response obtenerActividadesActivas() {
+        return Response.ok().setPayload(actividadService.obtenerActividadesActivas());
+    }
+
+    @PostMapping()
+    public Response createActividad(@Valid @RequestBody ActividadDto actividadDto){
+        return Response.ok().setPayload(actividadService.crearActividad(actividadDto));
+    }
+
+    @PutMapping()
+    public Response updateActividad(@Valid @RequestBody ActividadDto actividadDto){
+        return Response.ok().setPayload(actividadService.actualizarActividad(actividadDto));
+    }
+
+    @DeleteMapping("/{uuid}")
+    public Response deleteActividad(@PathVariable("uuid") String uuid){
+        return Response.ok().setPayload(actividadService.eliminarActividad(uuid));
+    }
+
+    @GetMapping("/gestion")
+    public Response obtenerActividadesPorAnio(@RequestParam("year") Integer year) {
+        return Response.ok().setPayload(actividadService.obtenerActividadesPorAnio(year));
+    }
+
+    @PutMapping("/{uuid}/cambiar-activo")
+    public Response updateActividadActivo(@PathVariable String uuid,
+                                          @RequestParam boolean activo){
+        return Response.ok().setPayload(actividadService.actualizarActividadActivo(uuid, activo));
+    }
+}
+
+
