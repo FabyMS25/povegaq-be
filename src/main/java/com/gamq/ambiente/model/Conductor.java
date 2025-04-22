@@ -39,6 +39,8 @@ public class Conductor {
     private String numeroDocumento;
     @Column(name = "expedido", nullable = false)
     private Integer expedido;
+    @Column(name= "email", nullable = false, length = 50)
+    private String email;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

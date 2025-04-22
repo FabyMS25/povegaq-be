@@ -12,6 +12,7 @@ public class DetalleInspeccionMapper {
         return new DetalleInspeccionDto()
                 .setUuid(detalleInspeccion.getUuid())
                 .setValor(detalleInspeccion.getValor())
+                .setNroEjecucion(detalleInspeccion.getNroEjecucion())
                 .setEstado(detalleInspeccion.isEstado())
                 .setTipoParametroDto(detalleInspeccion.getTipoParametro() == null? null: new TipoParametroDto()
                         .setUuid(detalleInspeccion.getTipoParametro().getUuid())
@@ -36,14 +37,15 @@ public class DetalleInspeccionMapper {
         return new DetalleInspeccion()
                 .setUuid(detalleInspeccionDto.getUuid())
                 .setValor(detalleInspeccionDto.getValor())
+                .setNroEjecucion(detalleInspeccionDto.getNroEjecucion())
                 .setEstado(detalleInspeccionDto.isEstado())
-                .setTipoParametro(detalleInspeccionDto.getTipoParametroDto() == null? null: new TipoParametro()
+               /* .setTipoParametro(detalleInspeccionDto.getTipoParametroDto() == null? null: new TipoParametro()
                         .setUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
                         .setNombre(detalleInspeccionDto.getTipoParametroDto().getNombre())
                         .setDescripcion(detalleInspeccionDto.getTipoParametroDto().getDescripcion())
                         .setUnidad(detalleInspeccionDto.getTipoParametroDto().getUnidad())
                         .setActivo(detalleInspeccionDto.getTipoParametroDto().isActivo())
                         .setEstado(detalleInspeccionDto.getTipoParametroDto().isEstado())
-                );
+                )*/;
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/inspeccion")
@@ -27,6 +28,16 @@ public class InspeccionController {
     @GetMapping("/uuidUsuario/{uuidUsuario}")
     public Response getInspeccionByUuidUsuario(@PathVariable("uuidUsuario") String uuidUsuario){
         return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorUuidUsuario(uuidUsuario));
+    }
+
+    @GetMapping("/uuidActividad/{uuidActividad}")
+    public Response getInspeccionByUuidActividad(@PathVariable("uuidActividad") String uuidActividad){
+        return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorUuidActividad(uuidActividad));
+    }
+
+    @GetMapping("/fechaInspeccion")
+    public Response getInspeccionByFechaInspeccion(@RequestParam Date fechaInspeccion){
+        return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorFechaInspeccion(fechaInspeccion));
     }
 
     @GetMapping()

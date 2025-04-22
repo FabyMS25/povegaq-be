@@ -25,6 +25,7 @@ public class ConductorDto {
     private String tipoDocumento;
     private String numeroDocumento;
     private Integer expedido;
+    private String email;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

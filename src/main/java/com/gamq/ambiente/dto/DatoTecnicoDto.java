@@ -23,9 +23,8 @@ import java.math.BigInteger;
 public class DatoTecnicoDto {
     private String uuid;
     private String clase;
-    private String radicatoria;
     private String marca;
-    private String pais;
+    private String pais;  //pais de fabricacion u origen procedencia
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
     private String modelo;
     private String servicio; //particular, comercial, flota, etc.
@@ -35,7 +34,6 @@ public class DatoTecnicoDto {
     private String tipoVehiculo; //sedán, SUV, camioneta, furgón, camión, etc
     private String tipoCarroceria;
     private Integer yearFabricacion;
-    private String procedencia; //pais de fabricacion u origen
     private Integer numeroPuertas;
     private String tipoCombustion; //gasolina , diesel, gas, electrico, hibrido
     private Integer tamanoMotor; //2500

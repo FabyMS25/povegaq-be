@@ -2,6 +2,7 @@ package com.gamq.ambiente.service;
 
 import com.gamq.ambiente.dto.InspeccionDto;
 
+import java.util.Date;
 import java.util.List;
 
 public interface InspeccionService {
@@ -12,4 +13,6 @@ public interface InspeccionService {
     InspeccionDto crearInspeccion(InspeccionDto inspeccionDto);
     InspeccionDto actualizarInspeccion(InspeccionDto inspeccionDto);
     InspeccionDto eliminarInspeccion(String uuid);
+    List<InspeccionDto> obtenerInspeccionPorUuidActividad(String uuidActividad);
+    List<InspeccionDto> obtenerInspeccionPorFechaInspeccion(Date fechaInspeccion);
 }

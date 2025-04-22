@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 public class DetalleInspeccionDto {
     private String uuid;
     private BigDecimal valor;
+    private Integer nroEjecucion;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

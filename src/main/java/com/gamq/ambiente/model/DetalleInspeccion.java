@@ -28,36 +28,10 @@ public class DetalleInspeccion {
     private Long idDetalleInspeccion;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-  //  @Column(name = "status_inspeccion", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-   // private boolean statusInspeccion;
-    @Column(name = "valor", precision = 20, scale = 4)
+    @Column(name = "valor", nullable = false, precision = 20, scale = 4)
     private BigDecimal valor;
-
-
-   /*
-    @Column(name = "co_monoxido_carbono", precision = 20, scale = 4)
-    private BigDecimal co;
-    @Column(name = "hc_hidrocarburo", precision = 20, scale = 4)
-    private BigDecimal hc;
-    @Column(name = "co2_dioxido_carbono", precision = 20, scale = 4)
-    private BigDecimal co2;
-
-
-    @Column(name = "hc2_hidrocarburo_2atomos", precision = 20, scale = 4)
-    private BigDecimal hc2;
-
-    @Column(name = "o2_oxigeno", precision = 20, scale = 4)
-    private BigDecimal o2;
-    @Column(name = "no2_dioxido_nitrogeno", precision = 20, scale = 4)
-    private BigDecimal no2;
-    @Column(name = "lambda", precision = 20, scale = 4)
-    private BigDecimal lambda;
-    @Column(name = "rpm_revoluciones_minuto", precision = 20, scale = 4)
-    private BigDecimal rpm;
-    @Column(name = "temperatura_aceite", precision = 20, scale = 4)
-    private BigDecimal temperatura_aceite;*/
-
-
+    @Column(name = "nro_ejecucion", nullable = true,  precision = 20, scale = 4)
+    private Integer nroEjecucion;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

@@ -8,6 +8,8 @@ import com.gamq.ambiente.model.Actividad;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Vehiculo;
 
+import java.util.stream.Collectors;
+
 public class InspeccionMapper {
     public static InspeccionDto toInspeccionDto(Inspeccion inspeccion){
         return new InspeccionDto()
@@ -44,7 +46,9 @@ public class InspeccionMapper {
                         .setFechaFin(inspeccion.getEvento().getFechaFin())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
-                ;
+                .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
+                        return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
+                }).collect(Collectors.toList()));
     }
 
     public static Inspeccion toInspeccion(InspeccionDto inspeccionDto){

@@ -13,6 +13,7 @@ public class ConductorMapper {
                 .setNumeroDocumento(conductor.getNumeroDocumento())
                 .setTipoDocumento(conductor.getTipoDocumento())
                 .setTipoContribuyente(conductor.getTipoContribuyente())
+                .setEmail(conductor.getEmail())
                 .setEstado(conductor.isEstado());
     }
 
@@ -25,6 +26,7 @@ public class ConductorMapper {
                 .setNumeroDocumento(conductorDto.getNumeroDocumento())
                 .setTipoDocumento(conductorDto.getTipoDocumento())
                 .setTipoContribuyente(conductorDto.getTipoContribuyente())
+                .setEmail(conductorDto.getEmail())
                 .setEstado(conductorDto.isEstado());
     }
 }

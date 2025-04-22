@@ -32,12 +32,10 @@ public class DatoTecnico {
 
     @Column(name = "clase", nullable = false, length = 50)
     private String clase;
-    @Column(name = "radicatoria", nullable = false, length = 50)
-    private String radicatoria;
     @Column(name = "marca", nullable = false, length = 50)
     private String marca;
     @Column(name = "pais", nullable = false, length = 50)
-    private String pais;
+    private String pais; //pais de fabricacion u origen o procedencia
     @Column(name = "traccion", nullable = false, length = 50)
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
     @Column(name = "modelo", nullable = false, length = 50)
@@ -56,8 +54,6 @@ public class DatoTecnico {
     private String tipoCarroceria;
     @Column(name = "year_fabricacion", nullable = false)
     private Integer yearFabricacion;
-    @Column(name = "procedencia", nullable = false, length = 50)
-    private String procedencia; //pais de fabricacion u origen
     @Column(name = "numero_puertas", nullable = false)
     private Integer numeroPuertas;
     @Column(name = "tipo_combustion", nullable = false, length = 20)

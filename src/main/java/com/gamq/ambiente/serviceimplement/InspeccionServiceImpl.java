@@ -1,32 +1,31 @@
 package com.gamq.ambiente.serviceimplement;
 
+import com.gamq.ambiente.dto.DetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionDto;
+import com.gamq.ambiente.dto.mapper.DetalleInspeccionMapper;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
-import com.gamq.ambiente.model.Actividad;
-import com.gamq.ambiente.model.Evento;
-import com.gamq.ambiente.model.Inspeccion;
+import com.gamq.ambiente.model.*;
 
-import com.gamq.ambiente.model.Vehiculo;
-import com.gamq.ambiente.repository.ActividadRepository;
-import com.gamq.ambiente.repository.EventoRepository;
-import com.gamq.ambiente.repository.InspeccionRepository;
-import com.gamq.ambiente.repository.VehiculoRepository;
+import com.gamq.ambiente.repository.*;
 import com.gamq.ambiente.service.InspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class InspeccionServiceImpl implements InspeccionService {
     @Autowired
     InspeccionRepository inspeccionRepository;
+    @Autowired
+    DetalleInspeccionRepository detalleInspeccionRepository;
+    @Autowired
+    TipoParametroRepository tipoParametroRepository;
     @Autowired
     ActividadRepository actividadRepository;
     @Autowired
@@ -89,6 +88,19 @@ public class InspeccionServiceImpl implements InspeccionService {
                    Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
                    nuevoInspeccion.setEvento(eventoOptional.get());
                }
+
+             /*  List<DetalleInspeccion> detalleInspeccionList = inspeccionDto.getDetalleInspeccionDtoList().stream().map( detalleInspeccionDto ->
+                      detalleInspeccionRepository.findByUuid( detalleInspeccionDto.getUuid())
+                               .orElseThrow(() -> new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "El UUID del detalle de inspeccion no existe"))
+               ).collect(Collectors.toList());*/
+
+               List<DetalleInspeccion> detalleInspeccionList = mapearDetalleInspeccion(inspeccionDto.getDetalleInspeccionDtoList(), nuevoInspeccion);
+
+
+
+               nuevoInspeccion.setDetalleInspeccionList(detalleInspeccionList);
+
+
                return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(nuevoInspeccion));
             }
             else {
@@ -97,6 +109,34 @@ public class InspeccionServiceImpl implements InspeccionService {
         }
         throw new ResourceNotFoundException("Actividad", "uuid", inspeccionDto.getActividadDto().getUuid());
     }
+
+    private List<DetalleInspeccion> mapearDetalleInspeccion(List<DetalleInspeccionDto> detalleInspeccionDtoList, Inspeccion nuevoInspeccion) {
+        Set<String> uuidsTipoParametro = new HashSet<>();
+        return detalleInspeccionDtoList.stream().map(detalleInspeccionDto -> {
+            if(uuidsTipoParametro.contains(detalleInspeccionDto.getUuid().toLowerCase().trim())){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,"la uuid del Tipo Parametro '" + detalleInspeccionDto.getUuid() + "' ya existe o es duplicado");
+            }
+            uuidsTipoParametro.add(detalleInspeccionDto.getUuid().toLowerCase().trim());
+            TipoParametro tipoParametro = obtenerTipoParametro( detalleInspeccionDto.getTipoParametroDto().getUuid());
+
+            Integer ultimaEjecucion = detalleInspeccionRepository.findUltimaEjecucionByUuidInspeccion(nuevoInspeccion.getUuid());
+            int nuevaEjecucion = (ultimaEjecucion == null) ? 1 : ultimaEjecucion + 1;
+
+            return DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto)
+                    .setInspeccion(nuevoInspeccion)
+                    .setNroEjecucion(ultimaEjecucion)
+                    .setTipoParametro(tipoParametro);
+        }).collect(Collectors.toList());
+    }
+
+    private TipoParametro obtenerTipoParametro(String tipoParametroUuid) {
+        Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(tipoParametroUuid);
+        if (tipoParametroOptional.isEmpty()) {
+            throw new ResourceNotFoundException("tipo parametro", "uuid", tipoParametroUuid);
+        }
+        return tipoParametroOptional.get();
+    }
+
 
     @Override
     public InspeccionDto actualizarInspeccion(InspeccionDto inspeccionDto) {
@@ -146,4 +186,19 @@ public class InspeccionServiceImpl implements InspeccionService {
         throw new ResourceNotFoundException("Inspeccion","uuid", uuid);
     }
 
+    @Override
+    public List<InspeccionDto> obtenerInspeccionPorUuidActividad(String uuidActividad) {
+        List<Inspeccion> inspeccionList = inspeccionRepository.findByTipoActividad(uuidActividad);
+        return inspeccionList.stream().map( inspeccion -> {
+            return InspeccionMapper.toInspeccionDto(inspeccion);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InspeccionDto> obtenerInspeccionPorFechaInspeccion(Date fechaInspeccion) {
+        List<Inspeccion> inspeccionList = inspeccionRepository.findByFechaInspeccion(fechaInspeccion);
+        return inspeccionList.stream().map(inspeccion -> {
+            return InspeccionMapper.toInspeccionDto(inspeccion);
+        }).collect(Collectors.toList());
+    }
 }

@@ -42,7 +42,7 @@ public class Vehiculo {
     @Column(name = "fecha_registro", nullable = false)
     private Date fechaRegistro;
     @Column(name = "juridiccion_origen",nullable = true)
-    private String juridiccionOrigen;
+    private String juridiccionOrigen;  //radicatoria LA PAZ QUILLACOLLO TARIJA
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
