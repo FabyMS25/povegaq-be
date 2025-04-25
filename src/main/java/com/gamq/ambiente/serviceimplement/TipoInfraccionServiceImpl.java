@@ -94,17 +94,10 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
         if (tipoInfraccionOptional.isEmpty()) {
             throw new ResourceNotFoundException("TipoInfraccion", "uuid",tipoInfraccionDto.getUuid());
         }
-        //if(TipoInfraccionOptional.isPresent()) {
-            //if (!tipoInfraccionRepository..exitsTipoInfraccionLikeDescripcion(TipoInfraccionDto.getDescripcion().toLowerCase(), TipoInfraccionDto.getUuid())) {
-                TipoInfraccion updateTipoInfraccion = TipoInfraccionMapper.toTipoInfraccion(tipoInfraccionDto);
-                updateTipoInfraccion.setIdTipoInfraccion(tipoInfraccionOptional.get().getIdTipoInfraccion());
-                updateTipoInfraccion.setTipoContribuyente(tipoContribuyente);
-                return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionRepository.save(updateTipoInfraccion));
-            //} else {
-            //    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el TipoInfraccion ya existe");
-            //}
-        //}
-        //throw new ResourceNotFoundException("TipoInfraccion", "uuid",TipoInfraccionDto.getUuid());
+        TipoInfraccion updateTipoInfraccion = TipoInfraccionMapper.toTipoInfraccion(tipoInfraccionDto);
+        updateTipoInfraccion.setIdTipoInfraccion(tipoInfraccionOptional.get().getIdTipoInfraccion());
+        updateTipoInfraccion.setTipoContribuyente(tipoContribuyente);
+        return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionRepository.save(updateTipoInfraccion));
     }
 
     @Override

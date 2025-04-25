@@ -64,7 +64,7 @@ public class Inspeccion {
     private Conductor conductor;
 
 
-    //private Certificado certificado;
+    //private CertificadoRepository certificado;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
     private List<Certificado> certificadoList = new ArrayList<>();
 

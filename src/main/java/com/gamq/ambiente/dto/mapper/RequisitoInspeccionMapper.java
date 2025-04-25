@@ -37,7 +37,7 @@ public class RequisitoInspeccionMapper {
                 .setCumple(requisitoInspeccionDto.isCumple())
                 .setFechaPresentacion(requisitoInspeccionDto.getFechaPresentacion())
                 .setEstado(requisitoInspeccionDto.isEstado())
-                .setInspeccion(requisitoInspeccionDto.getInspeccionDto()==null? null: new Inspeccion()
+                /*.setInspeccion(requisitoInspeccionDto.getInspeccionDto()==null? null: new Inspeccion()
                         .setUuid(requisitoInspeccionDto.getInspeccionDto().getUuid())
                         .setFechaInspeccion(requisitoInspeccionDto.getInspeccionDto().getFechaInspeccion())
                         .setLugarInspeccion(requisitoInspeccionDto.getInspeccionDto().getLugarInspeccion())
@@ -51,7 +51,8 @@ public class RequisitoInspeccionMapper {
                         .setUuid(requisitoInspeccionDto.getRequisitoDto().getUuid())
                         .setDescripcion(requisitoInspeccionDto.getRequisitoDto().getDescripcion())
                         .setEstado(requisitoInspeccionDto.getRequisitoDto().isEstado())
-                );
+                )*/
+                ;
 
     }
 }

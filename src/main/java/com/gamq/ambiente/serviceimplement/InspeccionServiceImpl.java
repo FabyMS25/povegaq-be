@@ -74,10 +74,8 @@ public class InspeccionServiceImpl implements InspeccionService {
         String nombreInspector = inspeccionDto.getNombreInspector();
         if(nombreInspector == null){ throw new ResourceNotFoundException("Inspeccion","nombreInspector", nombreInspector);}
 
-
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(inspeccionDto.getActividadDto().getUuid());
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(inspeccionDto.getVehiculoDto().getUuid());
-
 
         if(actividadOptional.isPresent()){
            if (vehiculoOptional.isPresent()){
@@ -89,14 +87,7 @@ public class InspeccionServiceImpl implements InspeccionService {
                    nuevoInspeccion.setEvento(eventoOptional.get());
                }
 
-             /*  List<DetalleInspeccion> detalleInspeccionList = inspeccionDto.getDetalleInspeccionDtoList().stream().map( detalleInspeccionDto ->
-                      detalleInspeccionRepository.findByUuid( detalleInspeccionDto.getUuid())
-                               .orElseThrow(() -> new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "El UUID del detalle de inspeccion no existe"))
-               ).collect(Collectors.toList());*/
-
                List<DetalleInspeccion> detalleInspeccionList = mapearDetalleInspeccion(inspeccionDto.getDetalleInspeccionDtoList(), nuevoInspeccion);
-
-
 
                nuevoInspeccion.setDetalleInspeccionList(detalleInspeccionList);
 

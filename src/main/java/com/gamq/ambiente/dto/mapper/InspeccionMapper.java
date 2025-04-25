@@ -48,7 +48,11 @@ public class InspeccionMapper {
                 )
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
-                }).collect(Collectors.toList()));
+                }).collect(Collectors.toList()))
+                .setRequisitoInspeccionDtoList(inspeccion.getRequisitoInspeccionList().stream().map(requisitoInspeccion -> {
+                    return RequisitoInspeccionMapper.toRequisitoInspeccionDto(requisitoInspeccion);
+                }).collect(Collectors.toList()))
+                ;
     }
 
     public static Inspeccion toInspeccion(InspeccionDto inspeccionDto){

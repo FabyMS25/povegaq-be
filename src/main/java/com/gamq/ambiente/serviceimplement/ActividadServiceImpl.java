@@ -78,8 +78,7 @@ public class ActividadServiceImpl implements ActividadService {
 
     @Override
     public ActividadDto eliminarActividad(String uuid) {
-        //Actividad actividadQBE = new Actividad(uuid);
-        Optional<Actividad> optionalActividad = actividadRepository.findByUuid(uuid);// .findOne(Example.of(actividadQBE));
+        Optional<Actividad> optionalActividad = actividadRepository.findByUuid(uuid);
         if(optionalActividad.isPresent()){
             Actividad actividad = optionalActividad.get();
             if(!actividad.getInspeccionList().isEmpty()){

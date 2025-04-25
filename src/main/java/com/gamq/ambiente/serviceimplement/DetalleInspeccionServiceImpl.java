@@ -32,6 +32,8 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
     InspeccionRepository inspeccionRepository;
     @Autowired
     TipoParametroRepository tipoParametroRepository;
+    @Autowired
+    private EntidadHelperServiceImpl entidadHelper;
 
     @Override
     public DetalleInspeccionDto obtenerDetalleInspeccionPorUuid(String uuid) {
@@ -150,13 +152,12 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
    }
 
     public List<DetalleInspeccionDto> addDetalleInspecionToInspeccion(InspeccionDetalleInspeccionDto inspeccionDetalleInspeccionDto) {
-        Inspeccion inspeccion = obtenerInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
+        Inspeccion inspeccion = entidadHelper.obtenerInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
         Integer ultimaEjecucion = detalleInspeccionRepository.findUltimaEjecucionByUuidInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
         int nuevaEjecucion = (ultimaEjecucion == null) ? 1 : ultimaEjecucion + 1;
         List<DetalleInspeccion>  detalleInspeccionList = inspeccionDetalleInspeccionDto.getDetalleInspeccionDtoList().stream().map(detalleInspeccionDto ->  {
-                    TipoParametro tipoParametro = obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
+                    TipoParametro tipoParametro = entidadHelper.obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
 
-                   // if(!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametro.getUuid(),inspeccion.getUuid(),detalleInspeccionDto.getNroEjecucion())) {
                     if(!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametro.getUuid(),inspeccion.getUuid(),nuevaEjecucion)) {
                         detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
                         DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro);
@@ -187,7 +188,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         return nuevoDetalleInspeccion;
     }
 
-    private Inspeccion obtenerInspeccion(String inspeccionUuid) {
+  /*  private Inspeccion obtenerInspeccion(String inspeccionUuid) {
         Optional<Inspeccion> optionalInspeccion = inspeccionRepository.findByUuid(inspeccionUuid);// moduloRepository.findByUuid(moduloUuid);
         if(optionalInspeccion.isEmpty()){
             throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid de la inspeccion no existe");
@@ -201,6 +202,6 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
             throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid del tipo de parametro para detalle inspeccion no existe");
         }
         return optionalTipoParametro.get();
-    }
+    }*/
 
 }

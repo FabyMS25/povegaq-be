@@ -68,7 +68,7 @@ public class TipoContribuyenteServiceImpl implements TipoContribuyenteService {
                 updateTipoContribuyente.setIdTipoContribuyente(tipoContribuyenteOptional.get().getIdTipoContribuyente());
                 return TipoContribuyenteMapper.toTipoContribuyenteDto(tipoContribuyenteRepository.save(updateTipoContribuyente));
             } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el TipovContribuyente ya existe");
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Tipo Contribuyente ya existe");
             }
         }
         throw new ResourceNotFoundException("Tipo Contribuyente", "uuid",tipoContribuyenteDto.getUuid());
@@ -80,7 +80,7 @@ public class TipoContribuyenteServiceImpl implements TipoContribuyenteService {
         Optional<TipoContribuyente> optionalTipoContribuyente = tipoContribuyenteRepository.findOne(Example.of(tipoContribuyenteQBE));
         if(optionalTipoContribuyente.isPresent()){
             TipoContribuyente tipoContribuyente = optionalTipoContribuyente.get();
-           /* if(!tipoContribuyente.getTipoContribuyenteInspeccionList().isEmpty()){
+        /*    if(!tipoContribuyente.get.getTipoContribuyenteInspeccionList().isEmpty()){
                 throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el TipoContribuyente ya esta siendo usado por las inspecciones");
             }*/
             tipoContribuyenteRepository.delete(tipoContribuyente);

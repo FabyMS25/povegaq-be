@@ -1,5 +1,6 @@
 package com.gamq.ambiente.utils;
 
+import com.gamq.ambiente.serviceimplement.GeneradorCodigoQRServiceImpl;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
@@ -27,6 +28,8 @@ public class GeneradorReporte {
     private DataSource dataSource;
     @Autowired
     private ResourceLoader resourceLoader;
+    @Autowired
+    private GeneradorCodigoQRServiceImpl generadorCodigoQRService;
 
     /**
      *
@@ -59,7 +62,7 @@ public class GeneradorReporte {
                 logo64 = new String(Base64.encodeBase64(logoResource.getInputStream().readAllBytes()), "UTF-8");
             }
             parametros.put("logo64", logo64);
-
+            parametros.put("qr" , new String(Base64.encodeBase64(generadorCodigoQRService.generateQRCodeImage((String) parametros.get("url"))),"UTF-8"));
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros,conn);
 
             response.setContentType("application/pdf");
