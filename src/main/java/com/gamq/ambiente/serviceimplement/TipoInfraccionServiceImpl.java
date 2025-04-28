@@ -4,8 +4,10 @@ import com.gamq.ambiente.dto.TipoInfraccionDto;
 import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
+import com.gamq.ambiente.model.Reglamento;
 import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.TipoInfraccion;
+import com.gamq.ambiente.repository.ReglamentoRepository;
 import com.gamq.ambiente.repository.TipoContribuyenteRepository;
 import com.gamq.ambiente.repository.TipoInfraccionRepository;
 import com.gamq.ambiente.service.TipoInfraccionService;
@@ -25,6 +27,8 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
     TipoInfraccionRepository tipoInfraccionRepository;
     @Autowired
     TipoContribuyenteRepository tipoContribuyenteRepository;
+    @Autowired
+    ReglamentoRepository reglamentoRepository;
 
     @Override
     public TipoInfraccionDto obtenerTipoInfraccionPorUuid(String uuid) {
@@ -55,16 +59,27 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
     @Override
     public TipoInfraccionDto crearTipoInfraccion(TipoInfraccionDto tipoInfraccionDto) {
         if (tipoInfraccionDto.getTipoContribuyenteDto() == null || tipoInfraccionDto.getTipoContribuyenteDto().getUuid() == null) {
-            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid en tipoContribuyenteDto no puede ser vacío");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de tipoContribuyenteDto no puede ser vacío");
         }
-        String grado = tipoInfraccionDto.getGrado();
-        Optional<TipoInfraccion> TipoInfraccionOptional = tipoInfraccionRepository.findByGrado(grado);
-        if(TipoInfraccionOptional.isEmpty()){
+        if (tipoInfraccionDto.getReglamentoDto() == null || tipoInfraccionDto.getReglamentoDto().getUuid() == null){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de reglamentoDto no puede ser vacío");
+        }
+
+        Integer grado = tipoInfraccionDto.getGrado();
+        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findTipoInfraccionByUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getTipoContribuyenteDto().getUuid(), grado);
+        if(tipoInfraccionOptional.isEmpty()){
             Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());
+            Optional<Reglamento> reglamentoOptional = reglamentoRepository.findByUuid(tipoInfraccionDto.getReglamentoDto().getUuid());
             if(tipoContribuyenteOptional.isPresent()) {
-                TipoInfraccion nuevoTipoInfraccion = TipoInfraccionMapper.toTipoInfraccion(tipoInfraccionDto);
-                nuevoTipoInfraccion.setTipoContribuyente(tipoContribuyenteOptional.get());
-                return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionRepository.save(nuevoTipoInfraccion));
+                if(reglamentoOptional.isPresent()) {
+                    TipoInfraccion nuevoTipoInfraccion = TipoInfraccionMapper.toTipoInfraccion(tipoInfraccionDto);
+                    nuevoTipoInfraccion.setTipoContribuyente(tipoContribuyenteOptional.get());
+                    nuevoTipoInfraccion.setReglamento(reglamentoOptional.get());
+                    return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionRepository.save(nuevoTipoInfraccion));
+                }
+                else {
+                    throw new ResourceNotFoundException("reglamento", "uuid", tipoInfraccionDto.getReglamentoDto().getUuid());
+                }
             }
             else {
                 throw new ResourceNotFoundException("Tipo Contribuyente", "uuid", tipoInfraccionDto.getTipoContribuyenteDto().getUuid());
@@ -83,20 +98,30 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
         if (tipoInfraccionDto.getTipoContribuyenteDto() == null || tipoInfraccionDto.getTipoContribuyenteDto().getUuid() == null) {
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid en tipoContribuyenteDto no puede ser vacío");
         }
+        if (tipoInfraccionDto.getReglamentoDto() == null || tipoInfraccionDto.getReglamentoDto().getUuid() == null){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de reglamentoDto no puede ser vacío");
+        }
 
         TipoContribuyente tipoContribuyente = obtenerTipoContribuyente(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());
 
-        if ( tipoInfraccionRepository.existsFechaActualForUuidTipoContribuyente(new Date(),tipoContribuyente.getUuid(),tipoInfraccionDto.getUuid())) {
+        if (tipoInfraccionRepository.existsTipoInfraccionLikeUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getGrado(),tipoContribuyente.getUuid(),tipoInfraccionDto.getUuid())){
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Ya existe un tipo infraccion para la fecha de aplicación del tipo de infraccion");
         }
 
         Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByUuid(tipoInfraccionDto.getUuid());
         if (tipoInfraccionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("TipoInfraccion", "uuid",tipoInfraccionDto.getUuid());
+            throw new ResourceNotFoundException("Tipo Infraccion", "uuid",tipoInfraccionDto.getUuid());
         }
+        Optional<Reglamento> reglamentoOptional = reglamentoRepository.findByUuid(tipoInfraccionDto.getReglamentoDto().getUuid());
+        if (reglamentoOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Reglamento", "uuid",tipoInfraccionDto.getReglamentoDto().getUuid());
+        }
+
+
         TipoInfraccion updateTipoInfraccion = TipoInfraccionMapper.toTipoInfraccion(tipoInfraccionDto);
         updateTipoInfraccion.setIdTipoInfraccion(tipoInfraccionOptional.get().getIdTipoInfraccion());
         updateTipoInfraccion.setTipoContribuyente(tipoContribuyente);
+        updateTipoInfraccion.setReglamento(reglamentoOptional.get());
         return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionRepository.save(updateTipoInfraccion));
     }
 

@@ -31,22 +31,21 @@ public class TipoInfraccion {
     private Long idTipoInfraccion;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "grado", nullable = false, length = 250)
-    private String grado;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_inicio", nullable = false)
-    private Date fechaInicio;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_fin")
-    private Date fechaFin;
+    @Column(name = "grado", nullable = false)
+    private Integer grado;
     @Column(name = "valor_ufv", precision = 20, scale = 4)
     private BigDecimal valorUFV;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_contribuyente", nullable = false)
     private TipoContribuyente tipoContribuyente;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_reglamento", nullable = false)
+    private Reglamento reglamento;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "tipoInfraccion", fetch = FetchType.LAZY)
     private List<Infraccion> infraccionList = new ArrayList<Infraccion>();

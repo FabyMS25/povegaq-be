@@ -20,8 +20,8 @@ public class UfvController {
         return Response.ok().setPayload(ufvService.obtenerUfvPorUuid(uuid));
     }
 
-    @GetMapping("/fecha/{fecha}")
-    public Response getUfvByFecha(@PathVariable("fecha") Date fecha){
+    @GetMapping("/fecha")
+    public Response getUfvByFecha(@RequestParam( value = "fecha") Date fecha){
         return Response.ok().setPayload(ufvService.obtenerUfvPorFecha(fecha));
     }
 

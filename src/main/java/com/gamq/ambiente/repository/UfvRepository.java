@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface UfvRepository extends JpaRepository<Ufv, Long> {
     Optional<Ufv> findByUuid(String uuid);
-    @Query("SELECT u FROM Ufv u WHERE u.fecha = ?1")
-    Optional<Ufv> findByFecha(Date fecha);
+    @Query("SELECT u FROM Ufv u WHERE FUNCTION('DATE', u.fecha) = :fecha")
+    Optional<Ufv> findByFecha(@Param("fecha") Date fecha);
     List<Ufv> findAllByOrderByFechaDesc();
     @Query("SELECT u FROM Ufv u WHERE u.fecha BETWEEN ?1 AND ?2 ORDER BY u.fecha desc")
     List<Ufv> findListUfvByFecha(Date fechaIni, Date fechaFin);

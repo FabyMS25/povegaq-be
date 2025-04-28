@@ -9,6 +9,7 @@ import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.repository.CertificadoRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.service.CertificadoService;
+import com.gamq.ambiente.utils.FechaUtil;
 import com.gamq.ambiente.utils.GeneradorReporte;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -23,11 +24,13 @@ import java.util.stream.Collectors;
 @Component
 public class CertificadoServiceImpl implements CertificadoService {
     @Autowired
-    CertificadoRepository certificadoRepository;
+    private CertificadoRepository certificadoRepository;
     @Autowired
-    InspeccionRepository inspeccionRepository;
+    private InspeccionRepository inspeccionRepository;
     @Autowired
     private GeneradorReporte generadorReporte;
+   // @Autowired
+   // private FechaUtil fechaUtil;
 
     @Override
     public CertificadoDto obtenerCertificadoPorUuid(String uuid) {
@@ -62,6 +65,7 @@ public class CertificadoServiceImpl implements CertificadoService {
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()) {
                 Certificado nuevoCertificado = CertificadoMapper.toCertificado(certificadoDto);
+                nuevoCertificado.setFechaVencimiento(FechaUtil.calcularFechaVencimiento(nuevoCertificado.getFechaVencimiento()));
                 nuevoCertificado.setInspeccion(inspeccionOptional.get());
                 return CertificadoMapper.toCertificadoDto(certificadoRepository.save(nuevoCertificado));
             } else {

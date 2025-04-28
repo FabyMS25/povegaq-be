@@ -2,21 +2,13 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import com.gamq.ambiente.model.TipoContribuyente;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,13 +17,11 @@ import java.util.List;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TipoInfraccionDto {
+public class ReglamentoDto {
     private String uuid;
-    private Integer grado;
-    private BigDecimal valorUFV;
+    private String codigo;
+    private String descripcion;
+    private Date fechaEmision;
+    private boolean activo;
     private boolean estado;
-
-    private TipoContribuyenteDto tipoContribuyenteDto;
-    private ReglamentoDto reglamentoDto;
-    private List<InfraccionDto> infraccionDtoList = new ArrayList<InfraccionDto>();
 }

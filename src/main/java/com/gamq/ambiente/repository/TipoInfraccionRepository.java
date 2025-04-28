@@ -13,28 +13,15 @@ import java.util.Optional;
 @Repository
 public interface TipoInfraccionRepository extends JpaRepository<TipoInfraccion, Long> {
     Optional<TipoInfraccion> findByUuid(String uuid);
-    @Query("SELECT t FROM TipoInfraccion t  WHERE LOWER(t.grado) = LOWER(:grado)")
+    @Query("SELECT t FROM TipoInfraccion t  WHERE LOWER(t.grado) = LOWER(:grado)  AND t.reglamento.activo = true ")
     Optional<TipoInfraccion> findByGrado(@Param("grado") String grado);
-    @Query("SELECT t FROM TipoInfraccion t WHERE t.tipoContribuyente.uuid = :uuidTipoContribuyente AND (t.fechaInicio<= :fechaActual AND (t.fechaFin IS NULL OR t.fechaFin >= :fechaActual))")
-    Optional<TipoInfraccion> findMostRecentTipoInfraccionByFechaActualAndUuidTipoContribuyente(@Param("uuidTipoContribuyente") String uuidTipoContribuyente,
-                                                                                               @Param("fechaActual") Date fechaActual);
 
-    @Query("SELECT COUNT(t) > 0 FROM TipoInfraccion t WHERE t.fechaInicio >= :fechaActual AND (t.fechaFin IS NULL OR t.fechaFin <= :fechaActual) AND t.tipoContribuyente.uuid = :uuidTipoContribuyente AND t.uuid <> :uuidTipoInfraccion")
-    boolean existsFechaActualForUuidTipoContribuyente(@Param("fechaActual") Date fechaActual,
-                                                 @Param("uuidTipoContribuyente") String uuidTipoContribuyente,
-                                                 @Param("uuidTipoInfraccion") String uuidTipoInfraccion);
+    @Query("SELECT t FROM TipoInfraccion t WHERE t.tipoContribuyente.uuid = :uuidTipoContribuyente AND t.grado = :grado AND t.reglamento.activo = true")
+    Optional<TipoInfraccion> findTipoInfraccionByUuidTipoContribuyenteAndGrado(@Param("uuidTipoContribuyente") String uuidTipoContribuyente,
+                                                                               @Param("grado") Integer grado);
 
-    //Optional<TipoInfraccion> findByGrado(String grado);
- /*   @Query(value = "SELECT monto FROM valores_infraccion " +
-            "WHERE id_tipo_contribuyente = :idTipoContribuyente " +
-            "AND grado_infraccion = :gradoInfraccion " +
-            "AND fecha_inicio <= :fechaInfraccion " +
-            "AND (fecha_fin IS NULL OR fecha_fin >= :fechaInfraccion) " +
-            "ORDER BY fecha_inicio DESC LIMIT 1",
-            nativeQuery = true)
-    BigDecimal findvalorUFVByInfraccionNative(
-            @Param("uuidTipoContribuyente") String uuidTipoContribuyente,
-            @Param("gradoInfraccion") String gradoInfraccion,
-            @Param("fechaInfraccion") Date fechaInfraccion);*/
-
+    @Query("SELECT (COUNT(t) > 0) FROM TipoInfraccion t WHERE t.reglamento.activo = true AND t.grado = :grado AND t.tipoContribuyente.uuid = :uuidTipoContribuyente AND t.uuid <> :uuidTipoInfraccion ")
+    boolean existsTipoInfraccionLikeUuidTipoContribuyenteAndGrado(@Param("grado") Integer grado,
+                                                                  @Param("uuidTipoContribuyente") String uuidTipoContribuyente,
+                                                                  @Param("uuidTipoInfraccion") String uuidTipoInfraccion);
 }
