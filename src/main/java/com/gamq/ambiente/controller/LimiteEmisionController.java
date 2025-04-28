@@ -19,9 +19,9 @@ public class LimiteEmisionController {
         return Response.ok().setPayload(limiteEmisionService.obtenerLimiteEmisionPorUuid(uuid));
     }
 
-    @GetMapping("/nombre/{nombre}")
-    public Response getLimiteEmisionByNombreTipoParametro(@PathVariable("nombre") String nombre){
-        return Response.ok().setPayload(limiteEmisionService.obtenerLimiteEmisionPorUuidTipoParametro(nombre));
+    @GetMapping("/tipoParametro/{uuidTipoParametro}")
+    public Response getLimiteEmisionByNombreTipoParametro(@PathVariable("uuidTipoParametro") String uuidTipoParametro){
+        return Response.ok().setPayload(limiteEmisionService.obtenerLimiteEmisionPorUuidTipoParametro(uuidTipoParametro));
     }
 
     @GetMapping()

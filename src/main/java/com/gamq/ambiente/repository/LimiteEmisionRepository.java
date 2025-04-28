@@ -6,14 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface LimiteEmisionRepository extends JpaRepository<LimiteEmision, Long> {
     Optional<LimiteEmision> findByUuid(String uuid);
     Optional<LimiteEmision> findByTipoCombustible(String tipoCombustible);
-    @Query("SELECT l FROM LimiteEmision l WHERE l.tipoParametro.uuid = ?1")
-    Optional<LimiteEmision> findByUuidTipoParametro(String uuid);
+    @Query("SELECT l FROM LimiteEmision l WHERE l.activo = true AND l.tipoParametro.uuid = :uuidTipoParametro")
+    List<LimiteEmision> findByUuidTipoParametro(@Param("uuidTipoParametro") String uuidTipoParametro);
     @Query("SELECT l FROM LimiteEmision l WHERE LOWER(l.tipoParametro.nombre) = ?1")
     Optional<LimiteEmision> findByNombreTipoParametro(String nombre);
 

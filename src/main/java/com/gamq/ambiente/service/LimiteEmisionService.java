@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LimiteEmisionService {
     LimiteEmisionDto obtenerLimiteEmisionPorUuid(String uuid);
-    LimiteEmisionDto obtenerLimiteEmisionPorUuidTipoParametro(String uuidTipoParametro);
+    List<LimiteEmisionDto> obtenerLimiteEmisionPorUuidTipoParametro(String uuidTipoParametro);
     List<LimiteEmisionDto> obtenerLimiteEmisiones();
     LimiteEmisionDto crearLimiteEmision(LimiteEmisionDto LimiteEmisionDto);
     LimiteEmisionDto actualizarLimiteEmision(LimiteEmisionDto LimiteEmisionDto);

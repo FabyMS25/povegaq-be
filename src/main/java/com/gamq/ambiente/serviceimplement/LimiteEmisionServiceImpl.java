@@ -36,12 +36,11 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     @Override
-    public LimiteEmisionDto obtenerLimiteEmisionPorUuidTipoParametro(String uuidTipoParametro) {
-        Optional<LimiteEmision> limiteEmisionOptional = limiteEmisionRepository.findByUuidTipoParametro(uuidTipoParametro);
-        if(limiteEmisionOptional.isPresent()){
-            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionOptional.get());
-        }
-        throw new ResourceNotFoundException("Limite Emision", "uuid limite emision", uuidTipoParametro.toString());
+    public List<LimiteEmisionDto> obtenerLimiteEmisionPorUuidTipoParametro(String uuidTipoParametro) {
+        List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findByUuidTipoParametro(uuidTipoParametro);
+        return limiteEmisionList.stream().map(limiteEmision -> {
+            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
+        }).collect(Collectors.toList());
     }
 
     @Override
