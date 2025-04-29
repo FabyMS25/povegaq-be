@@ -35,7 +35,7 @@ public class LimiteEmision {
     private String tipoMotor;
     @Column(name="year_fabricacion_inicio", nullable = false)
     private Integer yearFabricacionInicio;
-    @Column(name="year_fabricacion_fin", nullable = false)
+    @Column(name="year_fabricacion_fin", nullable = true)
     private Integer yearFabricacionFin;
     @Column(name = "limite",  nullable = false, precision = 20, scale = 4)
     private BigDecimal limite;
