@@ -1,0 +1,52 @@
+services:
+  be-provequi:
+    depends_on:
+      - db-provequi
+    image: 'provequi-be'
+    container_name: 'provequi-be'
+    build: .
+    ports:
+      - '8090:8090'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-provequi:5432/db_provequi
+      - SPRING_DATASOURCE_USERNAME=provequi
+      - SPRING_DATASOURCE_PASSWORD=provequi123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: always
+  db-provequi:
+    image: postgis/postgis:14-3.2-alpine
+#    image: postgres:14-alpine
+    container_name: 'provequi-db'
+    environment:
+      - POSTGRES_USER=provequi
+      - POSTGRES_PASSWORD=provequi123
+      - POSTGRES_DB=db_provequi
+    ports:
+      - '5443:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+  pg-provequi:
+    image: dpage/pgadmin4
+    container_name: 'provequi-pg'
+    ports:
+      - "5060:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=provequi@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=provequi123
+    depends_on:
+      - db-provequi
+    volumes:
+      - pg:/var/lib/pgadmin
+    restart: always
+  fe-provequi:
+    image: 'provequi-fe'
+    container_name: 'provequi-fe'
+    ports:
+      - '4210:80'
+    depends_on:
+      - be-provequi
+    restart: always
+volumes:
+  db:
+  pg:
