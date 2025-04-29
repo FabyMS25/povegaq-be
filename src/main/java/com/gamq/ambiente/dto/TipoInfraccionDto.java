@@ -27,7 +27,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TipoInfraccionDto {
     private String uuid;
-    private Integer grado;
+    private String grado;
     private BigDecimal valorUFV;
     private boolean estado;
 

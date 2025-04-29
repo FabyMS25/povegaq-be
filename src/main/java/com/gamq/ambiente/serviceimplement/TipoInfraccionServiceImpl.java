@@ -65,7 +65,7 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de reglamentoDto no puede ser vacío");
         }
 
-        Integer grado = tipoInfraccionDto.getGrado();
+        String grado = tipoInfraccionDto.getGrado();
         Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findTipoInfraccionByUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getTipoContribuyenteDto().getUuid(), grado);
         if(tipoInfraccionOptional.isEmpty()){
             Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());

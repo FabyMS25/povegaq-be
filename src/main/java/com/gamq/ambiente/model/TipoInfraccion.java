@@ -31,8 +31,8 @@ public class TipoInfraccion {
     private Long idTipoInfraccion;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "grado", nullable = false)
-    private Integer grado;
+    @Column(name = "grado", nullable = false, length = 250)
+    private String grado;
     @Column(name = "valor_ufv", precision = 20, scale = 4)
     private BigDecimal valorUFV;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")

@@ -33,4 +33,6 @@ public interface DetalleInspeccionRepository extends JpaRepository<DetalleInspec
                                        @Param("uuidDetalleInspeccion") String uuidDetalleInspeccio);
     @Query("SELECT d FROM DetalleInspeccion d WHERE d.inspeccion.uuid = :uuidInspeccion ORDER BY d.nroEjecucion ASC")
     List<DetalleInspeccion> findByUuidInspeccion(@Param("uuidInspeccion") String uuidInspeccion);
+
+    List<DetalleInspeccion> findByInspeccionUuidOrderByNroEjecucionAsc(String uuidInspeccion);
 }
