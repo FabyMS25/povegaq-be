@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
 
 @Getter
@@ -24,6 +25,8 @@ import java.math.BigDecimal;
 public class DetalleInspeccionDto {
     private String uuid;
     private BigDecimal valor;
+    private boolean resultadoParcial;
+    private Integer tipoPrueba;
     private Integer nroEjecucion;
     private boolean estado;
 

@@ -30,7 +30,7 @@ public class Vehiculo {
     private Long idVehiculo;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "placa",nullable = false)
+    @Column(name = "placa",nullable = true)
     private String placa;
     @Column(name = "poliza",nullable = true)
     private String poliza;
@@ -41,14 +41,27 @@ public class Vehiculo {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_registro", nullable = false)
     private Date fechaRegistro;
-    @Column(name = "juridiccion_origen",nullable = true)
+    @Column(name = "juridiccion_origen", nullable = true)
     private String juridiccionOrigen;  //radicatoria LA PAZ QUILLACOLLO TARIJA
+
+    @Column(name = "es_movil", columnDefinition = "BOOLEAN NOT NULL DEFAULT true")
+    private Boolean esMovil;
+    @Column(name = "es_unidad_industrial", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean esUnidadIndustrial;
+    @Column(name = "pin_numero_identificacion",nullable = true)
+    private String pinNumeroIdentificacion;
+    @Column(name = "categoria_vehicular", nullable = false, length = 150)
+    private String categoriaVehicular;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
     private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_propietario", nullable = true)
+    private Propietario propietario;
 
     @OneToOne(mappedBy = "vehiculo")
     private DatoTecnico datoTecnico;

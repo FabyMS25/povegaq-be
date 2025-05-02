@@ -4,11 +4,15 @@ package com.gamq.ambiente.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gamq.ambiente.model.Inspeccion;
+import com.gamq.ambiente.model.TipoContribuyente;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,13 +24,12 @@ import lombok.experimental.Accessors;
 public class ConductorDto {
     private String uuid;
     private String nombreCompleto;
-    private String tipoContribuyente; //NATURAL, JURIDICO
-    private String codigoContribuyente;
     private String tipoDocumento;
     private String numeroDocumento;
     private Integer expedido;
     private String email;
     private boolean estado;
 
-    private InspeccionDto inspeccionDto;
+    private TipoContribuyenteDto tipoContribuyenteDto;
+    private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
 }

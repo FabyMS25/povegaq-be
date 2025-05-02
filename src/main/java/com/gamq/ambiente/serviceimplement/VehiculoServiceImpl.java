@@ -1,12 +1,16 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.dto.mapper.DatoTecnicoMapper;
 import com.gamq.ambiente.dto.mapper.VehiculoMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
+import com.gamq.ambiente.model.DatoTecnico;
 import com.gamq.ambiente.model.Vehiculo;
+import com.gamq.ambiente.repository.DatoTecnicoRepository;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.VehiculoService;
+import com.gamq.ambiente.validators.VehiculoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,10 @@ import java.util.stream.Collectors;
 public class VehiculoServiceImpl implements VehiculoService {
     @Autowired
     VehiculoRepository vehiculoRepository;
+    @Autowired
+    DatoTecnicoRepository datoTecnicoRepository;
+    @Autowired
+    VehiculoValidator vehiculoValidator;
     @Override
     public VehiculoDto obtenerVehiculoPorUuid(String uuid) {
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuid);
@@ -48,14 +56,20 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
-        String placa = vehiculoDto.getPlaca();
-        if(placa == null){ throw new ResourceNotFoundException("Vehiculo", "placa", placa);}
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
-        if(vehiculoOptional.isEmpty()){
+        if (vehiculoValidator.validateVehiculo(vehiculoDto) ){
             Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
-            return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(nuevoVehiculo));
+
+            Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
+            vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
+            return VehiculoMapper.toVehiculoDto(vehiculo);
         }
+
+      //  Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
+      //  if(vehiculoOptional.isEmpty()){
+
+      //  }
         throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
+        //throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
     }
 
     @Override
@@ -65,6 +79,20 @@ public class VehiculoServiceImpl implements VehiculoService {
             if (!vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
                 Vehiculo updateVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
                 updateVehiculo.setIdVehiculo(vehiculoOptional.get().getIdVehiculo());
+
+                Optional<DatoTecnico> datoTecnicoOptional = datoTecnicoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getUuid());
+                if(datoTecnicoOptional.isEmpty()){
+                    throw new ResourceNotFoundException("dato tecnico del vehiculo", "uuid", vehiculoDto.getDatoTecnicoDto().getUuid());
+                }
+
+                DatoTecnico datoTecnico = DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto());
+                updateVehiculo.setDatoTecnico(datoTecnico);
+
+                updateVehiculo.getDatoTecnico().setIdDatoTecnico(datoTecnicoOptional.get().getIdDatoTecnico());
+                updateVehiculo.getDatoTecnico().setVehiculo(updateVehiculo);
+
+                datoTecnicoRepository.save(updateVehiculo.getDatoTecnico());
+
                 return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(updateVehiculo));
             } else {
                 throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");

@@ -1,17 +1,18 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.CertificadoDto;
 import com.gamq.ambiente.dto.DetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionDto;
 import com.gamq.ambiente.dto.TipoParametroDto;
 import com.gamq.ambiente.model.DetalleInspeccion;
-import com.gamq.ambiente.model.TipoParametro;
+
 
 public class DetalleInspeccionMapper {
     public static DetalleInspeccionDto toDetalleInspeccionDto(DetalleInspeccion detalleInspeccion){
         return new DetalleInspeccionDto()
                 .setUuid(detalleInspeccion.getUuid())
                 .setValor(detalleInspeccion.getValor())
+                .setTipoPrueba(detalleInspeccion.getTipoPrueba())
+                .setResultadoParcial(detalleInspeccion.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccion.getNroEjecucion())
                 .setEstado(detalleInspeccion.isEstado())
                 .setTipoParametroDto(detalleInspeccion.getTipoParametro() == null? null: new TipoParametroDto()
@@ -37,6 +38,8 @@ public class DetalleInspeccionMapper {
         return new DetalleInspeccion()
                 .setUuid(detalleInspeccionDto.getUuid())
                 .setValor(detalleInspeccionDto.getValor())
+                .setTipoPrueba(detalleInspeccionDto.getTipoPrueba())
+                .setResultadoParcial(detalleInspeccionDto.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccionDto.getNroEjecucion())
                 .setEstado(detalleInspeccionDto.isEstado())
                /* .setTipoParametro(detalleInspeccionDto.getTipoParametroDto() == null? null: new TipoParametro()

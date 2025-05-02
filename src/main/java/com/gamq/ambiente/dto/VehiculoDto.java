@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,11 +28,19 @@ public class VehiculoDto {
     private String poliza;
     private String vinNumeroIdentificacion;
     private boolean esOficial;
+    @NotNull(message = "La fecha de elaboracion es requerido YYYY-MM-DD")
     private Date fechaRegistro;
     private String juridiccionOrigen;
+    @NotNull(message = "El campo es Movil es requerido TRUE o FALSE")
+    private Boolean esMovil;
+    private boolean esUnidadIndustrial;
+    private String pinNumeroIdentificacion; //producto numero de identificacion unidad industrial
+    @NotNull(message = "La categoria vehicular es requerido")
+    private String categoriaVehicular;
     private boolean estado;
 
     private DatoTecnicoDto datoTecnicoDto;
+    private PropietarioDto propietarioDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
 
 }

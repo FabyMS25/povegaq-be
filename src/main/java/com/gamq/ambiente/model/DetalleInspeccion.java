@@ -30,7 +30,13 @@ public class DetalleInspeccion {
     private String uuid;
     @Column(name = "valor", nullable = false, precision = 20, scale = 4)
     private BigDecimal valor;
-    @Column(name = "nro_ejecucion", nullable = true,  precision = 20, scale = 4)
+
+    @Column(name = "resultado_parcial", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean resultadoParcial;
+    @Column(name = "tipo_prueba", nullable = false)
+    private Integer tipoPrueba;
+
+    @Column(name = "nro_ejecucion", nullable = false)
     private Integer nroEjecucion;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")

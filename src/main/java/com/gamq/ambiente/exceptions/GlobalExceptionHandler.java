@@ -2,8 +2,10 @@ package com.gamq.ambiente.exceptions;
 
 import com.gamq.ambiente.dto.response.ErrorDetails;
 import io.jsonwebtoken.MalformedJwtException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -12,6 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import javax.validation.ConstraintViolationException;
 import java.nio.file.AccessDeniedException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -65,22 +69,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 webRequest.getDescription(false),"500-INTERNAL_SERVER_ERROR");
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-/*
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
-                                                                  HttpStatusCode status,
+                                                                  HttpStatus status,
                                                                   WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
+    /*    Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) ->{
             String fieldName = ((FieldError)error).getField();
             String message = error.getDefaultMessage();
             errors.put(fieldName, message);
         });
 
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);*/
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), "Error de validación",
+                errors.toString(), "400-BAD_REQUEST");
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
-*/
+
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
 //    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception,
 //                                                                        WebRequest webRequest){
@@ -108,5 +121,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 webRequest.getDescription(false),"401-UNAUTHORIZED");
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
+/*
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDetails> handleValidationException(MethodArgumentNotValidException ex,
+                                                                  WebRequest request) {
+
+        Map<String, String> validationErrors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            validationErrors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        ErrorDetails errorDetails = new ErrorDetails(new Date(),
+                "Error de validación",
+                validationErrors.toString(),
+                "400-BAD_REQUEST");
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }*/
 }
 

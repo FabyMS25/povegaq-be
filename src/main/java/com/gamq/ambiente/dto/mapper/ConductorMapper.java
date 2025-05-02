@@ -1,32 +1,42 @@
 package com.gamq.ambiente.dto.mapper;
 
 import com.gamq.ambiente.dto.ConductorDto;
+import com.gamq.ambiente.dto.TipoContribuyenteDto;
 import com.gamq.ambiente.model.Conductor;
+import com.gamq.ambiente.model.TipoContribuyente;
 
 public class ConductorMapper {
     public static ConductorDto toConductorDto(Conductor conductor){
         return new ConductorDto()
                 .setUuid(conductor.getUuid())
-                .setCodigoContribuyente(conductor.getCodigoContribuyente())
                 .setExpedido(conductor.getExpedido())
                 .setNombreCompleto(conductor.getNombreCompleto())
                 .setNumeroDocumento(conductor.getNumeroDocumento())
                 .setTipoDocumento(conductor.getTipoDocumento())
-                .setTipoContribuyente(conductor.getTipoContribuyente())
                 .setEmail(conductor.getEmail())
-                .setEstado(conductor.isEstado());
+                .setEstado(conductor.isEstado())
+                .setTipoContribuyenteDto(conductor.getTipoContribuyente() == null? null: new TipoContribuyenteDto()
+                        .setUuid(conductor.getTipoContribuyente().getUuid())
+                        .setDescripcion(conductor.getTipoContribuyente().getDescripcion())
+                        .setEstado(conductor.getTipoContribuyente().isEstado())
+                )
+                ;
     }
 
     public static Conductor toConductor(ConductorDto conductorDto){
         return new Conductor()
                 .setUuid(conductorDto.getUuid())
-                .setCodigoContribuyente(conductorDto.getCodigoContribuyente())
                 .setExpedido(conductorDto.getExpedido())
                 .setNombreCompleto(conductorDto.getNombreCompleto())
                 .setNumeroDocumento(conductorDto.getNumeroDocumento())
                 .setTipoDocumento(conductorDto.getTipoDocumento())
-                .setTipoContribuyente(conductorDto.getTipoContribuyente())
                 .setEmail(conductorDto.getEmail())
-                .setEstado(conductorDto.isEstado());
+                .setEstado(conductorDto.isEstado())
+                .setTipoContribuyente(conductorDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
+                        .setUuid(conductorDto.getTipoContribuyenteDto().getUuid())
+                        .setDescripcion(conductorDto.getTipoContribuyenteDto().getDescripcion())
+                        .setEstado(conductorDto.getTipoContribuyenteDto().isEstado())
+                )
+                ;
     }
 }

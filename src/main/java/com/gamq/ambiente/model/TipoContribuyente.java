@@ -9,6 +9,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -31,6 +33,9 @@ public class TipoContribuyente {
     private String descripcion;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "tipoContribuyente", fetch = FetchType.LAZY)
+    private List<Propietario> propietarioList = new ArrayList<Propietario>();
 
     public TipoContribuyente(String uuid) {this.uuid = uuid;}
 

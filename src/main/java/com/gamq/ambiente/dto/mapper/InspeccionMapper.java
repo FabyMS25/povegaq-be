@@ -1,9 +1,6 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.ActividadDto;
-import com.gamq.ambiente.dto.EventoDto;
-import com.gamq.ambiente.dto.InspeccionDto;
-import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Actividad;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Vehiculo;
@@ -20,6 +17,7 @@ public class InspeccionMapper {
                 .setLugarInspeccion(inspeccion.getLugarInspeccion())
                 .setNombreInspector(inspeccion.getNombreInspector())
                 .setUuidUsuario(inspeccion.getUuidUsuario())
+                .setAltitud(inspeccion.getAltitud())
                 .setEstado(inspeccion.isEstado())
                 .setActividadDto(inspeccion.getActividad() == null? null: new ActividadDto()
                         .setUuid(inspeccion.getActividad().getUuid())
@@ -46,6 +44,15 @@ public class InspeccionMapper {
                         .setFechaFin(inspeccion.getEvento().getFechaFin())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
+                .setConductorDto( inspeccion.getConductor() == null? null: new ConductorDto()
+                        .setUuid(inspeccion.getConductor().getUuid())
+                        .setNombreCompleto(inspeccion.getConductor().getNombreCompleto())
+                        .setTipoDocumento(inspeccion.getConductor().getTipoDocumento())
+                        .setNumeroDocumento(inspeccion.getConductor().getNumeroDocumento())
+                        .setExpedido(inspeccion.getConductor().getExpedido())
+                        .setEmail(inspeccion.getConductor().getEmail())
+                        .setEstado(inspeccion.getConductor().isEstado())
+                )
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
                 }).collect(Collectors.toList()))
@@ -64,6 +71,7 @@ public class InspeccionMapper {
                 .setLugarInspeccion(inspeccionDto.getLugarInspeccion())
                 .setNombreInspector(inspeccionDto.getNombreInspector())
                 .setUuidUsuario(inspeccionDto.getUuidUsuario())
+                .setAltitud(inspeccionDto.getAltitud())
                 .setEstado(inspeccionDto.isEstado())
               /*  .setActividad(inspeccionDto.getActividadDto() == null? null: new Actividad()
                         .setUuid(inspeccionDto.getActividadDto().getUuid())
