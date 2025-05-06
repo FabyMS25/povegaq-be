@@ -1,7 +1,7 @@
 HELP.md
-#.gradle
-#build/
-#!gradle/wrapper/gradle-wrapper.jar
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -50,3 +50,4 @@ target/
 *.iml
 .idea/
 *.swp
+.gradle/
