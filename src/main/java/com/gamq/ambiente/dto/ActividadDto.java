@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +25,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ActividadDto {
     private String uuid;
+    @NotBlank(message = "El tipo de actividad es obligatorio")
     private String tipoActividad;
+    @NotNull(message = "La fecha de inicio es obligatoria")
     private Date fechaInicio;
+    @NotNull(message = "La fecha de fin es obligatoria")
     private Date fechaFin;
     private boolean activo;
     private boolean estado;

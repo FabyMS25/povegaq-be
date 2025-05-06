@@ -43,13 +43,18 @@ public class Vehiculo {
     private Date fechaRegistro;
     @Column(name = "juridiccion_origen", nullable = true)
     private String juridiccionOrigen;  //radicatoria LA PAZ QUILLACOLLO TARIJA
-
     @Column(name = "es_movil", columnDefinition = "BOOLEAN NOT NULL DEFAULT true")
     private Boolean esMovil;
     @Column(name = "es_unidad_industrial", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esUnidadIndustrial;
     @Column(name = "pin_numero_identificacion",nullable = true)
     private String pinNumeroIdentificacion;
+    @Column(name = "nro_copias_placa")
+    private Integer nroCopiasPlaca;
+    @Column(name = "placa_anterior")
+    private String placaAnterior;
+    @Column(name = "copo")
+    private String copo;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

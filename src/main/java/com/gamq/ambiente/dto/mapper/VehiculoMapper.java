@@ -4,6 +4,7 @@ import com.gamq.ambiente.dto.DatoTecnicoDto;
 import com.gamq.ambiente.dto.PropietarioDto;
 import com.gamq.ambiente.dto.TipoContribuyenteDto;
 import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.model.DatoTecnico;
 import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.Vehiculo;
@@ -22,6 +23,9 @@ public class VehiculoMapper {
                 .setEsUnidadIndustrial(vehiculo.isEsUnidadIndustrial())
                 .setEsMovil(vehiculo.getEsMovil())
                 .setPinNumeroIdentificacion(vehiculo.getPinNumeroIdentificacion())
+                .setNroCopiasPlaca(vehiculo.getNroCopiasPlaca())
+                .setPlacaAnterior(vehiculo.getPlacaAnterior())
+                .setCopo(vehiculo.getCopo())
                 .setDatoTecnicoDto(vehiculo.getDatoTecnico()== null? null: new DatoTecnicoDto()
                         .setUuid(vehiculo.getDatoTecnico().getUuid())
                         .setTipoVehiculo(vehiculo.getDatoTecnico().getTipoVehiculo())
@@ -80,6 +84,9 @@ public class VehiculoMapper {
                 .setEsMovil(vehiculoDto.getEsMovil())
                 .setEsUnidadIndustrial(vehiculoDto.isEsUnidadIndustrial())
                 .setPinNumeroIdentificacion(vehiculoDto.getPinNumeroIdentificacion())
+                .setNroCopiasPlaca(vehiculoDto.getNroCopiasPlaca())
+                .setPlacaAnterior(vehiculoDto.getPlacaAnterior())
+                .setCopo(vehiculoDto.getCopo())
                 .setPropietario( vehiculoDto.getPropietarioDto() == null? null: new Propietario()
                         .setUuid(vehiculoDto.getPropietarioDto().getUuid())
                         .setNombreCompleto(vehiculoDto.getPropietarioDto().getNombreCompleto())
