@@ -35,6 +35,9 @@ public class VehiculoDto {
     private Boolean esMovil;
     private boolean esUnidadIndustrial;
     private String pinNumeroIdentificacion; //producto numero de identificacion unidad industrial
+    private Integer nroCopiasPlaca;
+    private String placaAnterior;
+    private String copo;
     private boolean estado;
 
     private DatoTecnicoDto datoTecnicoDto;

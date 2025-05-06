@@ -63,13 +63,7 @@ public class VehiculoServiceImpl implements VehiculoService {
             vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
             return VehiculoMapper.toVehiculoDto(vehiculo);
         }
-
-      //  Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
-      //  if(vehiculoOptional.isEmpty()){
-
-      //  }
-        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
-        //throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
+        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
     }
 
     @Override
