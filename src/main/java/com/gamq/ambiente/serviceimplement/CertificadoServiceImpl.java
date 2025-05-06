@@ -64,7 +64,9 @@ public class CertificadoServiceImpl implements CertificadoService {
         if(certificadoOptional.isEmpty()){
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()) {
+                String codigo = UUID.randomUUID().toString();
                 Certificado nuevoCertificado = CertificadoMapper.toCertificado(certificadoDto);
+                nuevoCertificado.setCodigo(codigo);
                 nuevoCertificado.setFechaVencimiento(FechaUtil.calcularFechaVencimiento(nuevoCertificado.getFechaVencimiento()));
                 nuevoCertificado.setInspeccion(inspeccionOptional.get());
                 return CertificadoMapper.toCertificadoDto(certificadoRepository.save(nuevoCertificado));

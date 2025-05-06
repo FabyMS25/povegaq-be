@@ -51,6 +51,10 @@ public class LimiteEmision {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_fin")
     private Date fechaFin;
+    @Column(name="altitud_minima", nullable = true)
+    private Integer altitudMinima;
+    @Column(name="altitud_maxima", nullable = true)
+    private Integer altitudMaxima;
     @Column(name = "activo", columnDefinition = "BOOLEAN NOT NULL DEFAULT '1'")
     private boolean activo;
 

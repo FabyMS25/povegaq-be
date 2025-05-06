@@ -35,3 +35,18 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignora clases compiladas
+*.class
+
+# Ignora la carpeta build (como en Gradle)
+build/
+
+# Ignora la carpeta target (si usas Maven)
+target/
+
+# Ignora archivos temporales de tu IDE
+*.log
+*.iml
+.idea/
+*.swp

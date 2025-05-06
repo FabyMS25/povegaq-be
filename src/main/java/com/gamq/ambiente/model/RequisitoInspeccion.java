@@ -9,7 +9,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -43,6 +45,9 @@ public class RequisitoInspeccion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_inspeccion", nullable = false)
     private Inspeccion inspeccion;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "requisitoInspeccion", fetch = FetchType.LAZY)
+    private List<ArchivoAdjunto> archivoAdjuntoList = new ArrayList<ArchivoAdjunto>();
 
     public RequisitoInspeccion(String uuid) {this.uuid = uuid;}
 

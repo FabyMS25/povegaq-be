@@ -66,6 +66,10 @@ public class DatoTecnico {
     private BigInteger kilometraje; //150000 km mas grandes en flotas y camiones de largo viaje
     @Column(name = "emision_standard", length = 100)
     private String emisionStandard; //Euro 6
+    @Column(name = "clasificacion", nullable = false, length = 150)
+    private String clasificacion;
+    @Column(name = "numero_asientos", nullable = false)
+    private Integer numeroAsientos;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

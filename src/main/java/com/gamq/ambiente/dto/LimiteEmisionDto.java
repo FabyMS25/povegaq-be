@@ -34,6 +34,8 @@ public class LimiteEmisionDto {
     private String peso;
     private Date fechaInicio;
     private Date fechaFin;
+    private Integer altitudMinima;
+    private Integer altitudMaxima;
     private boolean activo;
     private boolean estado;
 

@@ -2,9 +2,13 @@ package com.gamq.ambiente.validators;
 
 import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.exceptions.BlogAPIException;
+import com.gamq.ambiente.model.Ufv;
+import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class VehiculoValidator {
@@ -33,16 +37,46 @@ public class VehiculoValidator {
         boolean tieneVin = vehiculoDto.getVinNumeroIdentificacion() != null && !vehiculoDto.getVinNumeroIdentificacion().isBlank();
         boolean tienePin = vehiculoDto.getPinNumeroIdentificacion() != null && !vehiculoDto.getPinNumeroIdentificacion().isBlank();
 
-        if (tienePlaca && !tienePoliza && !tieneVin && !tienePin) return true;                     // solo placa
-        if (tienePoliza && !tienePlaca && !tieneVin && !tienePin) return true;                     // solo poliza
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(vehiculoDto.getPlaca());
+        if (tienePlaca && !tienePoliza && !tieneVin && !tienePin){
+            if(vehiculoOptional.isEmpty()){
+                return true;
+            }
+        }                     // solo placa
+
+        if (!tienePlaca && tienePoliza && !tieneVin && !tienePin){
+            vehiculoOptional = vehiculoRepository.findByPoliza(vehiculoDto.getPoliza());
+            if(vehiculoOptional.isEmpty()) {
+                return true;
+            }
+        }                     // solo poliza
+
         if (tieneVin && tienePoliza) return true;                                                  // vin + poliza
         if (tienePlaca && tienePoliza && tieneVin) return true;                                    // placa + poliza + vin
-        if (!tienePlaca && !tienePoliza && !tieneVin && tienePin) return true;                     // solo pin
 
-      //  context.disableDefaultConstraintViolation();
-      //  context.buildConstraintViolationWithTemplate(
-      //          "Combinación inválida. Requiere: (1) placa sola, (2) poliza sola, (3) poliza + vin, (4) placa + poliza + vin, o (5) pin solo."
-      //  ).addConstraintViolation();
+
+        if (!tienePlaca && !tienePoliza && !tieneVin && tienePin){
+            vehiculoOptional = vehiculoRepository.findByPinNumeroIdentificacion(vehiculoDto.getPinNumeroIdentificacion());
+            if(!vehiculoOptional.isPresent()) {
+                return true;
+            }
+        }                     // solo pin
+
+        if (tienePlaca && !tienePoliza && tieneVin && !tienePin){
+            if(vehiculoOptional.isEmpty()) {
+                vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
+                if (vehiculoOptional.isEmpty()) {
+                    return true;
+                }
+            }
+        }//tiene placa +  vin
+
+        if (!tienePlaca && !tienePoliza && tieneVin && !tienePin){
+            vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
+            if(!vehiculoOptional.isPresent()) {
+                return true;
+            }
+        }                    // solo vin
 
         return false;
     }

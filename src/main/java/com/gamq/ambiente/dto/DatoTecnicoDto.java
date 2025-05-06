@@ -10,6 +10,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -40,6 +41,9 @@ public class DatoTecnicoDto {
     private String tipoMotor; //4 cilindros,v6
     private BigInteger kilometraje; //150000 km mas grandes en flotas y camiones de largo viaje
     private String emisionStandard; //Euro 6
+    @NotNull(message = "La clasificacion vehicular es requerido")
+    private String clasificacion;
+    private Integer numeroAsientos;
     private boolean estado;
 
     private VehiculoDto vehiculoDto;

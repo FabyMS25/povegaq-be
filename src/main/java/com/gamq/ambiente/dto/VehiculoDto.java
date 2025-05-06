@@ -35,8 +35,6 @@ public class VehiculoDto {
     private Boolean esMovil;
     private boolean esUnidadIndustrial;
     private String pinNumeroIdentificacion; //producto numero de identificacion unidad industrial
-    @NotNull(message = "La categoria vehicular es requerido")
-    private String categoriaVehicular;
     private boolean estado;
 
     private DatoTecnicoDto datoTecnicoDto;

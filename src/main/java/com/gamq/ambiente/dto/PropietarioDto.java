@@ -26,7 +26,7 @@ public class PropietarioDto {
         @Size(min= 4, max = 15)
         @Size(max = 15, message = "El nro de documento no puede exceder los 15 caracteres")
         private String nroDocumento;
-        private Integer tipoDocumento;
+        private String tipoDocumento;
         private Integer expedido;
         @Size(max = 50, message = "El correo no puede exceder los 50  caracteres")
         private String email;

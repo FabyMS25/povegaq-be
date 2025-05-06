@@ -50,8 +50,6 @@ public class Vehiculo {
     private boolean esUnidadIndustrial;
     @Column(name = "pin_numero_identificacion",nullable = true)
     private String pinNumeroIdentificacion;
-    @Column(name = "categoria_vehicular", nullable = false, length = 150)
-    private String categoriaVehicular;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
@@ -65,6 +63,12 @@ public class Vehiculo {
 
     @OneToOne(mappedBy = "vehiculo")
     private DatoTecnico datoTecnico;
+
+    @OneToOne(mappedBy = "vehiculo")
+    private FotoVehiculo fotoVehiculo;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
+    private List<FotoVehiculo> fotoVehiculoList = new ArrayList<FotoVehiculo>();
 
     public Vehiculo(String uuid) {this.uuid = uuid;}
 

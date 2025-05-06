@@ -1,17 +1,15 @@
 package com.gamq.ambiente.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gamq.ambiente.model.Actividad;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
-import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -21,19 +19,18 @@ import java.util.Date;
 @ToString
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EventoDto {
+public class ArchivoAdjuntoDto {
     private String uuid;
-    private String institucion;
-    private Date fechaInicio;
-    private Date fechaFin;
-    private LocalTime horaInicio;
-    private LocalTime horaFin;
-    private Double latitud;
-    private Double longitud;
-    private String direccion;
+    private String nombre;
     private String descripcion;
-    private String distrito;
+    private String rutaArchivo;
+    private Date fechaAdjunto;
+    private String nombreUsuario;
+    private String uuidUsuario;
     private boolean estado;
 
-    private ActividadDto actividadDto;
+    private MultipartFile archivoFile;
+
+    private RequisitoInspeccionDto requisitoInspeccionDto;
+
 }
