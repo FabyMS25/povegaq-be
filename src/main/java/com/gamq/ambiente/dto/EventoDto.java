@@ -33,6 +33,7 @@ public class EventoDto {
     private String direccion;
     private String descripcion;
     private String distrito;
+    private Integer altitud;
     private boolean estado;
 
     private ActividadDto actividadDto;

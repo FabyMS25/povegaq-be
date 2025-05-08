@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface FotoVehiculoService {
     FotoVehiculoDto obtenerFotoVehiculoPorUuid(String uuid);
+    List<FotoVehiculoDto> obtenerFotoVehiculoPorUuidVehiculo(String uuidVehiculo);
     List<FotoVehiculoDto> obtenerFotoVehiculos();
     FotoVehiculoDto crearFotoVehiculo(FotoVehiculoDto fotoVehiculoDto);
     FotoVehiculoDto actualizarFotoVehiculo(FotoVehiculoDto fotoVehiculoDto);

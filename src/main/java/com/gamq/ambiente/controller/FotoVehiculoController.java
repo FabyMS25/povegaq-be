@@ -26,6 +26,11 @@ public class FotoVehiculoController {
     {
         return Response.ok().setPayload(fotoVehiculoService.obtenerFotoVehiculoPorUuid(uuid));
     }
+    @GetMapping("/uuidVehiculo")
+    public Response getArchivoAdjuntos(@RequestParam("uuidVehiculo") String uuidVehiculo)
+    {
+        return Response.ok().setPayload(fotoVehiculoService.obtenerFotoVehiculoPorUuidVehiculo(uuidVehiculo));
+    }
 
     @GetMapping("/fotos")
     public Response getFotoVehiculos()

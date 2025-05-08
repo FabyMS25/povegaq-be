@@ -24,10 +24,10 @@ import java.math.BigInteger;
 public class DatoTecnicoDto {
     private String uuid;
     private String clase;
-    private String marca;
+    private String marca; //no
     private String pais;  //pais de fabricacion u origen procedencia
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
-    private String modelo;
+    private String modelo; //si
     private String servicio; //particular, comercial, flota, etc.
     private BigDecimal cilindrada; //2.5
     private String color;
@@ -36,9 +36,9 @@ public class DatoTecnicoDto {
     private String tipoCarroceria;
     private Integer yearFabricacion;
     private Integer numeroPuertas;
-    private String tipoCombustion; //gasolina , diesel, gas, electrico, hibrido
+    private String tipoCombustion; //si gasolina , diesel, gas, electrico, hibrido
     private Integer tamanoMotor; //2500
-    private String tipoMotor; //4 cilindros,v6
+    private String tipoMotor; // si es gasolina chispa 4 cilindros,v6
     private BigInteger kilometraje; //150000 km mas grandes en flotas y camiones de largo viaje
     private String emisionStandard; //Euro 6
     @NotNull(message = "La clasificacion vehicular es requerido")

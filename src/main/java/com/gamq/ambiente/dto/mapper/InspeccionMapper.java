@@ -82,6 +82,7 @@ public class InspeccionMapper {
                         .setDireccion(inspeccion.getEvento().getDireccion())
                         .setDescripcion(inspeccion.getEvento().getDescripcion())
                         .setDistrito(inspeccion.getEvento().getDistrito())
+                        .setAltitud(inspeccion.getEvento().getAltitud())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
                 .setConductorDto( inspeccion.getConductor() == null? null: new ConductorDto()

@@ -5,14 +5,35 @@ import com.gamq.ambiente.dto.TipoContribuyenteDto;
 import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.TipoContribuyente;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PropietarioMapper {
     public static PropietarioDto toPropietarioDto(Propietario propietario){
         return new PropietarioDto()
                 .setUuid(propietario.getUuid())
-                .setNombreCompleto(propietario.getNombreCompleto())
-                .setNroDocumento(propietario.getNroDocumento())
+           //     .setNombreCompleto(
+            //            Stream.of(
+            //                            safeTrim(propietario.getNombre()),
+            //                            safeTrim(propietario.getPrimerApellido()),
+            //                            safeTrim(propietario.getSegundoApellido()),
+            //                            safeTrim(propietario.getApellidoEsposo())
+            //                    )
+            //                    .filter(Objects::nonNull)
+            //                    .map(String::trim)
+            //                    .filter(s ->  s != null && !s.isEmpty())
+            //                    .collect(Collectors.joining(" "))
+            //    )
+                .setNombre(propietario.getNombre())
+                .setPrimerApellido(propietario.getPrimerApellido())
+                .setSegundoApellido(propietario.getSegundoApellido())
+                .setApellidoEsposo(propietario.getApellidoEsposo())
+                .setEstadoCivil(propietario.getEstadoCivil())
+                .setGenero(propietario.getGenero())
+                .setFechaNacimiento(propietario.getFechaNacimiento())
+
+                .setNumeroDocumento(propietario.getNumeroDocumento())
                 .setTipoDocumento(propietario.getTipoDocumento())
                 .setExpedido(propietario.getExpedido())
                 .setEmail(propietario.getEmail())
@@ -32,8 +53,14 @@ public class PropietarioMapper {
     public static Propietario toPropietario(PropietarioDto propietarioDto){
         return new Propietario()
                 .setUuid(propietarioDto.getUuid())
-                .setNombreCompleto(propietarioDto.getNombreCompleto())
-                .setNroDocumento(propietarioDto.getNroDocumento())
+                .setNombre(propietarioDto.getNombre())
+                .setPrimerApellido(propietarioDto.getPrimerApellido())
+                .setSegundoApellido(propietarioDto.getSegundoApellido())
+                .setApellidoEsposo(propietarioDto.getApellidoEsposo())
+                .setEstadoCivil(propietarioDto.getEstadoCivil())
+                .setGenero(propietarioDto.getGenero())
+                .setFechaNacimiento(propietarioDto.getFechaNacimiento())
+                .setNumeroDocumento(propietarioDto.getNumeroDocumento())
                 .setTipoDocumento(propietarioDto.getTipoDocumento())
                 .setExpedido(propietarioDto.getExpedido())
                 .setEmail(propietarioDto.getEmail())
@@ -44,9 +71,13 @@ public class PropietarioMapper {
                         .setDescripcion(propietarioDto.getTipoContribuyenteDto().getDescripcion())
                         .setEstado(propietarioDto.getTipoContribuyenteDto().isEstado())
                 )
-                .setVehiculoList(propietarioDto.getVehiculoDtoList().stream().map(vehiculoDto -> {
-                    return VehiculoMapper.toVehiculo(vehiculoDto);
-                }).collect(Collectors.toList()))
+            //    .setVehiculoList(propietarioDto.getVehiculoDtoList().stream().map(vehiculoDto -> {
+            //        return VehiculoMapper.toVehiculo(vehiculoDto);
+            //    }).collect(Collectors.toList()))
                 ;
+    }
+
+    private static String safeTrim(String s) {
+        return s == null ? null : s.trim();
     }
 }

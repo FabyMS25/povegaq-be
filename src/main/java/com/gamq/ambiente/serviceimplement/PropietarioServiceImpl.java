@@ -6,22 +6,28 @@ import com.gamq.ambiente.dto.mapper.PropietarioMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.Propietario;
+import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.PropietarioRepository;
+import com.gamq.ambiente.repository.TipoContribuyenteRepository;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.PropietarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class PropietarioServiceImpl implements PropietarioService {
     @Autowired
     PropietarioRepository propietarioRepository;
     @Autowired
     VehiculoRepository vehiculoRepository;
+    @Autowired
+    TipoContribuyenteRepository tipoContribuyenteRepository;
 
     @Override
     public PropietarioDto obtenerPropietarioPorUuid(String uuid) {
@@ -42,14 +48,22 @@ public class PropietarioServiceImpl implements PropietarioService {
 
     @Override
     public PropietarioDto crearPropietario(PropietarioDto propietarioDto) {
-        String nroDocumento = propietarioDto.getNroDocumento().trim().toLowerCase();
+        if (propietarioDto.getTipoContribuyenteDto() == null || propietarioDto.getTipoContribuyenteDto().getUuid() == null) {
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de tipoContribuyenteDto no puede ser vacío");
+        }
+        String nroDocumento = propietarioDto.getNumeroDocumento().trim().toLowerCase();
 
-        if (propietarioRepository.findByNroDocumento(nroDocumento).isPresent()) {
+        if (propietarioRepository.findByNumeroDocumento(nroDocumento).isPresent()) {
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el nro de documento del propietario ya existe");
+        }
+        Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(propietarioDto.getTipoContribuyenteDto().getUuid());
+        if(!tipoContribuyenteOptional.isPresent()) {
+            throw new ResourceNotFoundException("Tipo Contribuyente", "uuid", propietarioDto.getTipoContribuyenteDto().getUuid());
         }
         Propietario nuevoPropietario = PropietarioMapper.toPropietario(propietarioDto);
         List<Vehiculo>  vehiculoList = mapearVehiculos(propietarioDto.getVehiculoDtoList(), nuevoPropietario);
         nuevoPropietario.setVehiculoList(vehiculoList);
+        nuevoPropietario.setTipoContribuyente(tipoContribuyenteOptional.get());
         return PropietarioMapper.toPropietarioDto(propietarioRepository.save(nuevoPropietario));
     }
 
@@ -61,13 +75,36 @@ public class PropietarioServiceImpl implements PropietarioService {
 
             Vehiculo vehiculo = obtenerVehiculo( vehiculoDto.getUuid());
 
-            if ( vehiculo.getPropietario() == null || !vehiculo.getPropietario().getNroDocumento().contains(nuevoPropietario.getNroDocumento())){
-                if ( placasVehiculo.contains(vehiculoDto.getPlaca().toLowerCase().trim())){
-                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,"la placa del vehiculo'" + vehiculoDto.getPlaca() + "' ya existe o es duplicado");
+            // si el vehiculo no tiene propietario
+            if ( vehiculo.getPropietario() == null || !vehiculo.getPropietario().getNumeroDocumento().contains(nuevoPropietario.getNumeroDocumento())){
+
+                if (vehiculo.getPropietario() != null){
+                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,"El vehículo ya tiene un propietario: Será reasignado? ");
                 }
-                placasVehiculo.add(vehiculoDto.getPlaca().toLowerCase().trim());
-                vehiculo.setPropietario(nuevoPropietario);
-                vehiculoList.add(vehiculo);
+
+                boolean tienePlaca = vehiculo.getPlaca() != null && !vehiculo.getPlaca().trim().isEmpty();
+                boolean tienePinSinPlaca = vehiculo.getPinNumeroIdentificacion() != null && !tienePlaca;
+
+                if (tienePlaca) {
+                    if (placasVehiculo.contains(vehiculo.getPlaca().toLowerCase().trim())) {
+                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la placa del vehiculo'" + vehiculo.getPlaca() + "' ya existe o es duplicado");
+                    }
+                    placasVehiculo.add(vehiculo.getPlaca().toLowerCase().trim());
+                }
+
+                if (tienePinSinPlaca){
+                    if (placasVehiculo.contains(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim())) {
+                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el PIN o numero identificacion del vehiculo'" + vehiculo.getPinNumeroIdentificacion() + "' ya existe o es duplicado");
+                    }
+                    placasVehiculo.add(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim());
+                }
+                if( tienePlaca || tienePinSinPlaca) {
+                    vehiculo.setPropietario(nuevoPropietario);
+                    vehiculoList.add(vehiculo);
+                }
+                else {
+                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el verifique los datos del vehiculo no tiene placa ese vehiculo");
+                }
             }
         } );
         return vehiculoList;
@@ -84,7 +121,7 @@ public class PropietarioServiceImpl implements PropietarioService {
 
     @Override
     public PropietarioDto actualizarPropietario(PropietarioDto propietarioDto) {
-        String nroDocumento = propietarioDto.getNroDocumento().trim().toLowerCase();
+        String nroDocumento = propietarioDto.getNumeroDocumento().trim().toLowerCase();
         Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(propietarioDto.getUuid());
         if(propietarioOptional.isEmpty()){
             throw new ResourceNotFoundException("propietario", "uuid", propietarioDto.getUuid());
