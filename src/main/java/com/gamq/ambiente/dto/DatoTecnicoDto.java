@@ -27,11 +27,11 @@ public class DatoTecnicoDto {
     private String marca; //no
     private String pais;  //pais de fabricacion u origen procedencia
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
-    private String modelo; //si
+    private String modelo; //si el year modelo 2000, 1999
     private String servicio; //particular, comercial, flota, etc.
     private BigDecimal cilindrada; //2.5
     private String color;
-    private BigDecimal capacidadCarga;
+    private BigDecimal capacidadCarga; //
     private String tipoVehiculo; //sedán, SUV, camioneta, furgón, camión, etc
     private String tipoCarroceria;
     private Integer yearFabricacion;
@@ -42,7 +42,7 @@ public class DatoTecnicoDto {
     private BigInteger kilometraje; //150000 km mas grandes en flotas y camiones de largo viaje
     private String emisionStandard; //Euro 6
     @NotNull(message = "La clasificacion vehicular es requerido")
-    private String clasificacion;
+    private String clasificacion; //m1 y m2  liviano, mediano, pesado
     private Integer numeroAsientos;
     private boolean estado;
 

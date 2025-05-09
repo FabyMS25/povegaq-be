@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="550"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="439"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="557"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="432"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -34,17 +34,21 @@
 	<parameter name="opacidad" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select c.codigo,c.fecha_emision, c.fecha_vencimiento,
-i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,
+		<![CDATA[
+select c.codigo,c.fecha_emision, c.fecha_vencimiento,
+i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,i.equipo,
  t.nombre, t.descripcion, t.unidad 
-, d.valor, d.nro_ejecucion
+, d.valor, d.nro_ejecucion, dt.tipo_vehiculo,dt.modelo, v.placa
 from certificados as c
 inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
 inner join actividades as a on a.id_actividad = i.id_actividad
 inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
 inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
-where c.uuid = $P{uuidCertificado}
-and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false]]>
+inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
+inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
+where c.uuid =$P{uuidCertificado}
+and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
+and dt.estado = false]]>
 	</queryString>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="fecha_emision" class="java.util.Date"/>
@@ -60,6 +64,10 @@ and c.estado = false and i.estado = false and d.estado = false and t.estado =fal
 	<field name="unidad" class="java.lang.String"/>
 	<field name="valor" class="java.math.BigDecimal"/>
 	<field name="nro_ejecucion" class="java.lang.Integer"/>
+	<field name="equipo" class="java.lang.String"/>
+	<field name="tipo_vehiculo" class="java.lang.String"/>
+	<field name="modelo" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -156,7 +164,7 @@ and c.estado = false and i.estado = false and d.estado = false and t.estado =fal
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Se emite el certificado de emision de gases vehiculares para : "+ "\n" +
-"Vehiculo: " + $F{tipoVehiculo} + "\n" +
+"Vehiculo: " + $F{tipo_vehiculo} + "\n" +
 "Placa: " + $F{placa} + "\n" +
 "modelo: " + $F{modelo} + "\n" +
 "opacidad:"+ $P{opacidad} + "\n"+ 

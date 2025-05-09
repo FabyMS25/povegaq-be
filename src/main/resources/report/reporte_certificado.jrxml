@@ -42,8 +42,7 @@ inner join actividades as a on a.id_actividad = i.id_actividad
 inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
 inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
 where c.uuid = $P{uuidCertificado}
-and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false
-]]>
+and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false]]>
 	</queryString>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="fecha_emision" class="java.util.Date"/>
