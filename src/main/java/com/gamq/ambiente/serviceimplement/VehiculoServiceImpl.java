@@ -47,6 +47,51 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
+    public VehiculoDto obtenerVehiculoPorPoliza(String poliza) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPoliza(poliza);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "poliza", poliza.toString());
+    }
+
+    @Override
+    public VehiculoDto obtenerVehiculoPorVinNumeroIdentificacion(String vinNumeroIdentificacion) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vinNumeroIdentificacion);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "vin numero de identificacion", vinNumeroIdentificacion);
+    }
+
+    @Override
+    public VehiculoDto obtenerVehiculoPorPinNumeroIdentificacion(String pinNumeroIdentificacion) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPinNumeroIdentificacion(pinNumeroIdentificacion);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "pin numero de identificacion", pinNumeroIdentificacion);
+    }
+
+    @Override
+    public VehiculoDto obtenerVehiculoPorCopo(String copo) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByCopo(copo);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "copo", copo);
+    }
+
+    @Override
+    public VehiculoDto obtenerVehiculoPorPlacaAnterior(String placaAnterior) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlacaAnterior(placaAnterior);
+        if(vehiculoOptional.isPresent()){
+            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
+        }
+        throw new ResourceNotFoundException("Vehiculo", "placa anterior", placaAnterior);
+    }
+
+    @Override
     public List<VehiculoDto> obtenerVehiculos() {
         List<Vehiculo> vehiculoList = vehiculoRepository.findAll();
         return  vehiculoList.stream().map( vehiculo -> {
@@ -58,7 +103,6 @@ public class VehiculoServiceImpl implements VehiculoService {
     public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
         if (vehiculoValidator.validateVehiculo(vehiculoDto) ){
             Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
-
             Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
             vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
             return VehiculoMapper.toVehiculoDto(vehiculo);
