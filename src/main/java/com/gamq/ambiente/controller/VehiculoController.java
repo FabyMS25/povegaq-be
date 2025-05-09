@@ -24,6 +24,31 @@ public class VehiculoController {
         return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPlaca(placa));
     }
 
+    @GetMapping("/poliza/{poliza}")
+    public Response getVehiculoByPoliza(@PathVariable("poliza") String poliza){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPoliza(poliza));
+    }
+
+    @GetMapping("/vin/{vin}")
+    public Response getVehiculoByVin(@PathVariable("vin") String vin){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorVinNumeroIdentificacion(vin));
+    }
+
+    @GetMapping("/pin/{pin}")
+    public Response getVehiculoByPin(@PathVariable("pin") String pin){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPinNumeroIdentificacion(pin));
+    }
+
+    @GetMapping("/copo/{copo}")
+    public Response getVehiculoByCopo(@PathVariable("copo") String copo){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorCopo(copo));
+    }
+
+    @GetMapping("/placaAnterior/{placaAnterior}")
+    public Response getVehiculoByPlacaAnterior(@PathVariable("placaAnterior") String placaAnterior){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPlacaAnterior(placaAnterior));
+    }
+
     @GetMapping()
     public Response getAllVehiculos(){
         return Response.ok().setPayload(vehiculoService.obtenerVehiculos());

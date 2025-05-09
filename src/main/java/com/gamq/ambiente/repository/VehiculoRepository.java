@@ -19,6 +19,10 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
     Optional<Vehiculo> findByVinNumeroIdentificacion(@Param("vinNumeroIdentificacion") String vinNumeroIdentificacion);
     @Query("SELECT v FROM Vehiculo v  WHERE LOWER(rtrim(ltrim(v.pinNumeroIdentificacion))) = LOWER(rtrim(ltrim(:pinNumeroIdentificacion)))")
     Optional<Vehiculo> findByPinNumeroIdentificacion(@Param("pinNumeroIdentificacion") String pinNumeroIdentificacion);
+    @Query("SELECT v FROM Vehiculo v  WHERE LOWER(rtrim(ltrim(v.copo))) = LOWER(rtrim(ltrim(:copo)))")
+    Optional<Vehiculo> findByCopo(@Param("copo") String copo);
+    @Query("SELECT v FROM Vehiculo v  WHERE LOWER(rtrim(ltrim(v.placaAnterior))) = LOWER(rtrim(ltrim(:placaAnterior)))")
+    Optional<Vehiculo> findByPlacaAnterior(@Param("placaAnterior") String placaAnterior);
 
     @Query("SELECT case when count(v) > 0 then true else false end FROM Vehiculo v WHERE lower(rtrim(ltrim(v.placa))) = lower(rtrim(ltrim(:placa))) AND v.uuid <> :uuid")
     boolean exitsVehiculoLikePlaca(@Param("placa") String placa,
