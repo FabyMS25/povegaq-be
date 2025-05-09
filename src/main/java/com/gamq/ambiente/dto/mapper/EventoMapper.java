@@ -19,6 +19,7 @@ public class EventoMapper {
                 .setDireccion(evento.getDireccion())
                 .setDescripcion(evento.getDescripcion())
                 .setDistrito(evento.getDistrito())
+                .setAltitud(evento.getAltitud())
                 .setEstado(evento.isEstado())
                 .setActividadDto(evento.getActividad() == null? null: new ActividadDto()
                         .setUuid(evento.getActividad().getUuid())

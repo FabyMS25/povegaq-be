@@ -2,7 +2,6 @@ package com.gamq.ambiente.validators;
 
 import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.exceptions.BlogAPIException;
-import com.gamq.ambiente.model.Ufv;
 import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import org.springframework.http.HttpStatus;
@@ -37,32 +36,53 @@ public class VehiculoValidator {
         boolean tieneVin = vehiculoDto.getVinNumeroIdentificacion() != null && !vehiculoDto.getVinNumeroIdentificacion().isBlank();
         boolean tienePin = vehiculoDto.getPinNumeroIdentificacion() != null && !vehiculoDto.getPinNumeroIdentificacion().isBlank();
 
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(vehiculoDto.getPlaca());
+
         if (tienePlaca && !tienePoliza && !tieneVin && !tienePin){
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(vehiculoDto.getPlaca());
             if(vehiculoOptional.isEmpty()){
                 return true;
             }
         }                     // solo placa
 
         if (!tienePlaca && tienePoliza && !tieneVin && !tienePin){
-            vehiculoOptional = vehiculoRepository.findByPoliza(vehiculoDto.getPoliza());
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPoliza(vehiculoDto.getPoliza());
             if(vehiculoOptional.isEmpty()) {
                 return true;
             }
         }                     // solo poliza
 
-        if (tieneVin && tienePoliza) return true;                                                  // vin + poliza
-        if (tienePlaca && tienePoliza && tieneVin) return true;                                    // placa + poliza + vin
+        if (tieneVin && tienePoliza){
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
+            if(vehiculoOptional.isEmpty()) {
+                vehiculoOptional = vehiculoRepository.findByPoliza(vehiculoDto.getPoliza());
+                if(vehiculoOptional.isEmpty()) {
+                    return true;
+                }
+            }
+        }                                                  // vin + poliza
+        if (tienePlaca && tienePoliza && tieneVin){
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(vehiculoDto.getPlaca());
+            if (vehiculoOptional.isEmpty()) {
+                vehiculoOptional = vehiculoRepository.findByPoliza(vehiculoDto.getPoliza());
+                if (vehiculoOptional.isEmpty()) {
+                    vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
+                    if (vehiculoOptional.isEmpty()) {
+                        return true;
+                    }
+                }
+            }// placa + poliza + vin
+        }
 
 
         if (!tienePlaca && !tienePoliza && !tieneVin && tienePin){
-            vehiculoOptional = vehiculoRepository.findByPinNumeroIdentificacion(vehiculoDto.getPinNumeroIdentificacion());
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPinNumeroIdentificacion(vehiculoDto.getPinNumeroIdentificacion());
             if(!vehiculoOptional.isPresent()) {
                 return true;
             }
         }                     // solo pin
 
         if (tienePlaca && !tienePoliza && tieneVin && !tienePin){
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(vehiculoDto.getPlaca());
             if(vehiculoOptional.isEmpty()) {
                 vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
                 if (vehiculoOptional.isEmpty()) {
@@ -72,7 +92,7 @@ public class VehiculoValidator {
         }//tiene placa +  vin
 
         if (!tienePlaca && !tienePoliza && tieneVin && !tienePin){
-            vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion());
             if(!vehiculoOptional.isPresent()) {
                 return true;
             }

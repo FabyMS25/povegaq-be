@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -24,13 +25,18 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LimiteEmisionDto {
     private String uuid;
-    private String tipoCombustible;
+
+    @NotBlank(message = "El tipo de motor es requerido")
     private String tipoMotor;
+    @NotBlank(message = "El tipo de motor es requerido")
+    private String tipoCombustible;
+    private Integer cilindradaMinimo;
+    private Integer cilindradaMaximo;
+    private String categoriaVehiculo;
+    private String categoria;
     private Integer yearFabricacionInicio;
     private Integer yearFabricacionFin;
     private BigDecimal limite;
-    private String categoriaVehiculo;
-    private String categoria;
     private String peso;
     private Date fechaInicio;
     private Date fechaFin;

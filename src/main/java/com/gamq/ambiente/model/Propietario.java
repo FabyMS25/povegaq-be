@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +30,25 @@ public class Propietario {
     private Long idPropietario;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "nombre_completo",  nullable = true, length = 250)
-    private String nombreCompleto;
-    @Column(name = "nro_documento", nullable = true, length = 15)
-    private String nroDocumento;
+
+    @Column(name = "nombre",  nullable = false, length = 100)
+    private String nombre;
+    @Column(name = "primerApellido",  nullable = false, length = 80)
+    private String primerApellido;
+    @Column(name = "segundoApellido", length = 80)
+    private String segundoApellido;
+    @Column(name = "apellidoEsposo", length = 80)
+    private String apellidoEsposo;
+    @Column(name = "estadoCivil", length = 15)
+    private String estadoCivil;
+    @Column(name = "genero", length = 3)
+    private String genero;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_nacimiento")
+    private Date fechaNacimiento;
+
+    @Column(name = "numero_documento", nullable = false, length = 15)
+    private String numeroDocumento;
     @Column(name = "tipo_documento", nullable = false, length = 3)
     private String tipoDocumento;
     @Column(name = "expedido", nullable = false)
@@ -44,12 +60,13 @@ public class Propietario {
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "propietario", fetch = FetchType.LAZY)
-    private List<Vehiculo> vehiculoList = new ArrayList<Vehiculo>();
-
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name = "id_tipo_contribuyente", nullable = false)
     private TipoContribuyente tipoContribuyente;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "propietario", fetch = FetchType.LAZY)
+    private List<Vehiculo> vehiculoList = new ArrayList<Vehiculo>();
+
 
     public Propietario(String uuid) { this.uuid = uuid;}
 

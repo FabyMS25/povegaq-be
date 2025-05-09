@@ -29,20 +29,30 @@ public class LimiteEmision {
     private Long idLimiteEmision;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
+    @Column(name = "tipo_motor", nullable = false, length = 50)
+    private String tipoMotor;
     @Column(name = "tipo_combustible", nullable = false, length = 50)
     private String tipoCombustible;
-    @Column(name = "tipo_motor", nullable = true, length = 50)
-    private String tipoMotor;
-    @Column(name="year_fabricacion_inicio", nullable = false)
-    private Integer yearFabricacionInicio;
-    @Column(name="year_fabricacion_fin", nullable = true)
-    private Integer yearFabricacionFin;
-    @Column(name = "limite",  nullable = false, precision = 20, scale = 4)
-    private BigDecimal limite;
+
+    @Column(name="cilindrada_minimo", nullable = true)
+    private Integer cilindradaMinimo;
+    @Column(name="cilindrada_maximo", nullable = true)
+    private Integer cilindradaMaximo;
+
     @Column(name ="categoria_vehiculo", nullable = true, length =250)
-    private String categoriaVehiculo;
+    private String categoriaVehiculo;  //livianos pesados motocicletas
     @Column(name ="categoria", nullable = true, length = 250)
     private String categoria;
+
+
+    @Column(name="year_fabricacion_inicio", nullable = true)
+    private Integer yearFabricacionInicio; // todos tiene year de fabricacion
+    @Column(name="year_fabricacion_fin", nullable = true)
+    private Integer yearFabricacionFin;
+
+    @Column(name = "limite",  nullable = false, precision = 20, scale = 4)
+    private BigDecimal limite;
+
     @Column(name ="peso", nullable = true, length = 250)
     private String peso;
     @Temporal(TemporalType.TIMESTAMP)
@@ -64,7 +74,6 @@ public class LimiteEmision {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_parametro", nullable = false)
     private TipoParametro tipoParametro;
-
 
     public LimiteEmision(String uuid) {this.uuid = uuid;}
 

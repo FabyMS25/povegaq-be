@@ -62,14 +62,14 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             if (nombre == null) {
                 throw new ResourceNotFoundException("Limite Emision", "nombre", nombre);
             }
-            if(!limiteEmisionRepository.exitsLimiteEmisionLikeTipoConbustibleAndNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), tipoParametroOptional.get().getNombre()))
-            {
-                LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
-                nuevoLimiteEmision.setTipoParametro(tipoParametroOptional.get());
-                return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
-            } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "ya existe el limite de emision para el tipo de combustible  " + limiteEmisionDto.getTipoCombustible() + " y el parametro " + tipoParametroOptional.get().getNombre());
-            }
+          //  if(!limiteEmisionRepository.exitsLimiteEmisionLikeTipoConbustibleAndNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), tipoParametroOptional.get().getNombre()))
+           // {
+            LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
+            nuevoLimiteEmision.setTipoParametro(tipoParametroOptional.get());
+            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
+          //  } else {
+          //      throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "ya existe el limite de emision para el tipo de combustible  " + limiteEmisionDto.getTipoCombustible() + " y el parametro " + tipoParametroOptional.get().getNombre());
+          //  }
         }
         else {
             throw new ResourceNotFoundException("tipo parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid());

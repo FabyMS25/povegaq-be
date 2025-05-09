@@ -9,6 +9,10 @@ import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.Vehiculo;
 
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class VehiculoMapper {
     public static VehiculoDto toVehiculoDto(Vehiculo vehiculo){
         return new VehiculoDto()
@@ -55,8 +59,26 @@ public class VehiculoMapper {
 
                 .setPropietarioDto( vehiculo.getPropietario() == null? null: new PropietarioDto()
                         .setUuid(vehiculo.getPropietario().getUuid())
-                        .setNombreCompleto(vehiculo.getPropietario().getNombreCompleto())
-                        .setNroDocumento(vehiculo.getPropietario().getNroDocumento())
+                      //  .setNombreCompleto(Stream.of(
+                      //                  vehiculo.getPropietario().getNombre(),
+                      //                  vehiculo.getPropietario().getPrimerApellido(),
+                      //                  vehiculo.getPropietario().getSegundoApellido(),
+                      //                  vehiculo.getPropietario().getApellidoEsposo()
+                      //          )
+                      //          .filter(Objects::nonNull)
+                      //          .map(String::trim)
+                      //          .filter(s -> !s.isEmpty())
+                      //          .collect(Collectors.joining(" "))
+                       // )
+                        //.setNombreCompleto(vehiculo.getPropietario().getNombreCompleto())
+                        .setNombre(vehiculo.getPropietario().getNombre())
+                        .setPrimerApellido(vehiculo.getPropietario().getPrimerApellido())
+                        .setSegundoApellido(vehiculo.getPropietario().getSegundoApellido())
+                        .setApellidoEsposo(vehiculo.getPropietario().getApellidoEsposo())
+                        .setEstadoCivil(vehiculo.getPropietario().getEstadoCivil())
+                        .setGenero(vehiculo.getPropietario().getGenero())
+                        .setFechaNacimiento(vehiculo.getPropietario().getFechaNacimiento())
+                        .setNumeroDocumento(vehiculo.getPropietario().getNumeroDocumento())
                         .setTipoDocumento(vehiculo.getPropietario().getTipoDocumento())
                         .setExpedido(vehiculo.getPropietario().getExpedido())
                         .setEmail(vehiculo.getPropietario().getEmail())
@@ -89,8 +111,16 @@ public class VehiculoMapper {
                 .setCopo(vehiculoDto.getCopo())
                 .setPropietario( vehiculoDto.getPropietarioDto() == null? null: new Propietario()
                         .setUuid(vehiculoDto.getPropietarioDto().getUuid())
-                        .setNombreCompleto(vehiculoDto.getPropietarioDto().getNombreCompleto())
-                        .setNroDocumento(vehiculoDto.getPropietarioDto().getNroDocumento())
+                        //.setNombreCompleto(vehiculoDto.getPropietarioDto().getNombreCompleto())
+                        .setNombre(vehiculoDto.getPropietarioDto().getNombre())
+                        .setPrimerApellido(vehiculoDto.getPropietarioDto().getPrimerApellido())
+                        .setSegundoApellido(vehiculoDto.getPropietarioDto().getSegundoApellido())
+                        .setApellidoEsposo(vehiculoDto.getPropietarioDto().getApellidoEsposo())
+                        .setEstadoCivil(vehiculoDto.getPropietarioDto().getEstadoCivil())
+                        .setGenero(vehiculoDto.getPropietarioDto().getGenero())
+                        .setFechaNacimiento(vehiculoDto.getPropietarioDto().getFechaNacimiento())
+
+                        .setNumeroDocumento(vehiculoDto.getPropietarioDto().getNumeroDocumento())
                         .setTipoDocumento(vehiculoDto.getPropietarioDto().getTipoDocumento())
                         .setExpedido(vehiculoDto.getPropietarioDto().getExpedido())
                         .setEmail(vehiculoDto.getPropietarioDto().getEmail())

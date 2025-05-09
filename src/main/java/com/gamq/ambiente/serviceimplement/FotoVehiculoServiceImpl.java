@@ -45,6 +45,15 @@ public class FotoVehiculoServiceImpl implements FotoVehiculoService {
     }
 
     @Override
+    public List<FotoVehiculoDto> obtenerFotoVehiculoPorUuidVehiculo(String uuidVehiculo) {
+        List<FotoVehiculo> fotoVehiculoList = fotoVehiculoRepository.findByUuidVehiculo(uuidVehiculo);
+        return fotoVehiculoList.stream().map( fotoVehiculo -> {
+            return FotoVehiculoMapper.toFotoVehiculoDto( fotoVehiculo);
+        }).collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<FotoVehiculoDto> obtenerFotoVehiculos() {
         List<FotoVehiculo> fotoVehiculoList = fotoVehiculoRepository.findAll();
         return fotoVehiculoList.stream().map( fotoVehiculo -> {

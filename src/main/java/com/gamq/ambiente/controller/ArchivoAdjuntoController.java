@@ -115,5 +115,4 @@ public class ArchivoAdjuntoController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);
     }
-
 }

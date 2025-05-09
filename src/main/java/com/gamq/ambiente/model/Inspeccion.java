@@ -45,7 +45,7 @@ public class Inspeccion {
     @Column(name = "uuid_usuario")
     private String uuidUsuario;
 
-    @Column(name = "altitud", nullable = false)
+    @Column(name = "altitud", nullable = true)
     private Integer altitud;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
