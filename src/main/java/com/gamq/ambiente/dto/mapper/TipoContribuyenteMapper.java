@@ -8,6 +8,7 @@ public class TipoContribuyenteMapper {
         return new TipoContribuyenteDto()
                 .setUuid(tipoContribuyente.getUuid())
                 .setDescripcion(tipoContribuyente.getDescripcion())
+                .setCodigo(tipoContribuyente.getCodigo())
                 .setEstado(tipoContribuyente.isEstado());
     }
 
@@ -15,6 +16,7 @@ public class TipoContribuyenteMapper {
         return new TipoContribuyente()
                 .setUuid(tipoContribuyenteDto.getUuid())
                 .setDescripcion(tipoContribuyenteDto.getDescripcion())
+                .setCodigo(tipoContribuyenteDto.getCodigo())
                 .setEstado(tipoContribuyenteDto.isEstado());
     }
 }

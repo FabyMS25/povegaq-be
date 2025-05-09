@@ -31,6 +31,8 @@ public class TipoContribuyente {
     private String uuid;
     @Column(name = "descripcion", nullable = false, length = 150)
     private String descripcion;
+    @Column(name = "codigo", nullable = true, length = 15)
+    private String codigo;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

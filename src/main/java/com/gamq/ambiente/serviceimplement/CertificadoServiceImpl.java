@@ -117,8 +117,8 @@ public class CertificadoServiceImpl implements CertificadoService {
         HashMap<String, Object> parametros = prepararParametros(certificado, usuario, baseUrl);
 
         generadorReporte.generarSqlReportePdf(
-                "reporte_certificado",
-                "classpath:report/reporte_certificado.jrxml",
+                "reporte_certificado_opacidad",
+                "classpath:report/reporte_certificado_opacidad.jrxml",
                 parametros,
                 response
         );
@@ -142,6 +142,7 @@ public class CertificadoServiceImpl implements CertificadoService {
         parametros.put("subtitulo", "CERTIFICADO DE INSPECCION TECNICA VEHICULAR");
         parametros.put("usuario", usuario);
         parametros.put("uuidCertificado", certificado.getUuid());
+        parametros.put("fechaActual", new Date());
         parametros.put("url", baseUrl + "/api/reporte/verificar?codigo=" + certificado.getCodigo());
         return parametros;
     }

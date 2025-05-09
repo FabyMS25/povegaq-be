@@ -42,6 +42,7 @@ public class PropietarioMapper {
                 .setTipoContribuyenteDto(propietario.getTipoContribuyente() == null? null: new TipoContribuyenteDto()
                         .setUuid(propietario.getTipoContribuyente().getUuid())
                         .setDescripcion(propietario.getTipoContribuyente().getDescripcion())
+                        .setCodigo(propietario.getTipoContribuyente().getCodigo())
                         .setEstado(propietario.getTipoContribuyente().isEstado())
                 )
                 .setVehiculoDtoList(propietario.getVehiculoList().stream().map( vehiculo -> {
@@ -69,6 +70,7 @@ public class PropietarioMapper {
                 .setTipoContribuyente(propietarioDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
                         .setUuid(propietarioDto.getTipoContribuyenteDto().getUuid())
                         .setDescripcion(propietarioDto.getTipoContribuyenteDto().getDescripcion())
+                        .setCodigo(propietarioDto.getTipoContribuyenteDto().getCodigo())
                         .setEstado(propietarioDto.getTipoContribuyenteDto().isEstado())
                 )
             //    .setVehiculoList(propietarioDto.getVehiculoDtoList().stream().map(vehiculoDto -> {

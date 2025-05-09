@@ -28,6 +28,7 @@ public class VehiculoServiceImpl implements VehiculoService {
     DatoTecnicoRepository datoTecnicoRepository;
     @Autowired
     VehiculoValidator vehiculoValidator;
+
     @Override
     public VehiculoDto obtenerVehiculoPorUuid(String uuid) {
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuid);
@@ -74,12 +75,12 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
-    public VehiculoDto obtenerVehiculoPorCopo(String copo) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByCopo(copo);
+    public VehiculoDto obtenerVehiculoPorChasis(String chasis) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByChasis(chasis);
         if(vehiculoOptional.isPresent()){
             return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
         }
-        throw new ResourceNotFoundException("Vehiculo", "copo", copo);
+        throw new ResourceNotFoundException("Vehiculo", "chasis", chasis);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class Evento {
     private Long idEvento;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "institucion", nullable = false, length = 250)
+    @Column(name = "institucion", nullable = true, length = 250)
     private String institucion;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inicio")
@@ -51,11 +51,12 @@ public class Evento {
     private String direccion;
     @Column(columnDefinition = "TEXT", name = "descripcion", nullable = true)
     private String descripcion;
-    @Column(name = "distrito", nullable = true, length = 10)
+    @Column(name = "distrito", nullable = true, length = 15)
     private String distrito;
     @Column(name = "altitud", nullable = true)
     private Integer altitud;
-
+    @Column(name = "titulo", length = 50)
+    private String titulo;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

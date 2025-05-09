@@ -30,6 +30,7 @@ public class InspeccionDto {
     private String nombreInspector;
     private String uuidUsuario;
     private Integer altitud;
+    private String equipo;
     private boolean estado;
 
     private VehiculoDto vehiculoDto;

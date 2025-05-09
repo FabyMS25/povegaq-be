@@ -18,11 +18,13 @@ public class CertificadoMapper {
                 .setInspeccionDto(certificado.getInspeccion() == null? null: new InspeccionDto()
                         .setUuid(certificado.getInspeccion().getUuid())
                         .setFechaInspeccion(certificado.getInspeccion().getFechaInspeccion())
+                        .setResultado(certificado.getInspeccion().isResultado())
+                        .setObservacion(certificado.getInspeccion().getObservacion())
                         .setLugarInspeccion(certificado.getInspeccion().getLugarInspeccion())
                         .setNombreInspector(certificado.getInspeccion().getNombreInspector())
-                        .setObservacion(certificado.getInspeccion().getObservacion())
-                        .setResultado(certificado.getInspeccion().isResultado())
+                        .setEquipo(certificado.getInspeccion().getEquipo())
                         .setUuidUsuario(certificado.getInspeccion().getUuidUsuario())
+                        .setAltitud(certificado.getInspeccion().getAltitud())
                         .setEstado(certificado.getInspeccion().isEstado())
                 );
     }
@@ -38,11 +40,13 @@ public class CertificadoMapper {
                 .setInspeccion(certificadoDto.getInspeccionDto() == null? null: new Inspeccion()
                         .setUuid(certificadoDto.getInspeccionDto().getUuid())
                         .setFechaInspeccion(certificadoDto.getInspeccionDto().getFechaInspeccion())
+                        .setResultado(certificadoDto.getInspeccionDto().isResultado())
+                        .setObservacion(certificadoDto.getInspeccionDto().getObservacion())
                         .setLugarInspeccion(certificadoDto.getInspeccionDto().getLugarInspeccion())
                         .setNombreInspector(certificadoDto.getInspeccionDto().getNombreInspector())
-                        .setObservacion(certificadoDto.getInspeccionDto().getObservacion())
-                        .setResultado(certificadoDto.getInspeccionDto().isResultado())
                         .setUuidUsuario(certificadoDto.getInspeccionDto().getUuidUsuario())
+                        .setAltitud(certificadoDto.getInspeccionDto().getAltitud())
+                        .setEquipo(certificadoDto.getInspeccionDto().getEquipo())
                         .setEstado(certificadoDto.getInspeccionDto().isEstado())
                 );
     }

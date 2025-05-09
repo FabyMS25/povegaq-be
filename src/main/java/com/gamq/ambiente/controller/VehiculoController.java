@@ -39,9 +39,9 @@ public class VehiculoController {
         return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPinNumeroIdentificacion(pin));
     }
 
-    @GetMapping("/copo/{copo}")
-    public Response getVehiculoByCopo(@PathVariable("copo") String copo){
-        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorCopo(copo));
+    @GetMapping("/chasis/{chasis}")
+    public Response getVehiculoByChasis(@PathVariable("chasis") String chasis){
+        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorChasis(chasis));
     }
 
     @GetMapping("/placaAnterior/{placaAnterior}")

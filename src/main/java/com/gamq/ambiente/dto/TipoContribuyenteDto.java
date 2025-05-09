@@ -18,5 +18,6 @@ import lombok.experimental.Accessors;
 public class TipoContribuyenteDto {
     private String uuid;
     private String descripcion;
+    private String codigo;
     private boolean estado;
 }

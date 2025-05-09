@@ -53,8 +53,8 @@ public class Vehiculo {
     private Integer nroCopiasPlaca;
     @Column(name = "placa_anterior")
     private String placaAnterior;
-    @Column(name = "copo")
-    private String copo;
+    @Column(name = "chasis")
+    private String chasis;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

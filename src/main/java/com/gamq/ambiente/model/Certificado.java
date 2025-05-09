@@ -28,7 +28,7 @@ public class Certificado {
     private Long idCertificado;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name="codigo", nullable = false, length = 15)
+    @Column(name="codigo", nullable = false, length = 64)
     private String codigo;
     @Column(name = "qr", nullable = false)
     private String qrContent;

@@ -45,6 +45,9 @@ public class Inspeccion {
     @Column(name = "uuid_usuario")
     private String uuidUsuario;
 
+    @Column(name = "equipo", nullable = false, length = 100)
+    private String equipo;
+
     @Column(name = "altitud", nullable = true)
     private Integer altitud;
 

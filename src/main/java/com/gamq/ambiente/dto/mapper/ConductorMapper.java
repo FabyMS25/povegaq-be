@@ -18,6 +18,7 @@ public class ConductorMapper {
                 .setTipoContribuyenteDto(conductor.getTipoContribuyente() == null? null: new TipoContribuyenteDto()
                         .setUuid(conductor.getTipoContribuyente().getUuid())
                         .setDescripcion(conductor.getTipoContribuyente().getDescripcion())
+                        .setCodigo(conductor.getTipoContribuyente().getCodigo())
                         .setEstado(conductor.getTipoContribuyente().isEstado())
                 )
                 ;
@@ -35,6 +36,7 @@ public class ConductorMapper {
                 .setTipoContribuyente(conductorDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
                         .setUuid(conductorDto.getTipoContribuyenteDto().getUuid())
                         .setDescripcion(conductorDto.getTipoContribuyenteDto().getDescripcion())
+                        .setCodigo(conductorDto.getTipoContribuyenteDto().getCodigo())
                         .setEstado(conductorDto.getTipoContribuyenteDto().isEstado())
                 )
                 ;
