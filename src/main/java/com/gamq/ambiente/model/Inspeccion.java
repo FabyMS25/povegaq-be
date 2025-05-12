@@ -51,6 +51,15 @@ public class Inspeccion {
     @Column(name = "altitud", nullable = true)
     private Integer altitud;
 
+    @Column(name = "examen_visual_conforme", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean examenVisualConforme;
+    @Column(name = "gases_escape_conforme", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean gasesEscapeConforme;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_proxima_inspeccion", nullable = true)
+    private Date fechaProximaInspeccion;
+
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

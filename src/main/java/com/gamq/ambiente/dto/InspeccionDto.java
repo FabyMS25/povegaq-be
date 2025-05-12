@@ -10,6 +10,9 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +34,10 @@ public class InspeccionDto {
     private String uuidUsuario;
     private Integer altitud;
     private String equipo;
+    private boolean examenVisualConforme;
+    private boolean gasesEscapeConforme;
+    private Date fechaProximaInspeccion;
+
     private boolean estado;
 
     private VehiculoDto vehiculoDto;
