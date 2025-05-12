@@ -32,4 +32,5 @@ public class ConductorDto {
 
     private TipoContribuyenteDto tipoContribuyenteDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
+    private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
 }

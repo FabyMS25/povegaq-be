@@ -37,13 +37,22 @@ public class LimiteEmisionDto {
     private Integer yearFabricacionInicio;
     private Integer yearFabricacionFin;
     private BigDecimal limite;
-    private String peso;
+
+    private Integer pesoBrutoMinimo; // en kilogramos
+    private Integer pesoBrutoMaximo; // en kilogramos
+    private Integer capacidadCargaMinimo; // en kilogramos
+    private Integer capacidadCargaMaximo; // en kilogramos
+
     private Date fechaInicio;
     private Date fechaFin;
     private Integer altitudMinima;
     private Integer altitudMaxima;
     private String claseVehiculo;  //automoviles, ciclomotores
     private String tiempoMotor;//motor de 4 tiempos , motor de 2 tiempos
+
+    private String cicloPrueba;//"ASM2525", "IM240", "WLTC", "EURO 3 CI ETC", "ESC ETC"
+    private String normativa;//"NB-98007", "EURO 4 CI", "EPA 1996"
+
     private boolean activo;
     private boolean estado;
 

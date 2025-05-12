@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.model.Conductor;
 import com.gamq.ambiente.model.DatoTecnico;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,7 @@ public class VehiculoDto {
 
     private DatoTecnicoDto datoTecnicoDto;
     private PropietarioDto propietarioDto;
+    private Conductor conductor;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
 
 }

@@ -5,6 +5,8 @@ import com.gamq.ambiente.dto.TipoContribuyenteDto;
 import com.gamq.ambiente.model.Conductor;
 import com.gamq.ambiente.model.TipoContribuyente;
 
+import java.util.stream.Collectors;
+
 public class ConductorMapper {
     public static ConductorDto toConductorDto(Conductor conductor){
         return new ConductorDto()
@@ -21,6 +23,9 @@ public class ConductorMapper {
                         .setCodigo(conductor.getTipoContribuyente().getCodigo())
                         .setEstado(conductor.getTipoContribuyente().isEstado())
                 )
+                .setVehiculoDtoList(conductor.getVehiculoList().stream().map( vehiculo -> {
+                    return VehiculoMapper.toVehiculoDto(vehiculo);
+                }).collect(Collectors.toList()))
                 ;
     }
 

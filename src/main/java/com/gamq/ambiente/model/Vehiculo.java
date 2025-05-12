@@ -66,6 +66,10 @@ public class Vehiculo {
     @JoinColumn(name = "id_propietario", nullable = true)
     private Propietario propietario;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_conductor", nullable = true)
+    private Conductor conductor;
+
     @OneToOne(mappedBy = "vehiculo")
     private DatoTecnico datoTecnico;
 

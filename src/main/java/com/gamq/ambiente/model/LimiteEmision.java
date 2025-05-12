@@ -53,8 +53,15 @@ public class LimiteEmision {
     @Column(name = "limite",  nullable = false, precision = 20, scale = 4)
     private BigDecimal limite;
 
-    @Column(name ="peso", nullable = true, length = 250)
-    private String peso;
+    @Column(name = "peso_bruto_minimo", nullable = true)
+    private Integer pesoBrutoMinimo; // en kilogramos
+    @Column(name = "peso_bruto_maximo", nullable = true)
+    private Integer pesoBrutoMaximo; // en kilogramos
+    @Column(name = "capacidad_carga_minimo", nullable = true)
+    private Integer capacidadCargaMinimo; // en kilogramos
+    @Column(name = "capacidad_carga_maximo", nullable = true)
+    private Integer capacidadCargaMaximo; // en kilogramos
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inicio", nullable = false)
     private Date fechaInicio;
@@ -69,6 +76,11 @@ public class LimiteEmision {
     private String claseVehiculo;
     @Column(name="tiempo_motor", nullable = true)
     private String tiempoMotor;
+    @Column(name="ciclo_prueba", nullable = true, length =50)
+    private String cicloPrueba;
+    @Column(name="normativa", nullable = true,length =50)
+    private String normativa;
+
 
     @Column(name = "activo", columnDefinition = "BOOLEAN NOT NULL DEFAULT '1'")
     private boolean activo;
