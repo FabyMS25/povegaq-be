@@ -70,6 +70,10 @@ public class DatoTecnico {
     private String clasificacion;
     @Column(name = "numero_asientos", nullable = false)
     private Integer numeroAsientos;
+    @Column(name ="tiempo_motor", nullable = true)
+    private String tiempoMotor;
+    @Column(name ="categoria_vehiculo", nullable = true)
+    private String categoriaVehiculo;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

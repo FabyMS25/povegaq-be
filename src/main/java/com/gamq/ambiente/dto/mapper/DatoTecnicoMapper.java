@@ -29,6 +29,8 @@ public class DatoTecnicoMapper {
                 .setYearFabricacion(datoTecnico.getYearFabricacion())
                 .setClasificacion(datoTecnico.getClasificacion())
                 .setNumeroAsientos(datoTecnico.getNumeroAsientos())
+                .setTiempoMotor(datoTecnico.getTiempoMotor())
+                .setCategoriaVehiculo(datoTecnico.getCategoriaVehiculo())
                 .setEstado(datoTecnico.isEstado());
     }
 
@@ -57,6 +59,8 @@ public class DatoTecnicoMapper {
                 .setYearFabricacion(datoTecnicoDto.getYearFabricacion())
                 .setClasificacion(datoTecnicoDto.getClasificacion())
                 .setNumeroAsientos(datoTecnicoDto.getNumeroAsientos())
+                .setTiempoMotor(datoTecnicoDto.getTiempoMotor())
+                .setCategoriaVehiculo(datoTecnicoDto.getCategoriaVehiculo())
                 .setEstado(datoTecnicoDto.isEstado());
     }
 }

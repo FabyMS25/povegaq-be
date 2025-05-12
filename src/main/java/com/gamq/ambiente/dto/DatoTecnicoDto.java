@@ -44,6 +44,8 @@ public class DatoTecnicoDto {
     @NotNull(message = "La clasificacion vehicular es requerido")
     private String clasificacion; //m1 y m2  liviano, mediano, pesado
     private Integer numeroAsientos;
+    private String tiempoMotor;
+    private String categoriaVehiculo; // liviano, mediano, pesado
     private boolean estado;
 
     private VehiculoDto vehiculoDto;

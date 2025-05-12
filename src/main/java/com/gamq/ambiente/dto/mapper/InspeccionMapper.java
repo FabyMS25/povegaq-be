@@ -3,6 +3,7 @@ package com.gamq.ambiente.dto.mapper;
 import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Actividad;
 import com.gamq.ambiente.model.Inspeccion;
+import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.Vehiculo;
 
 import java.util.stream.Collectors;
@@ -67,6 +68,8 @@ public class InspeccionMapper {
                                 .setYearFabricacion(inspeccion.getVehiculo().getDatoTecnico().getYearFabricacion())
                                 .setClasificacion(inspeccion.getVehiculo().getDatoTecnico().getClasificacion())
                                 .setNumeroAsientos(inspeccion.getVehiculo().getDatoTecnico().getNumeroAsientos())
+                                .setTiempoMotor(inspeccion.getVehiculo().getDatoTecnico().getTiempoMotor())
+                                .setCategoriaVehiculo(inspeccion.getVehiculo().getDatoTecnico().getCategoriaVehiculo())
                                 .setEstado(inspeccion.getVehiculo().getDatoTecnico().isEstado())
                         )
 
@@ -87,6 +90,28 @@ public class InspeccionMapper {
                         .setTitulo(inspeccion.getEvento().getTitulo())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
+                .setPropietarioDto(inspeccion.getPropietario()== null? null: new PropietarioDto()
+                        .setUuid(inspeccion.getPropietario().getUuid())
+                        .setNombre(inspeccion.getNombreInspector())
+                        .setPrimerApellido(inspeccion.getPropietario().getPrimerApellido())
+                        .setSegundoApellido(inspeccion.getPropietario().getSegundoApellido())
+                        .setApellidoEsposo(inspeccion.getPropietario().getApellidoEsposo())
+                        .setEstadoCivil(inspeccion.getPropietario().getEstadoCivil())
+                        .setGenero(inspeccion.getPropietario().getGenero())
+                        .setFechaNacimiento(inspeccion.getPropietario().getFechaNacimiento())
+                        .setNumeroDocumento(inspeccion.getPropietario().getNumeroDocumento())
+                        .setTipoDocumento(inspeccion.getPropietario().getTipoDocumento())
+                        .setExpedido(inspeccion.getPropietario().getExpedido())
+                        .setEmail(inspeccion.getPropietario().getEmail())
+                        .setNroTelefono(inspeccion.getPropietario().getNroTelefono())
+                        .setEstado(inspeccion.getPropietario().isEstado())
+                        .setTipoContribuyenteDto(inspeccion.getPropietario().getTipoContribuyente()== null? null: new TipoContribuyenteDto()
+                                .setUuid(inspeccion.getPropietario().getTipoContribuyente().getUuid())
+                                .setDescripcion(inspeccion.getPropietario().getTipoContribuyente().getDescripcion())
+                                .setEstado(inspeccion.getPropietario().getTipoContribuyente().isEstado())
+                                .setCodigo(inspeccion.getPropietario().getTipoContribuyente().getCodigo())
+                        )
+                )
                 .setConductorDto( inspeccion.getConductor() == null? null: new ConductorDto()
                         .setUuid(inspeccion.getConductor().getUuid())
                         .setNombreCompleto(inspeccion.getConductor().getNombreCompleto())
@@ -95,6 +120,12 @@ public class InspeccionMapper {
                         .setExpedido(inspeccion.getConductor().getExpedido())
                         .setEmail(inspeccion.getConductor().getEmail())
                         .setEstado(inspeccion.getConductor().isEstado())
+                        .setTipoContribuyenteDto(inspeccion.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
+                                .setUuid(inspeccion.getConductor().getTipoContribuyente().getUuid())
+                                .setDescripcion(inspeccion.getConductor().getTipoContribuyente().getDescripcion())
+                                .setEstado(inspeccion.getConductor().getTipoContribuyente().isEstado())
+                                .setCodigo(inspeccion.getConductor().getTipoContribuyente().getCodigo())
+                        )
                 )
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);

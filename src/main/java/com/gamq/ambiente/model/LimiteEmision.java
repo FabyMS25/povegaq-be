@@ -65,6 +65,11 @@ public class LimiteEmision {
     private Integer altitudMinima;
     @Column(name="altitud_maxima", nullable = true)
     private Integer altitudMaxima;
+    @Column(name="clase_vehiculo", nullable = true)
+    private String claseVehiculo;
+    @Column(name="tiempo_motor", nullable = true)
+    private String tiempoMotor;
+
     @Column(name = "activo", columnDefinition = "BOOLEAN NOT NULL DEFAULT '1'")
     private boolean activo;
 

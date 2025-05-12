@@ -35,6 +35,7 @@ public class InspeccionDto {
 
     private VehiculoDto vehiculoDto;
     private ActividadDto actividadDto;
+    private PropietarioDto propietarioDto;
     private ConductorDto conductorDto;
     private EventoDto eventoDto;
 

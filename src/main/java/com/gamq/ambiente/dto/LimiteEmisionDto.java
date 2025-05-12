@@ -32,7 +32,7 @@ public class LimiteEmisionDto {
     private String tipoCombustible;
     private Integer cilindradaMinimo;
     private Integer cilindradaMaximo;
-    private String categoriaVehiculo;
+    private String categoriaVehiculo; //liviano, mediano y pesado
     private String categoria;
     private Integer yearFabricacionInicio;
     private Integer yearFabricacionFin;
@@ -42,6 +42,8 @@ public class LimiteEmisionDto {
     private Date fechaFin;
     private Integer altitudMinima;
     private Integer altitudMaxima;
+    private String claseVehiculo;  //automoviles, ciclomotores
+    private String tiempoMotor;//motor de 4 tiempos , motor de 2 tiempos
     private boolean activo;
     private boolean estado;
 

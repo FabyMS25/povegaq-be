@@ -70,6 +70,10 @@ public class Inspeccion {
     @JoinColumn(name = "id_conductor", nullable = true)  // Puede ser NULL
     private Conductor conductor;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_propietario", nullable = true)  // Puede ser NULL
+    private Propietario propietario;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
     private List<Certificado> certificadoList = new ArrayList<>();
 
