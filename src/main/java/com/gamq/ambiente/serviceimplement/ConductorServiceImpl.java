@@ -89,14 +89,14 @@ public class ConductorServiceImpl implements ConductorService {
         vehiculoDtoList.stream().forEach(vehiculoDto -> {
 
             Vehiculo vehiculo = obtenerVehiculo( vehiculoDto.getUuid());
-
+            if (vehiculo.getPropietario() != null){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un propietario: Será reasignado? ");
+            }
             // si el vehiculo no tiene propietario
-            if ( vehiculo.getPropietario() == null || !vehiculo.getPropietario().getNumeroDocumento().contains(nuevoConductor.getNumeroDocumento())){
-
-                if (vehiculo.getPropietario() != null){
-                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,"El vehículo ya tiene un propietario: Será reasignado? ");
+            if ( vehiculo.getPropietario() == null){
+                if (vehiculo.getConductor() != null) {
+                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un conductor: Será reasignado? ");
                 }
-
                 boolean tienePlaca = vehiculo.getPlaca() != null && !vehiculo.getPlaca().trim().isEmpty();
                 boolean tienePinSinPlaca = vehiculo.getPinNumeroIdentificacion() != null && !tienePlaca;
 
@@ -146,6 +146,16 @@ public class ConductorServiceImpl implements ConductorService {
                     Conductor updateConductor = ConductorMapper.toConductor(conductorDto);
                     updateConductor.setIdConductor(conductorOptional.get().getIdConductor());
                     updateConductor.setTipoContribuyente( tipoContribuyenteOptional.get());
+
+                    conductorOptional.get().getVehiculoList().forEach(vehiculo -> {
+                        vehiculo.setConductor(null);
+                    });
+
+                    conductorOptional.get().getVehiculoList().clear();
+                    List<Vehiculo> vehiculoList = mapearVehiculos(conductorDto.getVehiculoDtoList(),conductorOptional.get());
+
+                    updateConductor.setVehiculoList(vehiculoList);
+
                     return ConductorMapper.toConductorDto(conductorRepository.save(updateConductor));
                 }
                 else {
