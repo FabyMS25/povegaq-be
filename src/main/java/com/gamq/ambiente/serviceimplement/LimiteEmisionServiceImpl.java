@@ -101,11 +101,14 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     @Override
     public LimiteEmisionDto eliminarLimiteEmision(String uuid) {
         LimiteEmision limiteEmisionQBE = new LimiteEmision(uuid);
-        Optional<LimiteEmision> optionalLimiteEmision = limiteEmisionRepository.findOne(Example.of(limiteEmisionQBE));
+       // Optional<LimiteEmision> optionalLimiteEmision = limiteEmisionRepository.findOne(Example.of(limiteEmisionQBE));
+        Optional<LimiteEmision> optionalLimiteEmision = limiteEmisionRepository.findByUuid(uuid);
         if(optionalLimiteEmision.isPresent()){
-            LimiteEmision limiteEmision = optionalLimiteEmision.get();
-            limiteEmisionRepository.delete(limiteEmision);
-            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
+            if (optionalLimiteEmision.get().getTipoParametro().getDetalleInspeccionList().size()>0) {
+                LimiteEmision limiteEmision = optionalLimiteEmision.get();
+                limiteEmisionRepository.delete(limiteEmision);
+                return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
+            }
         }
         throw new ResourceNotFoundException("Limite Emision","uuid", uuid);
     }

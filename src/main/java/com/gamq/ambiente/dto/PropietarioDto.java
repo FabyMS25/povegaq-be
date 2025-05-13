@@ -52,6 +52,4 @@ public class PropietarioDto {
 
         private TipoContribuyenteDto tipoContribuyenteDto;
         private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
-
-
 }

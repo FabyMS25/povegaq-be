@@ -107,7 +107,7 @@ public class CertificadoServiceImpl implements CertificadoService {
     }
 
     @Override
-    public void generarReporteCertificado(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response) {
+    public void generarReporteCertificadoOpacidad(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response) {
         try {
         CertificadoDto certificado = obtenerCertificadoPorUuid(certificadoUuid);
 
@@ -122,6 +122,27 @@ public class CertificadoServiceImpl implements CertificadoService {
                 parametros,
                 response
         );
+        } catch (SQLException e) {
+            throw new BlogAPIException("409_CONFLICT", HttpStatus.CONFLICT, e.getMessage() + " " + e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void generarReporteCertificadoGnv(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response) {
+        try {
+            CertificadoDto certificado = obtenerCertificadoPorUuid(certificadoUuid);
+
+            if (certificado == null || !certificado.isEsValido() || certificado.getFechaVencimiento().before(new Date())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El certificado no es válido o está vencido");
+            }
+            HashMap<String, Object> parametros = prepararParametros(certificado, usuario, baseUrl);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_certificado_gnv",
+                    "classpath:report/reporte_certificado_gnv.jrxml",
+                    parametros,
+                    response
+            );
         } catch (SQLException e) {
             throw new BlogAPIException("409_CONFLICT", HttpStatus.CONFLICT, e.getMessage() + " " + e.getLocalizedMessage());
         }

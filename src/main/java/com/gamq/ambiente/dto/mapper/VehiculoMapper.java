@@ -1,9 +1,6 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.DatoTecnicoDto;
-import com.gamq.ambiente.dto.PropietarioDto;
-import com.gamq.ambiente.dto.TipoContribuyenteDto;
-import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.DatoTecnico;
 import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.TipoContribuyente;
@@ -90,7 +87,23 @@ public class VehiculoMapper {
                                 .setDescripcion(vehiculo.getPropietario().getTipoContribuyente().getDescripcion())
                                 .setEstado(vehiculo.getPropietario().getTipoContribuyente().isEstado())
                         )
-                );
+                )
+                .setConductorDto( vehiculo.getConductor() == null? null: new ConductorDto()
+                        .setUuid(vehiculo.getConductor().getUuid())
+                        .setNombreCompleto(vehiculo.getConductor().getNombreCompleto())
+                        .setTipoDocumento(vehiculo.getConductor().getTipoDocumento())
+                        .setNumeroDocumento(vehiculo.getConductor().getNumeroDocumento())
+                        .setExpedido(vehiculo.getConductor().getExpedido())
+                        .setEmail(vehiculo.getConductor().getEmail())
+                        .setEstado(vehiculo.getConductor().isEstado())
+                        .setTipoContribuyenteDto(vehiculo.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
+                                .setUuid(vehiculo.getConductor().getTipoContribuyente().getUuid())
+                                .setDescripcion(vehiculo.getConductor().getTipoContribuyente().getDescripcion())
+                                .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
+                                .setCodigo(vehiculo.getConductor().getTipoContribuyente().getCodigo())
+                        )
+                )
+                ;
 
     }
 

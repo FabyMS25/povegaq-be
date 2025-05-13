@@ -43,7 +43,7 @@ public class VehiculoDto {
 
     private DatoTecnicoDto datoTecnicoDto;
     private PropietarioDto propietarioDto;
-    private Conductor conductor;
+    private ConductorDto conductorDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
 
 }

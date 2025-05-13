@@ -151,8 +151,7 @@ and dt.estado = false]]>
 "<i><b>Vehículo: </b>" + $F{tipo_vehiculo} + "</i><br/>" +
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
 "<i><b>Modelo: </b> " + $F{modelo} + "</i><br/>" +
-"<i><b>Opacidad Máxima: </b>"+ $P{opacidad} + "</i> <br/>"+ 
-]]></textFieldExpression>
+"<i><b>Opacidad Máxima: </b>"+ $P{opacidad} + "</i> <br/>"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

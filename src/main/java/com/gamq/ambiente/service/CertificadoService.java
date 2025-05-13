@@ -14,6 +14,7 @@ public interface CertificadoService {
     CertificadoDto crearCertificado(CertificadoDto certificadoDto);
     CertificadoDto actualizarCertificado(CertificadoDto certificadoDto);
     CertificadoDto eliminarCertificado(String uuid);
-    void generarReporteCertificado(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response);
+    void generarReporteCertificadoOpacidad(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response);
+    void generarReporteCertificadoGnv(String certificadoUuid, String usuario, String baseUrl, HttpServletResponse response);
     CertificadoDto actualizarCertificadoValido(String uuid, boolean nuevoValido);
 }

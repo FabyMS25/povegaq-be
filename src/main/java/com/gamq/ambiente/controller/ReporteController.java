@@ -28,9 +28,9 @@ public class ReporteController {
     private CertificadoRepository certificadoRepository;
 
 
-    @RequestMapping( value = "/certificado", method= RequestMethod.GET)
+    @RequestMapping( value = "/certificado-opacidad", method= RequestMethod.GET)
     @ResponseBody
-    public void generarReporteCertificado(
+    public void generarReporteCertificadoOpacidad(
             @RequestParam( name = "uuid") String certificadoUuid,
             @RequestHeader Map<String, String> headers,
             HttpServletRequest request,
@@ -39,7 +39,21 @@ public class ReporteController {
     {
         String usuario = headers.getOrDefault("usuario", "Admin");
         String baseUrl = urlUtil.construirBaseUrl(request);
-        certificadoService.generarReporteCertificado(certificadoUuid, usuario, baseUrl, response);
+        certificadoService.generarReporteCertificadoOpacidad(certificadoUuid, usuario, baseUrl, response);
+    }
+
+    @RequestMapping( value = "/certificado-gnv", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarReporteCertificadoGnv(
+            @RequestParam( name = "uuid") String certificadoUuid,
+            @RequestHeader Map<String, String> headers,
+            HttpServletRequest request,
+            HttpServletResponse response
+    )
+    {
+        String usuario = headers.getOrDefault("usuario", "Admin");
+        String baseUrl = urlUtil.construirBaseUrl(request);
+        certificadoService.generarReporteCertificadoGnv(certificadoUuid, usuario, baseUrl, response);
     }
 
     @RequestMapping( value = "/verificar", method= RequestMethod.GET)
