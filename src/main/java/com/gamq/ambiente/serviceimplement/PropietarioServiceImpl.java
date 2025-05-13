@@ -129,8 +129,15 @@ public class PropietarioServiceImpl implements PropietarioService {
         if(propietarioRepository.exitsPropietarioLikeNroDocumento(nroDocumento,propietarioDto.getUuid())){
             throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"el propietario ya existe");
         }
+        Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(propietarioDto.getTipoContribuyenteDto().getUuid());
+        if(!tipoContribuyenteOptional.isPresent()) {
+            throw new ResourceNotFoundException("Tipo Contribuyente", "uuid", propietarioDto.getTipoContribuyenteDto().getUuid());
+        }
+
+
         Propietario updatePropietario= PropietarioMapper.toPropietario(propietarioDto);
         updatePropietario.setIdPropietario(propietarioOptional.get().getIdPropietario());
+        updatePropietario.setTipoContribuyente(tipoContribuyenteOptional.get());
 
         propietarioOptional.get().getVehiculoList().forEach(vehiculo -> {
             vehiculo.setPropietario(null);
