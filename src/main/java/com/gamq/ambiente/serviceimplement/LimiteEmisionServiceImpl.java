@@ -109,6 +109,9 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
                 limiteEmisionRepository.delete(limiteEmision);
                 return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
             }
+            else {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "ya tiene detalles de inspeccion");
+            }
         }
         throw new ResourceNotFoundException("Limite Emision","uuid", uuid);
     }

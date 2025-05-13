@@ -85,6 +85,7 @@ public class VehiculoMapper {
                         .setTipoContribuyenteDto(vehiculo.getPropietario() == null? null: new TipoContribuyenteDto()
                                 .setUuid(vehiculo.getPropietario().getTipoContribuyente().getUuid())
                                 .setDescripcion(vehiculo.getPropietario().getTipoContribuyente().getDescripcion())
+                                .setCodigo(vehiculo.getPropietario().getTipoContribuyente().getCodigo())
                                 .setEstado(vehiculo.getPropietario().getTipoContribuyente().isEstado())
                         )
                 )
@@ -99,8 +100,8 @@ public class VehiculoMapper {
                         .setTipoContribuyenteDto(vehiculo.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
                                 .setUuid(vehiculo.getConductor().getTipoContribuyente().getUuid())
                                 .setDescripcion(vehiculo.getConductor().getTipoContribuyente().getDescripcion())
-                                .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
                                 .setCodigo(vehiculo.getConductor().getTipoContribuyente().getCodigo())
+                                .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
                         )
                 )
                 ;
@@ -143,6 +144,7 @@ public class VehiculoMapper {
                         .setTipoContribuyente(vehiculoDto.getPropietarioDto() == null? null: new TipoContribuyente()
                                 .setUuid(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getUuid())
                                 .setDescripcion(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getDescripcion())
+                                .setCodigo(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getCodigo())
                                 .setEstado(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().isEstado())
                         ))
                 ;
