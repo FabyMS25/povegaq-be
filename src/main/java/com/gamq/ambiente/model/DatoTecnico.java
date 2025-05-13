@@ -39,7 +39,7 @@ public class DatoTecnico {
     @Column(name = "traccion", nullable = false, length = 50)
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
     @Column(name = "modelo", nullable = false, length = 50)
-    private String modelo;
+    private String modelo; // el year
     @Column(name = "servicio", nullable = false, length = 50)
     private String servicio; //particular, comercial, flota, etc.
     @Column(name = "cilindrada", precision = 20, scale = 4)

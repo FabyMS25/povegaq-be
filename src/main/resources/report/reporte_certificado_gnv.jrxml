@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="557"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="432"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="612"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="378"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -34,39 +34,49 @@
 	<parameter name="opacidad" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select c.codigo,c.fecha_emision, c.fecha_vencimiento,
-i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,i.equipo,
- t.nombre, t.descripcion, t.unidad 
-, d.valor, d.nro_ejecucion, dt.tipo_vehiculo,dt.modelo, v.placa
+		<![CDATA[select 
+i.equipo,
+ t.nombre, t.descripcion, t.unidad, 
+ dt.tipo_vehiculo,dt.modelo, v.placa,dt.tipo_combustion,
+    MAX(CASE WHEN d.nro_ejecucion = 1 THEN d.valor END) AS medicion_1ra,
+    MAX(CASE WHEN d.nro_ejecucion = 2 THEN d.valor END) AS medicion_2da,
+    MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
+	MAX(CASE WHEN d.nro_ejecucion = 4 THEN d.valor END) AS medicion_4ta,
+	MAX(CASE WHEN d.nro_ejecucion = 5 THEN d.valor END) AS medicion_5ta,
+    le.limite AS limite_permisible
 from certificados as c
 inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
 inner join actividades as a on a.id_actividad = i.id_actividad
 inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
 inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
+LEFT JOIN 
+    limites_emision le 
+    ON le.id_tipo_parametro = t.id_tipo_parametro 
+    --AND le.tipo_combustible = 'GNV'
 inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
-and dt.estado = false]]>
+and dt.estado = false and le.estado = false
+GROUP BY
+ t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.tipo_combustion,le.limite
+ORDER BY
+t.nombre]]>
 	</queryString>
-	<field name="codigo" class="java.lang.String"/>
-	<field name="fecha_emision" class="java.util.Date"/>
-	<field name="fecha_vencimiento" class="java.util.Date"/>
-	<field name="fecha_inspeccion" class="java.util.Date"/>
-	<field name="nombre_inspector" class="java.lang.String"/>
-	<field name="lugar_inspeccion" class="java.lang.String"/>
-	<field name="resultado" class="java.lang.Boolean"/>
-	<field name="observacion" class="java.lang.String"/>
-	<field name="tipo_actividad" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="descripcion" class="java.lang.String"/>
 	<field name="unidad" class="java.lang.String"/>
-	<field name="valor" class="java.math.BigDecimal"/>
-	<field name="nro_ejecucion" class="java.lang.Integer"/>
-	<field name="equipo" class="java.lang.String"/>
 	<field name="tipo_vehiculo" class="java.lang.String"/>
 	<field name="modelo" class="java.lang.String"/>
 	<field name="placa" class="java.lang.String"/>
+	<field name="tipo_combustion" class="java.lang.String"/>
+	<field name="equipo" class="java.lang.String"/>
+	<field name="medicion_1ra" class="java.math.BigDecimal"/>
+	<field name="medicion_2da" class="java.math.BigDecimal"/>
+	<field name="medicion_3ra" class="java.math.BigDecimal"/>
+	<field name="medicion_4ta" class="java.math.BigDecimal"/>
+	<field name="medicion_5ta" class="java.math.BigDecimal"/>
+	<field name="limite_permisible" class="java.math.BigDecimal"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -151,15 +161,59 @@ and dt.estado = false]]>
 "<i><b>Vehículo: </b>" + $F{tipo_vehiculo} + "</i><br/>" +
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
 "<i><b>Modelo: </b> " + $F{modelo} + "</i><br/>" +
-"<i><b>Opacidad Máxima: </b>"+ $P{opacidad} + "</i> <br/>"]]></textFieldExpression>
+"<i><b>Cuadro de verificación: </b>"+ $F{tipo_combustion} + "</i> <br/>"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="20"/>
+		<band height="34">
+			<staticText>
+				<reportElement x="70" y="0" width="100" height="20" uuid="9e1c9cf3-7855-4294-9255-a4f6b8385aa6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<text><![CDATA[Parametro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="0" width="188" height="19" uuid="01a688fb-3114-4c5a-a6c0-1dd726ac635c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<text><![CDATA[Medicion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="1" width="100" height="19" uuid="e6d9b421-2d39-4f61-967b-c76f3df95c47">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a92e7692-ea75-467a-a4ba-dd95b9eb2b91"/>
+				</reportElement>
+				<text><![CDATA[Limite Permisible]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="19" width="60" height="15" uuid="a7bb5af7-f9e0-41b3-b104-148dede4bc73">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622b468f-e453-4c7e-a566-bbb7376d39ee"/>
+				</reportElement>
+				<text><![CDATA[1ra]]></text>
+			</staticText>
+		</band>
 	</columnHeader>
 	<detail>
-		<band height="32" splitType="Stretch"/>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="70" y="0" width="100" height="18" uuid="4e5851f8-3d7c-4923-a807-0d15b5398ea8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="1" width="100" height="18" uuid="caf30809-6041-4ada-ad8f-a5f55d05cd07">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a92e7692-ea75-467a-a4ba-dd95b9eb2b91"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{limite_permisible}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="1" width="59" height="18" uuid="0fd3ed95-2121-4535-9533-75a2077faa8b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622b468f-e453-4c7e-a566-bbb7376d39ee"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{medicion_1ra}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band height="172">
