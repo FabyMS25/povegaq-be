@@ -79,7 +79,7 @@ and dt.estado = false]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="629" splitType="Stretch">
+		<band height="446" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image scaleImage="FillFrame" onErrorType="Blank">
 				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
@@ -89,7 +89,7 @@ and dt.estado = false]]>
 				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{logo64}))]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="36" y="168" width="482" height="50" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
+				<reportElement x="37" y="128" width="482" height="50" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="26" isBold="true"/>
 				</textElement>
@@ -100,49 +100,49 @@ and dt.estado = false]]>
 				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{qr}))]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="260" y="226" width="125" height="20" uuid="b1d8e5f5-9091-48a4-ad62-7c4d93f043eb"/>
+				<reportElement x="260" y="183" width="125" height="20" uuid="b1d8e5f5-9091-48a4-ad62-7c4d93f043eb"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Acorde a:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="261" y="251" width="244" height="16" uuid="9cf1a081-e791-4774-94c6-beac2fe903f2"/>
+				<reportElement x="261" y="208" width="244" height="16" uuid="9cf1a081-e791-4774-94c6-beac2fe903f2"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ley de medio Ambiente N 1333]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="261" y="269" width="198" height="39" uuid="1077f88b-d7bb-4e75-ad00-901f39323a03"/>
+				<reportElement x="261" y="226" width="198" height="39" uuid="1077f88b-d7bb-4e75-ad00-901f39323a03"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ley de transporte N 165 art 102 Inciso III]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="261" y="301" width="198" height="40" uuid="6ffd649a-3e5d-41de-806c-dc6fd2812a06"/>
+				<reportElement x="261" y="258" width="198" height="40" uuid="6ffd649a-3e5d-41de-806c-dc6fd2812a06"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[El Reglamento en materia de contaminacion atmosferica]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="262" y="334" width="244" height="16" uuid="727de670-2a8f-4e30-82d9-160dc1033589"/>
+				<reportElement x="262" y="291" width="244" height="16" uuid="727de670-2a8f-4e30-82d9-160dc1033589"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Decreto supremo N 28139]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="261" y="352" width="259" height="16" uuid="8753af97-bb34-40ae-8b3e-0422780f2041"/>
+				<reportElement x="261" y="309" width="259" height="16" uuid="8753af97-bb34-40ae-8b3e-0422780f2041"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Normativa Boliviana NB 62002]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="38" y="376" width="480" height="204" uuid="5dcef4d6-e212-4826-85ae-78a5b8b548b0"/>
+				<reportElement x="38" y="330" width="480" height="110" uuid="5dcef4d6-e212-4826-85ae-78a5b8b548b0"/>
 				<textElement textAlignment="Justified" markup="html">
 					<font size="12"/>
 				</textElement>
@@ -152,17 +152,7 @@ and dt.estado = false]]>
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
 "<i><b>Modelo: </b> " + $F{modelo} + "</i><br/>" +
 "<i><b>Opacidad Máxima: </b>"+ $P{opacidad} + "</i> <br/>"+ 
-
-"Por tanto, se encuentra dentro los límites permisibles establecidos en normativa ambiental vigente. Con esta finalidad se adjunta hoja de verificación vehicular realizada en ambientes del Gobierno Autónomo Municipal de Quillacollo con el equipo " + $F{equipo} + " <br/> " +
-
-"Es cuanto se tiene a bien detallar para fines que vea por conveniente el interesado.  <br/> "]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="37" y="580" width="480" height="30" uuid="cd4e2661-01ce-469c-acf2-78ed8a6a7c61"/>
-				<textElement textAlignment="Center">
-					<font size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Quillacollo," + new java.text.SimpleDateFormat("d 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date())]]></textFieldExpression>
+]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -170,10 +160,27 @@ and dt.estado = false]]>
 		<band height="20"/>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch"/>
+		<band height="32" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
-		<band height="40"/>
+		<band height="172">
+			<textField>
+				<reportElement x="38" y="130" width="480" height="30" uuid="cd4e2661-01ce-469c-acf2-78ed8a6a7c61"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quillacollo," + new java.text.SimpleDateFormat("d 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="37" y="0" width="480" height="120" uuid="2e9d3c47-f1fa-4a6b-9d07-2f78169bdd10"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Por tanto, se encuentra dentro los límites permisibles establecidos en normativa ambiental vigente. Con esta finalidad se adjunta hoja de verificación vehicular realizada en ambientes del Gobierno Autónomo Municipal de Quillacollo con el equipo " + $F{equipo} + " <br/> " +
+
+"Es cuanto se tiene a bien detallar para fines que vea por conveniente el interesado.  <br/> "]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="26" splitType="Stretch">

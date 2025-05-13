@@ -80,12 +80,19 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     public LimiteEmisionDto actualizarLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
         Optional<LimiteEmision> limiteEmisionOptional = limiteEmisionRepository.findByUuid(limiteEmisionDto.getUuid());
         if(limiteEmisionOptional.isPresent()) {
-            if (!limiteEmisionRepository.exitsLimiteEmisionLikeNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), limiteEmisionDto.getTipoParametroDto().getNombre().toLowerCase(), limiteEmisionDto.getUuid())) {
+            Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(limiteEmisionDto.getTipoParametroDto().getUuid());
+            if (tipoParametroOptional.isPresent()) {
+                //  if (!limiteEmisionRepository.exitsLimiteEmisionLikeNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), limiteEmisionDto.getTipoParametroDto().getNombre().toLowerCase(), limiteEmisionDto.getUuid())) {
                 LimiteEmision updateLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
                 updateLimiteEmision.setIdLimiteEmision(limiteEmisionOptional.get().getIdLimiteEmision());
+                updateLimiteEmision.setTipoParametro(tipoParametroOptional.get());
                 return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(updateLimiteEmision));
-            } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Limite Emision ya existe");
+                // } else {
+                //     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Limite Emision ya existe");
+                // }
+            }
+            else {
+                throw new ResourceNotFoundException("tipo parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid());
             }
         }
         throw new ResourceNotFoundException("Limite Emision", "uuid",limiteEmisionDto.getUuid());
