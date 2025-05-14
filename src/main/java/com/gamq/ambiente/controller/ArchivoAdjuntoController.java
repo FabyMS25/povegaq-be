@@ -28,51 +28,33 @@ public class ArchivoAdjuntoController {
         return Response.ok().setPayload(archivoAdjuntoService.obtenerArchivoAdjuntoPorUuid(uuid));
     }
 
-    @GetMapping("/inactivo/{uuid}")
-    public Response getArchivoAdjuntoByUuidActivoInactivo(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(archivoAdjuntoService.obtenerArchivoAdjuntoPorUuidActivoInactivo(uuid));
-    }
-
-    @GetMapping("/nombre/{nombre}")
-    public Response getArchivoAdjuntoByNombre(@PathVariable("nombre") String nombre)
-    {
-        return Response.ok().setPayload(archivoAdjuntoService.obtenerArchivoAdjuntoPorNombre(nombre));
-    }
-
     @GetMapping("/uuidRequisitoInspeccion")
     public Response getArchivoAdjuntos(@RequestParam("uuidRequisitoInspeccion") String uuidRequisitoInspeccion)
     {
         return Response.ok().setPayload(archivoAdjuntoService.obtenerArchivosAdjuntos(uuidRequisitoInspeccion));
     }
 
-    @GetMapping("/activoinactivo/uuidRequisitoInspeccion")
-    public Response getArchivoAdjuntosActivoInactivo(@RequestParam("uuidRequisitoInspeccion") String uuidRequisitoInspeccion)
-    {
-        return Response.ok().setPayload(archivoAdjuntoService.obtenerArchivosAdjuntosActivosInactivos(uuidRequisitoInspeccion));
-    }
-
     @PostMapping("/create")
-    public Response createArchivoAdjunto(@RequestParam String uuidRequisitoInspeccion,
+    public Response createArchivoAdjunto(@RequestParam String uuid,
+                                         @RequestParam String uuidUsuario,
+                                         @RequestParam String uuidRequisitoInspeccion,
                                          @RequestParam Date fechaAdjunto,
                                          @RequestParam String descripcion,
                                          MultipartFile archivoFile,
                                          @ModelAttribute ArchivoAdjuntoDto archivoAdjuntoDto)
     {
-       //archivoAdjuntoDto.setTareaDto(new TareaDto().setUuid(uuidTarea));
         archivoAdjuntoDto.setRequisitoInspeccionDto(new RequisitoInspeccionDto().setUuid(uuidRequisitoInspeccion));
-        //archivoAdjuntoDto.setUsuarioDto(new UsuarioDto().setUuid(uuidUsuario));
         return Response.ok().setPayload(archivoAdjuntoService.crearArchivoAdjunto(archivoAdjuntoDto));
     }
 
     @PutMapping("/update")
-    public Response updateArchivoAdjunto(//@RequestParam String uuid,
-                                        // @RequestParam String uuidUsuario,
+    public Response updateArchivoAdjunto(@RequestParam String uuid,
+                                         @RequestParam String uuidUsuario,
                                          @RequestParam Date fechaAdjunto,
                                          @RequestParam String descripcion,
                                          MultipartFile archivoFile,
                                          @ModelAttribute ArchivoAdjuntoDto archivoAdjuntoDto)
     {
-      //  archivoAdjuntoDto.setUsuarioDto(new UsuarioDto().setUuid(uuidUsuario));
         return  Response.ok().setPayload(archivoAdjuntoService.actualizarArchivoAdjunto(archivoAdjuntoDto));
     }
 

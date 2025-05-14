@@ -7,6 +7,8 @@ import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Requisito;
 import com.gamq.ambiente.model.RequisitoInspeccion;
 
+import java.util.stream.Collectors;
+
 public class RequisitoInspeccionMapper {
     public static RequisitoInspeccionDto toRequisitoInspeccionDto(RequisitoInspeccion requisitoInspeccion){
         return new RequisitoInspeccionDto()
@@ -28,7 +30,11 @@ public class RequisitoInspeccionMapper {
                         .setUuid(requisitoInspeccion.getRequisito().getUuid())
                         .setDescripcion(requisitoInspeccion.getRequisito().getDescripcion())
                         .setEstado(requisitoInspeccion.getRequisito().isEstado())
-                );
+                )
+                .setArchivoAdjuntoDtoList(requisitoInspeccion.getArchivoAdjuntoList().stream().map(archivoAdjunto -> {
+                    return ArchivoAdjuntoMapper.toArchivoAdjuntoDto(archivoAdjunto);
+                }).collect(Collectors.toList()))
+                ;
     }
 
     public static RequisitoInspeccion toRequisitoInspeccion(RequisitoInspeccionDto requisitoInspeccionDto){

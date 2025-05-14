@@ -7,10 +7,7 @@ import java.util.List;
 
 public interface ArchivoAdjuntoService {
     ArchivoAdjuntoDto obtenerArchivoAdjuntoPorUuid(String uuid);
-    ArchivoAdjuntoDto obtenerArchivoAdjuntoPorUuidActivoInactivo(String uuid);
-    ArchivoAdjuntoDto obtenerArchivoAdjuntoPorNombre(String nombre);
-    List<ArchivoAdjuntoDto> obtenerArchivosAdjuntos(String uuidTarea);
-    List<ArchivoAdjuntoDto> obtenerArchivosAdjuntosActivosInactivos(String uuidTarea);
+    List<ArchivoAdjuntoDto> obtenerArchivosAdjuntos(String uuidRequisitoInspeccion);
     ArchivoAdjuntoDto crearArchivoAdjunto(ArchivoAdjuntoDto archivoAdjuntoDto);
     ArchivoAdjuntoDto actualizarArchivoAdjunto(ArchivoAdjuntoDto archivoAdjuntoDto);
     ArchivoAdjuntoDto eliminarArchivoAdjunto(String uuid);

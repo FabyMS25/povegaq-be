@@ -130,7 +130,7 @@ public class InspeccionMapper {
                         .setTitulo(inspeccion.getEvento().getTitulo())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
-                             .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
+                .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
                 }).collect(Collectors.toList()))
                 .setRequisitoInspeccionDtoList(inspeccion.getRequisitoInspeccionList().stream().map(requisitoInspeccion -> {

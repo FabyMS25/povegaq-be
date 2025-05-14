@@ -73,9 +73,6 @@ public class Vehiculo {
     @OneToOne(mappedBy = "vehiculo")
     private DatoTecnico datoTecnico;
 
-    @OneToOne(mappedBy = "vehiculo")
-    private FotoVehiculo fotoVehiculo;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
     private List<FotoVehiculo> fotoVehiculoList = new ArrayList<FotoVehiculo>();
 

@@ -104,6 +104,9 @@ public class VehiculoMapper {
                                 .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
                         )
                 )
+                .setFotoVehiculoDtoList(vehiculo.getFotoVehiculoList().stream().map(fotoVehiculo -> {
+                    return FotoVehiculoMapper.toFotoVehiculoDto(fotoVehiculo);
+                }).collect(Collectors.toList()))
                 ;
 
     }

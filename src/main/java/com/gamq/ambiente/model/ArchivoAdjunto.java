@@ -54,11 +54,6 @@ public class ArchivoAdjunto {
     @JoinColumn(name = "id_requisito_inspeccion", nullable = false)
     private RequisitoInspeccion requisitoInspeccion;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false) ////cambiar
-    private Usuario usuario;*/
-
     public ArchivoAdjunto(String uuid) {this.uuid = uuid;}
 
     @PrePersist

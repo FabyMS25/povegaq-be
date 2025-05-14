@@ -28,11 +28,8 @@ public class ArchivoAdjuntoServiceImpl implements ArchivoAdjuntoService {
     private ArchivoAdjuntoRepository archivoAdjuntoRepository;
     @Autowired
     private RequisitoInspeccionRepository requisitoInspeccionRepository;
-    //private TareaRepository tareaRepository;
     @Autowired
     private UploadFileService uploadFileService;
-    //@Autowired
-    //private UsuarioRepository usuarioRepository;
 
     @Value("${files.path}/adjuntos")
     private String filePath;
@@ -47,39 +44,13 @@ public class ArchivoAdjuntoServiceImpl implements ArchivoAdjuntoService {
     }
 
     @Override
-    public ArchivoAdjuntoDto obtenerArchivoAdjuntoPorUuidActivoInactivo(String uuid) {
-        Optional<ArchivoAdjunto> archivoAdjuntoOptional = archivoAdjuntoRepository.findByUuidArchivoAdjuntoActivoInactivo(uuid);
-        if (archivoAdjuntoOptional.isPresent()) {
-            return ArchivoAdjuntoMapper.toArchivoAdjuntoDto(archivoAdjuntoOptional.get());
-        }
-        throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND,"no existe archivo adjunto");
-    }
-
-    @Override
-    public ArchivoAdjuntoDto obtenerArchivoAdjuntoPorNombre(String nombre) {
-        Optional<ArchivoAdjunto>  archivoAdjuntoOptional = archivoAdjuntoRepository.findByNombre(nombre);
-        if(archivoAdjuntoOptional.isPresent())
-        {
-            return ArchivoAdjuntoMapper.toArchivoAdjuntoDto(archivoAdjuntoOptional.get());
-        }
-        throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "no existe archivo adjunto");
-    }
-
-    @Override
-    public List<ArchivoAdjuntoDto> obtenerArchivosAdjuntos(String uuidTarea) {
-        List<ArchivoAdjunto> archivoAdjuntoList = archivoAdjuntoRepository.findByUuidRequisitoInspeccion(uuidTarea);
+    public List<ArchivoAdjuntoDto> obtenerArchivosAdjuntos(String uuidRequisitoInspeccion) {
+        List<ArchivoAdjunto> archivoAdjuntoList = archivoAdjuntoRepository.findByUuidRequisitoInspeccion(uuidRequisitoInspeccion);
         return archivoAdjuntoList.stream().map( archivoAdjunto -> {
             return ArchivoAdjuntoMapper.toArchivoAdjuntoDto( archivoAdjunto);
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public List<ArchivoAdjuntoDto> obtenerArchivosAdjuntosActivosInactivos(String uuidTarea) {
-        List<ArchivoAdjunto> archivoAdjuntoList = archivoAdjuntoRepository.findByUuidRequisitoInspeccionActivosYInactivos(uuidTarea);
-        return archivoAdjuntoList.stream().map( archivoAdjunto -> {
-            return ArchivoAdjuntoMapper.toArchivoAdjuntoDto( archivoAdjunto);
-        }).collect(Collectors.toList());
-    }
 
     @Override
     public ArchivoAdjuntoDto crearArchivoAdjunto(ArchivoAdjuntoDto archivoAdjuntoDto) {
@@ -90,33 +61,26 @@ public class ArchivoAdjuntoServiceImpl implements ArchivoAdjuntoService {
             ArchivoAdjunto nuevoArchivoAdjunto = ArchivoAdjuntoMapper.toArchivoAdjunto(archivoAdjuntoDto);
             Optional<RequisitoInspeccion> requisitoInspeccionOptional = requisitoInspeccionRepository.findByUuid(archivoAdjuntoDto.getRequisitoInspeccionDto().getUuid());
 
-            //Optional<Tarea> tareaOptional = tareaRepository.findByUuid(archivoAdjuntoDto.getTareaDto().getUuid());
-            //Optional<Usuario> usuarioOptional = usuarioRepository.findByUuid(archivoAdjuntoDto.getUsuarioDto().getUuid());
 
             if (requisitoInspeccionOptional.isPresent()) {
-                //if (usuarioOptional.isPresent()) {
 
-                    nuevoArchivoAdjunto.setRequisitoInspeccion(requisitoInspeccionOptional.get());// .setTarea(tareaOptional.get());
-                    //nuevoArchivoAdjunto.setUsuario(usuarioOptional.get());
-                    if (archivoAdjuntoDto.getArchivoFile() != null) {
-                        try {
-                            String codigoUuid = UUID.randomUUID().toString();
-                            String filenombre = uploadFileService.saveFile(archivoAdjuntoDto.getArchivoFile(), codigoUuid, filePath);
-                            nuevoArchivoAdjunto.setUuid(codigoUuid);
-                            nuevoArchivoAdjunto.setRutaArchivo(filePath);
-                            nuevoArchivoAdjunto.setNombre(filenombre);
-                            return ArchivoAdjuntoMapper.toArchivoAdjuntoDto(archivoAdjuntoRepository.save(nuevoArchivoAdjunto));
+                nuevoArchivoAdjunto.setRequisitoInspeccion(requisitoInspeccionOptional.get());
+                if (archivoAdjuntoDto.getArchivoFile() != null) {
+                    try {
+                        String codigoUuid = UUID.randomUUID().toString();
+                        String filenombre = uploadFileService.saveFile(archivoAdjuntoDto.getArchivoFile(), codigoUuid, filePath);
+                        nuevoArchivoAdjunto.setUuid(codigoUuid);
+                        nuevoArchivoAdjunto.setRutaArchivo(filePath);
+                        nuevoArchivoAdjunto.setNombre(filenombre);
+                        return ArchivoAdjuntoMapper.toArchivoAdjuntoDto(archivoAdjuntoRepository.save(nuevoArchivoAdjunto));
 
-                        } catch (IOException ioException) {
-                            throw new BlogAPIException("500-INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "no existe");
-                        }
+                    } catch (IOException ioException) {
+                        throw new BlogAPIException("500-INTERNAL_SERVER_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "no existe");
                     }
-                    else {
-                        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "debe adjuntar el archivo");
-                    }
-                //} else {
-               //     throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el usuario no existe");
-               // }
+                }
+                else {
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "debe adjuntar el archivo");
+                }
             }
             else {
                 throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND,"ta tarea no existe");
@@ -134,8 +98,6 @@ public class ArchivoAdjuntoServiceImpl implements ArchivoAdjuntoService {
             ArchivoAdjunto archivoAdjunto = ArchivoAdjuntoMapper.toArchivoAdjunto(archivoAdjuntoDto);
             archivoAdjunto.setIdArchivoAdjunto(archivoAdjuntoOptional.get().getIdArchivoAdjunto());
             archivoAdjunto.setRequisitoInspeccion( archivoAdjuntoOptional.get().getRequisitoInspeccion());
-            //archivoAdjunto.setTarea(archivoAdjuntoOptional.get().getTarea());
-            //archivoAdjunto.setUsuario(archivoAdjuntoOptional.get().getUsuario());
             if (archivoAdjuntoDto.getArchivoFile() != null) {
                 try {
                     boolean eliminado = uploadFileService.deleteFile(archivoAdjuntoOptional.get().getNombre(), filePath);
