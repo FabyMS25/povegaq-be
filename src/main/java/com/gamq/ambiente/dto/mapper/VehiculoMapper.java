@@ -16,7 +16,7 @@ public class VehiculoMapper {
                 .setUuid(vehiculo.getUuid())
                 .setEsOficial(vehiculo.isEsOficial())
                 .setFechaRegistro(vehiculo.getFechaRegistro())
-                .setJuridiccionOrigen(vehiculo.getJuridiccionOrigen())
+                .setJurisdiccionOrigen(vehiculo.getJurisdiccionOrigen())
                 .setPlaca(vehiculo.getPlaca())
                 .setPoliza(vehiculo.getPoliza())
                 .setVinNumeroIdentificacion(vehiculo.getVinNumeroIdentificacion())
@@ -89,7 +89,7 @@ public class VehiculoMapper {
                                 .setEstado(vehiculo.getPropietario().getTipoContribuyente().isEstado())
                         )
                 )
-                .setConductorDto( vehiculo.getConductor() == null? null: new ConductorDto()
+           /*     .setConductorDto( vehiculo.getConductor() == null? null: new ConductorDto()
                         .setUuid(vehiculo.getConductor().getUuid())
                         .setNombreCompleto(vehiculo.getConductor().getNombreCompleto())
                         .setTipoDocumento(vehiculo.getConductor().getTipoDocumento())
@@ -103,9 +103,12 @@ public class VehiculoMapper {
                                 .setCodigo(vehiculo.getConductor().getTipoContribuyente().getCodigo())
                                 .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
                         )
-                )
+                )*/
                 .setFotoVehiculoDtoList(vehiculo.getFotoVehiculoList().stream().map(fotoVehiculo -> {
                     return FotoVehiculoMapper.toFotoVehiculoDto(fotoVehiculo);
+                }).collect(Collectors.toList()))
+                .setVehiculoConductorInspeccionDtoList(vehiculo.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
+                    return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
                 }).collect(Collectors.toList()))
                 ;
 
@@ -116,7 +119,7 @@ public class VehiculoMapper {
                 .setUuid(vehiculoDto.getUuid())
                 .setEsOficial(vehiculoDto.isEsOficial())
                 .setFechaRegistro(vehiculoDto.getFechaRegistro())
-                .setJuridiccionOrigen(vehiculoDto.getJuridiccionOrigen())
+                .setJurisdiccionOrigen(vehiculoDto.getJurisdiccionOrigen())
                 .setPlaca(vehiculoDto.getPlaca())
                 .setPoliza(vehiculoDto.getPoliza())
                 .setVinNumeroIdentificacion(vehiculoDto.getVinNumeroIdentificacion())

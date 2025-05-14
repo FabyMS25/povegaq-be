@@ -46,6 +46,8 @@ public class InspeccionDto {
    // private ConductorDto conductorDto;
     private EventoDto eventoDto;
 
+    private List<VehiculoConductorInspeccionDto> vehiculoConductorInspeccionDtoList = new ArrayList<VehiculoConductorInspeccionDto>();
+
     private List<CertificadoDto> certificadoDtoList = new ArrayList<>();
     private List<NotificacionDto> notificacionDtoList = new ArrayList<>();
     private List<DetalleInspeccionDto> detalleInspeccionDtoList = new ArrayList<>();

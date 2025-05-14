@@ -70,8 +70,8 @@ public class ConductorServiceImpl implements ConductorService {
             Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(conductorDto.getTipoContribuyenteDto().getUuid());
             if(tipoContribuyenteOptional.isPresent()) {
                 Conductor nuevoConductor = ConductorMapper.toConductor(conductorDto);
-                List<Vehiculo>  vehiculoList  = mapearVehiculos(conductorDto.getVehiculoDtoList(), nuevoConductor);
-                nuevoConductor.setVehiculoList(vehiculoList);
+              //  List<Vehiculo>  vehiculoList  = mapearVehiculos(conductorDto.getVehiculoDtoList(), nuevoConductor);
+             //   nuevoConductor.setVehiculoList(vehiculoList);
                 nuevoConductor.setTipoContribuyente( tipoContribuyenteOptional.get());
                 return ConductorMapper.toConductorDto(conductorRepository.save(nuevoConductor));
             }
@@ -93,10 +93,10 @@ public class ConductorServiceImpl implements ConductorService {
                 throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un propietario: Será reasignado? ");
             }
             // si el vehiculo no tiene propietario
-            if ( vehiculo.getPropietario() == null){
-                if (vehiculo.getConductor() != null) {
+           /// if ( vehiculo.getPropietario() == null){
+              /*  if (vehiculo.getConductor() != null) {
                     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un conductor: Será reasignado? ");
-                }
+                }*/
                 boolean tienePlaca = vehiculo.getPlaca() != null && !vehiculo.getPlaca().trim().isEmpty();
                 boolean tienePinSinPlaca = vehiculo.getPinNumeroIdentificacion() != null && !tienePlaca;
 
@@ -114,13 +114,13 @@ public class ConductorServiceImpl implements ConductorService {
                     placasVehiculo.add(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim());
                 }
                 if( tienePlaca || tienePinSinPlaca) {
-                    vehiculo.setConductor(nuevoConductor);
+                   //ojo vehiculo.setConductor(nuevoConductor);
                     vehiculoList.add(vehiculo);
                 }
                 else {
                     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el verifique los datos del vehiculo no tiene placa ese vehiculo");
                 }
-            }
+            //}
         } );
         return vehiculoList;
     }
@@ -147,14 +147,14 @@ public class ConductorServiceImpl implements ConductorService {
                     updateConductor.setIdConductor(conductorOptional.get().getIdConductor());
                     updateConductor.setTipoContribuyente( tipoContribuyenteOptional.get());
 
-                    conductorOptional.get().getVehiculoList().forEach(vehiculo -> {
+             /*       conductorOptional.get().getVehiculoList().forEach(vehiculo -> {
                         vehiculo.setConductor(null);
                     });
 
                     conductorOptional.get().getVehiculoList().clear();
                     List<Vehiculo> vehiculoList = mapearVehiculos(conductorDto.getVehiculoDtoList(),conductorOptional.get());
 
-                    updateConductor.setVehiculoList(vehiculoList);
+                    updateConductor.setVehiculoList(vehiculoList);*/
 
                     return ConductorMapper.toConductorDto(conductorRepository.save(updateConductor));
                 }

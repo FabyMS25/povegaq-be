@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gamq.ambiente.model.Conductor;
 import com.gamq.ambiente.model.DatoTecnico;
 import com.gamq.ambiente.model.FotoVehiculo;
+import com.gamq.ambiente.model.VehiculoConductorInspeccion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +33,7 @@ public class VehiculoDto {
     private boolean esOficial;
     @NotNull(message = "La fecha de elaboracion es requerido YYYY-MM-DD")
     private Date fechaRegistro;
-    private String juridiccionOrigen;
+    private String jurisdiccionOrigen;
     @NotNull(message = "El campo es Movil es requerido TRUE o FALSE")
     private Boolean esMovil;
     private boolean esUnidadIndustrial;
@@ -44,8 +45,9 @@ public class VehiculoDto {
 
     private DatoTecnicoDto datoTecnicoDto;
     private PropietarioDto propietarioDto;
-    private ConductorDto conductorDto;
+   // private ConductorDto conductorDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
     private List<FotoVehiculoDto> fotoVehiculoDtoList = new ArrayList<FotoVehiculoDto>();
+    private List<VehiculoConductorInspeccionDto> vehiculoConductorInspeccionDtoList = new ArrayList<VehiculoConductorInspeccionDto>();
 
 }

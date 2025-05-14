@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.TipoContribuyente;
+import com.gamq.ambiente.model.VehiculoConductorInspeccion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,5 +33,6 @@ public class ConductorDto {
 
     private TipoContribuyenteDto tipoContribuyenteDto;
    // private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
-    private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
+   // private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
+   private List<VehiculoConductorInspeccionDto> vehiculoConductorInspeccionDtoList = new ArrayList<VehiculoConductorInspeccionDto>();
 }

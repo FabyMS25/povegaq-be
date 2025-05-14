@@ -39,7 +39,7 @@ public class InspeccionMapper {
                         .setVinNumeroIdentificacion(inspeccion.getVehiculo().getVinNumeroIdentificacion())
                         .setEsOficial(inspeccion.getVehiculo().isEsOficial())
                         .setFechaRegistro(inspeccion.getVehiculo().getFechaRegistro())
-                        .setJuridiccionOrigen(inspeccion.getVehiculo().getJuridiccionOrigen())
+                        .setJurisdiccionOrigen(inspeccion.getVehiculo().getJurisdiccionOrigen())
                         .setEsMovil(inspeccion.getVehiculo().getEsMovil())
                         .setEsUnidadIndustrial(inspeccion.getVehiculo().isEsUnidadIndustrial())
                         .setPinNumeroIdentificacion(inspeccion.getVehiculo().getPinNumeroIdentificacion())
@@ -98,7 +98,8 @@ public class InspeccionMapper {
                                         .setCodigo(inspeccion.getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
                                 )
                         )
-                        .setConductorDto( inspeccion.getVehiculo().getConductor() == null? null: new ConductorDto()
+
+                     /*   .setConductorDto( inspeccion.getVehiculo().getConductor() == null? null: new ConductorDto()
                                 .setUuid(inspeccion.getVehiculo().getConductor().getUuid())
                                 .setNombreCompleto(inspeccion.getVehiculo().getConductor().getNombreCompleto())
                                 .setTipoDocumento(inspeccion.getVehiculo().getConductor().getTipoDocumento())
@@ -112,7 +113,7 @@ public class InspeccionMapper {
                                         .setEstado(inspeccion.getVehiculo().getConductor().getTipoContribuyente().isEstado())
                                         .setCodigo(inspeccion.getVehiculo().getConductor().getTipoContribuyente().getCodigo())
                                 )
-                        )
+                        )*/
                 )
                 .setEventoDto( inspeccion.getEvento() == null ? null: new EventoDto()
                         .setUuid(inspeccion.getVehiculo().getUuid())
@@ -130,6 +131,11 @@ public class InspeccionMapper {
                         .setTitulo(inspeccion.getEvento().getTitulo())
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
+
+                .setVehiculoConductorInspeccionDtoList(inspeccion.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
+                    return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
+                }).collect(Collectors.toList()))
+
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
                 }).collect(Collectors.toList()))

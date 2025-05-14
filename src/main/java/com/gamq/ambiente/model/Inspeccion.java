@@ -75,13 +75,6 @@ public class Inspeccion {
     @JoinColumn(name = "id_evento", nullable = true)  // Puede ser NULL
     private Evento evento;
 
-   /* @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_conductor", nullable = true)  // Puede ser NULL
-    private Conductor conductor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_propietario", nullable = true)  // Puede ser NULL
-    private Propietario propietario;*/
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
     private List<Certificado> certificadoList = new ArrayList<>();
@@ -98,6 +91,14 @@ public class Inspeccion {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
     private List<RequisitoInspeccion> requisitoInspeccionList = new ArrayList<>();
+
+
+
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
+    private List<VehiculoConductorInspeccion> vehiculoConductorInspeccionList = new ArrayList<VehiculoConductorInspeccion>();
+
+
 
     public Inspeccion(String uuid) {this.uuid = uuid;}
 

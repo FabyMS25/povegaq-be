@@ -41,8 +41,8 @@ public class Vehiculo {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_registro", nullable = false)
     private Date fechaRegistro;
-    @Column(name = "juridiccion_origen", nullable = true)
-    private String juridiccionOrigen;  //radicatoria LA PAZ QUILLACOLLO TARIJA
+    @Column(name = "jurisdiccion_origen", nullable = true)
+    private String jurisdiccionOrigen;  //radicatoria LA PAZ QUILLACOLLO TARIJA
     @Column(name = "es_movil", columnDefinition = "BOOLEAN NOT NULL DEFAULT true")
     private Boolean esMovil;
     @Column(name = "es_unidad_industrial", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
@@ -66,15 +66,18 @@ public class Vehiculo {
     @JoinColumn(name = "id_propietario", nullable = true)
     private Propietario propietario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_conductor", nullable = true)
-    private Conductor conductor;
+   // @ManyToOne(fetch = FetchType.LAZY)
+   // @JoinColumn(name = "id_conductor", nullable = true)
+   // private Conductor conductor;
 
     @OneToOne(mappedBy = "vehiculo")
     private DatoTecnico datoTecnico;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
     private List<FotoVehiculo> fotoVehiculoList = new ArrayList<FotoVehiculo>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
+    private List<VehiculoConductorInspeccion> vehiculoConductorInspeccionList = new ArrayList<VehiculoConductorInspeccion>();
 
     public Vehiculo(String uuid) {this.uuid = uuid;}
 

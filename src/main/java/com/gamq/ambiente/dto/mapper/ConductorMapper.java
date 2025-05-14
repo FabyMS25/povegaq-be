@@ -23,8 +23,8 @@ public class ConductorMapper {
                         .setCodigo(conductor.getTipoContribuyente().getCodigo())
                         .setEstado(conductor.getTipoContribuyente().isEstado())
                 )
-                .setVehiculoDtoList(conductor.getVehiculoList().stream().map( vehiculo -> {
-                    return VehiculoMapper.toVehiculoDto(vehiculo);
+                .setVehiculoConductorInspeccionDtoList(conductor.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
+                    return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
                 }).collect(Collectors.toList()))
                 ;
     }
