@@ -32,16 +32,14 @@ public class Infraccion {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_infraccion", nullable = false)
     private Date fechaInfraccion;
-    //@Column(name = "tipo_infraccion", nullable = false, length = 50)
-    //private String tipoInfraccion;
-    @Column(name = "monto_total", precision = 20, scale = 4)
+    @Column(name = "monto_total", precision = 20, scale = 4, nullable = false)
     private BigDecimal montoTotal;
     @Column(name = "status_infraccion", length = 30) //
     private String statusInfraccion;
     @Column(name = "estado_pago", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estadoPago;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_pago", nullable = false)
+    @Column(name = "fecha_pago", nullable = true)
     private Date fechaPago;
     @Column(name = "numero_tasa", nullable = true, length = 15)
     private String numeroTasa;

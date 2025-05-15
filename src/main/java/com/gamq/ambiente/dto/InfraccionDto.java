@@ -9,6 +9,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -21,15 +25,24 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InfraccionDto {
     private String uuid;
+    @NotNull
+    @PastOrPresent
     private Date fechaInfraccion;
+    @NotNull
+    @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal montoTotal;
-    private String statusInfraccion;
+    @NotNull
+    private String statusInfraccion; //pendiente pagado
     private boolean estadoPago;
     private Date fechaPago;
     private String numeroTasa;
     private boolean estado;
 
+    @Valid
+    @NotNull
     private TipoInfraccionDto tipoInfraccionDto;
+    @Valid
+    @NotNull
     private InspeccionDto inspeccionDto;
     private NotificacionDto notificacionDto;
 }

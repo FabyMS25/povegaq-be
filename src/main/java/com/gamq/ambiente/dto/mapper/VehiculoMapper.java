@@ -52,6 +52,7 @@ public class VehiculoMapper {
                         .setClasificacion(vehiculo.getDatoTecnico().getClasificacion())
                         .setNumeroAsientos(vehiculo.getDatoTecnico().getNumeroAsientos())
                         .setTiempoMotor(vehiculo.getDatoTecnico().getTiempoMotor())
+                        .setCategoriaVehiculo(vehiculo.getDatoTecnico().getCategoriaVehiculo())
                         .setEstado(vehiculo.getDatoTecnico().isEstado())
                 )
 

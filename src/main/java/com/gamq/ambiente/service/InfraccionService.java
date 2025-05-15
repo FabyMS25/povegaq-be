@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface InfraccionService {
     InfraccionDto obtenerInfraccionPorUuid(String uuid);
-    List<InfraccionDto> obtenerInfraccionPorFechaInfraccion(Date fechaInfraccion);
+    List<InfraccionDto> obtenerInfraccionPorFecha(Date fecha);
     List<InfraccionDto> obtenerInfracciones();
     InfraccionDto crearInfraccion(InfraccionDto InfraccionDto);
     InfraccionDto actualizarInfraccion(InfraccionDto InfraccionDto);
