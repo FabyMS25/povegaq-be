@@ -95,9 +95,7 @@ public class Inspeccion {
 
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
-    private List<VehiculoConductorInspeccion> vehiculoConductorInspeccionList = new ArrayList<VehiculoConductorInspeccion>();
-
+    
 
 
     public Inspeccion(String uuid) {this.uuid = uuid;}

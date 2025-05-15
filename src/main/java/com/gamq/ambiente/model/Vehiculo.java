@@ -76,9 +76,7 @@ public class Vehiculo {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
     private List<FotoVehiculo> fotoVehiculoList = new ArrayList<FotoVehiculo>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
-    private List<VehiculoConductorInspeccion> vehiculoConductorInspeccionList = new ArrayList<VehiculoConductorInspeccion>();
-
+   
     public Vehiculo(String uuid) {this.uuid = uuid;}
 
     @PrePersist

@@ -107,9 +107,9 @@ public class VehiculoMapper {
                 .setFotoVehiculoDtoList(vehiculo.getFotoVehiculoList().stream().map(fotoVehiculo -> {
                     return FotoVehiculoMapper.toFotoVehiculoDto(fotoVehiculo);
                 }).collect(Collectors.toList()))
-                .setVehiculoConductorInspeccionDtoList(vehiculo.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
+             /*   .setVehiculoConductorInspeccionDtoList(vehiculo.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
                     return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
-                }).collect(Collectors.toList()))
+                }).collect(Collectors.toList()))*/
                 ;
 
     }

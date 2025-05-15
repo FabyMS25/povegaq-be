@@ -132,9 +132,9 @@ public class InspeccionMapper {
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
 
-                .setVehiculoConductorInspeccionDtoList(inspeccion.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
+               /* .setVehiculoConductorInspeccionDtoList(inspeccion.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
                     return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
-                }).collect(Collectors.toList()))
+                }).collect(Collectors.toList()))*/
 
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);

@@ -52,9 +52,7 @@ public class Conductor {
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
 //    private List<Vehiculo> vehiculoList = new ArrayList<Vehiculo>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
-    private List<VehiculoConductorInspeccion> vehiculoConductorInspeccionList = new ArrayList<VehiculoConductorInspeccion>();
-
+   
 
     public Conductor(String uuid) {this.uuid = uuid;}
 
