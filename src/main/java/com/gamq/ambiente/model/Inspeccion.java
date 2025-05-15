@@ -95,12 +95,6 @@ public class Inspeccion {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "inspeccion", fetch = FetchType.LAZY)
     private List<RequisitoInspeccion> requisitoInspeccionList = new ArrayList<>();
 
-
-
-
-    
-
-
     public Inspeccion(String uuid) {this.uuid = uuid;}
 
     @PrePersist

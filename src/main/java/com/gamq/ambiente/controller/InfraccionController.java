@@ -20,8 +20,12 @@ public class InfraccionController {
         return Response.ok().setPayload(infraccionService.obtenerInfraccionPorUuid(uuid));
     }
 
+    @GetMapping("/vehiculo/{uuidVehiculo}")
+    public Response getInfraccionByVehiculo(@PathVariable("uuidVehiculo") String uuidVehiculo) {
+        return Response.ok().setPayload(infraccionService.obtenerInfraccionPorVehiculo(uuidVehiculo));
+    }
     @GetMapping("/fecha/{fecha}")
-    public Response getInfraccionByDescripcion(@PathVariable("fecha") Date fecha){
+    public Response getInfraccionByFecha(@PathVariable("fecha") Date fecha){
         return Response.ok().setPayload(infraccionService.obtenerInfraccionPorFecha(fecha));
     }
 
@@ -35,6 +39,11 @@ public class InfraccionController {
         return Response.ok().setPayload(infraccionService.crearInfraccion(infraccionDto));
     }
 
+    @PostMapping("/generar/{uuidInspeccion}")
+    public Response generarInfraccion(@PathVariable String uuidInspeccion) {
+        return Response.ok().setPayload(infraccionService.generarInfraccion(uuidInspeccion));
+    }
+
     @PutMapping()
     public Response updateInfraccion(@Valid @RequestBody InfraccionDto infraccionDto){
         return Response.ok().setPayload(infraccionService.actualizarInfraccion(infraccionDto));
@@ -44,6 +53,7 @@ public class InfraccionController {
     public Response deleteInfraccion(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(infraccionService.eliminarInfraccion(uuid));
     }
-}
+
+  }
 
 

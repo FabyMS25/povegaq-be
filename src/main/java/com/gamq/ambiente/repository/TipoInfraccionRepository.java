@@ -1,5 +1,6 @@
 package com.gamq.ambiente.repository;
 
+import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.TipoInfraccion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,9 @@ public interface TipoInfraccionRepository extends JpaRepository<TipoInfraccion, 
     boolean existsTipoInfraccionLikeUuidTipoContribuyenteAndGrado(@Param("grado") String grado,
                                                                   @Param("uuidTipoContribuyente") String uuidTipoContribuyente,
                                                                   @Param("uuidTipoInfraccion") String uuidTipoInfraccion);
+
+   // @Query("SELECT t FROM TipoInfraccion t WHERE t.tipoContribuyente.uuid = :uuidTipoContribuyente AND  LOWER(t.grado) =  LOWER(:grado) AND t.reglamento.activo = true")
+    Optional<TipoInfraccion> findByGradoAndTipoContribuyente(String grado,
+                                                             TipoContribuyente tipoContribuyente);
+                                                          //   @Param("uuidTipoContribuyente") String uuidTipoContribuyente);
 }

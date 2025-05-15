@@ -1,6 +1,7 @@
 package com.gamq.ambiente.repository;
 
 import com.gamq.ambiente.model.Infraccion;
+import com.gamq.ambiente.model.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,12 @@ public interface InfraccionRepository extends JpaRepository<Infraccion, Long> {
     @Query("SELECT i FROM Infraccion i WHERE FUNCTION('DATE', i.fechaInfraccion) = :fechaInfraccion")
     List<Infraccion> findByFechaInfraccion(@Param("fechaInfraccion") Date fechaInfraccion);
     boolean existsByInspeccionUuidAndTipoInfraccionUuid(String uuidInspeccion, String uuidTipoInfraccion);
+
+    //SELECT i FROM Infraccion i
+    //WHERE i.inspeccion.vehiculo = :vehiculo
+    //2025
+    List<Infraccion> findByInspeccionVehiculo(Vehiculo vehiculo);
+    @Query("SELECT i FROM Infraccion i WHERE i.inspeccion.vehiculo = :vehiculo")
+    List<Infraccion> findByVehiculo(@Param("vehiculo") Vehiculo vehiculo);
+
 }

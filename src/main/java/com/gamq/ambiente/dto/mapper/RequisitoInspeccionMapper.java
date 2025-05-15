@@ -29,6 +29,7 @@ public class RequisitoInspeccionMapper {
                 .setRequisitoDto(requisitoInspeccion.getRequisito() == null? null: new RequisitoDto()
                         .setUuid(requisitoInspeccion.getRequisito().getUuid())
                         .setDescripcion(requisitoInspeccion.getRequisito().getDescripcion())
+                        .setObligatorio(requisitoInspeccion.getRequisito().getObligatorio())
                         .setEstado(requisitoInspeccion.getRequisito().isEstado())
                 )
                 .setArchivoAdjuntoDtoList(requisitoInspeccion.getArchivoAdjuntoList().stream().map(archivoAdjunto -> {

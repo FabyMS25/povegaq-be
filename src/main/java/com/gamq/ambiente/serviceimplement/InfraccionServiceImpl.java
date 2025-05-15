@@ -4,14 +4,8 @@ import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
-import com.gamq.ambiente.model.DetalleInspeccion;
-import com.gamq.ambiente.model.Infraccion;
-import com.gamq.ambiente.model.Inspeccion;
-import com.gamq.ambiente.model.TipoInfraccion;
-import com.gamq.ambiente.repository.DetalleInspeccionRepository;
-import com.gamq.ambiente.repository.InfraccionRepository;
-import com.gamq.ambiente.repository.InspeccionRepository;
-import com.gamq.ambiente.repository.TipoInfraccionRepository;
+import com.gamq.ambiente.model.*;
+import com.gamq.ambiente.repository.*;
 import com.gamq.ambiente.service.InfraccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -34,6 +28,10 @@ public class InfraccionServiceImpl implements InfraccionService {
     InspeccionRepository inspeccionRepository;
     @Autowired
     DetalleInspeccionRepository detalleInspeccionRepository;
+    @Autowired
+    GeneradorInfraccionServiceImpl generadorInfraccionService;
+    @Autowired
+    VehiculoRepository vehiculoRepository;
 
     @Override
     public InfraccionDto obtenerInfraccionPorUuid(String uuid) {
@@ -61,6 +59,18 @@ public class InfraccionServiceImpl implements InfraccionService {
     }
 
     @Override
+    public List<InfraccionDto> obtenerInfraccionPorVehiculo(String uuidVehiculo) {
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuidVehiculo);
+        if (vehiculoOptional.isEmpty()){
+            throw new ResourceNotFoundException("Vehiculo","uuid", uuidVehiculo);
+        }
+        List<Infraccion> infraccionList = infraccionRepository.findByVehiculo(vehiculoOptional.get());
+        return  infraccionList.stream().map( infraccion -> {
+            return  InfraccionMapper.toInfraccionDto(infraccion);
+        }).collect(Collectors.toList());
+    }
+
+    @Override
     public InfraccionDto crearInfraccion(InfraccionDto infraccionDto) {
         Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
         if (inspeccionOptional.isEmpty()) {
@@ -74,6 +84,19 @@ public class InfraccionServiceImpl implements InfraccionService {
         nuevoInfraccion.setInspeccion(inspeccionOptional.get());
         nuevoInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
         return InfraccionMapper.toInfraccionDto(infraccionRepository.save(nuevoInfraccion));
+    }
+
+    @Override
+    public InfraccionDto generarInfraccion(String uuidInspeccion) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("Inspeccion","uuid", uuidInspeccion);
+        }
+        Infraccion infraccion = generadorInfraccionService.generarDesdeInspeccion(inspeccionOptional.get());
+        if(infraccion == null){
+            throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar INFRACCION para inspeccion "+ uuidInspeccion);
+        }
+        return InfraccionMapper.toInfraccionDto(infraccion);
     }
 
     @Override

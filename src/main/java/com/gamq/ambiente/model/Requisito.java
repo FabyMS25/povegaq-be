@@ -29,8 +29,10 @@ public class Requisito {
     private Long idRequisito;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "descripcion", nullable = false, length = 150)
+    @Column(name = "descripcion", nullable = false, length = 200)
     private String descripcion;
+    @Column(name = "obligatorio", nullable = false)
+    private Boolean obligatorio;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

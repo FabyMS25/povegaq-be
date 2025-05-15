@@ -8,6 +8,7 @@ public class RequisitoMapper {
         return new RequisitoDto()
                 .setUuid(requisito.getUuid())
                 .setDescripcion(requisito.getDescripcion())
+                .setObligatorio(requisito.getObligatorio())
                 .setEstado(requisito.isEstado());
     }
 
@@ -15,6 +16,7 @@ public class RequisitoMapper {
         return new Requisito()
                 .setUuid(requisitoDto.getUuid())
                 .setDescripcion(requisitoDto.getDescripcion())
+                .setObligatorio(requisitoDto.getObligatorio())
                 .setEstado(requisitoDto.isEstado());
     }
 }
