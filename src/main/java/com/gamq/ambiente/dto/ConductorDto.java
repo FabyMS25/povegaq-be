@@ -31,7 +31,7 @@ public class ConductorDto {
     private boolean estado;
 
     private TipoContribuyenteDto tipoContribuyenteDto;
-   // private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
+    private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
    // private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
    
 }

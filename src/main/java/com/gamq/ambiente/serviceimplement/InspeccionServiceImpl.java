@@ -32,6 +32,8 @@ public class InspeccionServiceImpl implements InspeccionService {
     EventoRepository eventoRepository;
     @Autowired
     VehiculoRepository vehiculoRepository;
+    @Autowired
+    ConductorRepository conductorRepository;
 
     @Override
     public InspeccionDto obtenerInspeccionPorUuid(String uuid) {
@@ -76,23 +78,29 @@ public class InspeccionServiceImpl implements InspeccionService {
 
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(inspeccionDto.getActividadDto().getUuid());
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(inspeccionDto.getVehiculoDto().getUuid());
-
+        Optional<Conductor> conductorOptional = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid());
         if(actividadOptional.isPresent()){
            if (vehiculoOptional.isPresent()){
-                Inspeccion nuevoInspeccion = InspeccionMapper.toInspeccion(inspeccionDto);
-                nuevoInspeccion.setActividad(actividadOptional.get());
-                nuevoInspeccion.setVehiculo(vehiculoOptional.get());
-               if(inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {
-                   Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
-                   nuevoInspeccion.setEvento(eventoOptional.get());
+               if (conductorOptional.isPresent()) {
+                   Inspeccion nuevoInspeccion = InspeccionMapper.toInspeccion(inspeccionDto);
+                   nuevoInspeccion.setActividad(actividadOptional.get());
+                   nuevoInspeccion.setVehiculo(vehiculoOptional.get());
+                   nuevoInspeccion.setConductor(conductorOptional.get());
+                   if (inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {
+                       Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
+                       nuevoInspeccion.setEvento(eventoOptional.get());
+                   }
+
+                   List<DetalleInspeccion> detalleInspeccionList = mapearDetalleInspeccion(inspeccionDto.getDetalleInspeccionDtoList(), nuevoInspeccion);
+
+                   nuevoInspeccion.setDetalleInspeccionList(detalleInspeccionList);
+
+
+                   return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(nuevoInspeccion));
                }
-
-               List<DetalleInspeccion> detalleInspeccionList = mapearDetalleInspeccion(inspeccionDto.getDetalleInspeccionDtoList(), nuevoInspeccion);
-
-               nuevoInspeccion.setDetalleInspeccionList(detalleInspeccionList);
-
-
-               return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(nuevoInspeccion));
+               else {
+                   throw new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid());
+               }
             }
             else {
                 throw new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid());
@@ -135,20 +143,25 @@ public class InspeccionServiceImpl implements InspeccionService {
         if(inspeccionOptional.isPresent()) {
             Optional<Actividad> actividadOptional = actividadRepository.findByUuid(inspeccionDto.getActividadDto().getUuid());
             Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(inspeccionDto.getVehiculoDto().getUuid());
-
+            Optional<Conductor> conductorOptional = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid());
             if(actividadOptional.isPresent()){
                 if (vehiculoOptional.isPresent()){
-                    Inspeccion updateInspeccion = InspeccionMapper.toInspeccion(inspeccionDto);
-                    updateInspeccion.setIdInspeccion(inspeccionOptional.get().getIdInspeccion());
-                    updateInspeccion.setActividad(actividadOptional.get());
-                    updateInspeccion.setVehiculo(vehiculoOptional.get());
+                    if (conductorOptional.isPresent()) {
+                        Inspeccion updateInspeccion = InspeccionMapper.toInspeccion(inspeccionDto);
+                        updateInspeccion.setIdInspeccion(inspeccionOptional.get().getIdInspeccion());
+                        updateInspeccion.setActividad(actividadOptional.get());
+                        updateInspeccion.setVehiculo(vehiculoOptional.get());
+                        updateInspeccion.setConductor(conductorOptional.get());
 
-                    if(inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {
-                        Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
-                        updateInspeccion.setEvento(eventoOptional.get());
+                        if (inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {
+                            Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
+                            updateInspeccion.setEvento(eventoOptional.get());
+                        }
+                        return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(updateInspeccion));
                     }
-
-                    return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(updateInspeccion));
+                    else {
+                        throw new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid());
+                    }
                 }
                 else {
                     throw new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid());

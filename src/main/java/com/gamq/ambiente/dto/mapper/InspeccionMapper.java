@@ -98,23 +98,7 @@ public class InspeccionMapper {
                                         .setCodigo(inspeccion.getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
                                 )
                         )
-
-                     /*   .setConductorDto( inspeccion.getVehiculo().getConductor() == null? null: new ConductorDto()
-                                .setUuid(inspeccion.getVehiculo().getConductor().getUuid())
-                                .setNombreCompleto(inspeccion.getVehiculo().getConductor().getNombreCompleto())
-                                .setTipoDocumento(inspeccion.getVehiculo().getConductor().getTipoDocumento())
-                                .setNumeroDocumento(inspeccion.getVehiculo().getConductor().getNumeroDocumento())
-                                .setExpedido(inspeccion.getVehiculo().getConductor().getExpedido())
-                                .setEmail(inspeccion.getVehiculo().getConductor().getEmail())
-                                .setEstado(inspeccion.getVehiculo().getConductor().isEstado())
-                                .setTipoContribuyenteDto(inspeccion.getVehiculo().getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
-                                        .setUuid(inspeccion.getVehiculo().getConductor().getTipoContribuyente().getUuid())
-                                        .setDescripcion(inspeccion.getVehiculo().getConductor().getTipoContribuyente().getDescripcion())
-                                        .setEstado(inspeccion.getVehiculo().getConductor().getTipoContribuyente().isEstado())
-                                        .setCodigo(inspeccion.getVehiculo().getConductor().getTipoContribuyente().getCodigo())
-                                )
-                        )*/
-                )
+               )
                 .setEventoDto( inspeccion.getEvento() == null ? null: new EventoDto()
                         .setUuid(inspeccion.getVehiculo().getUuid())
                         .setInstitucion(inspeccion.getEvento().getInstitucion())
@@ -132,9 +116,21 @@ public class InspeccionMapper {
                         .setEstado(inspeccion.getEvento().isEstado())
                 )
 
-               /* .setVehiculoConductorInspeccionDtoList(inspeccion.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
-                    return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
-                }).collect(Collectors.toList()))*/
+                .setConductorDto( inspeccion.getConductor() == null? null: new ConductorDto()
+                            .setUuid(inspeccion.getConductor().getUuid())
+                            .setNombreCompleto(inspeccion.getConductor().getNombreCompleto())
+                            .setTipoDocumento(inspeccion.getConductor().getTipoDocumento())
+                            .setNumeroDocumento(inspeccion.getConductor().getNumeroDocumento())
+                            .setExpedido(inspeccion.getConductor().getExpedido())
+                            .setEmail(inspeccion.getConductor().getEmail())
+                            .setEstado(inspeccion.getConductor().isEstado())
+                            .setTipoContribuyenteDto(inspeccion.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
+                                    .setUuid(inspeccion.getConductor().getTipoContribuyente().getUuid())
+                                    .setDescripcion(inspeccion.getConductor().getTipoContribuyente().getDescripcion())
+                                    .setEstado(inspeccion.getConductor().getTipoContribuyente().isEstado())
+                                    .setCodigo(inspeccion.getConductor().getTipoContribuyente().getCodigo())
+                            )
+                )
 
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
                         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);

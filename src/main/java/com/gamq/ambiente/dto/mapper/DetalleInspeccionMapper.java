@@ -1,8 +1,6 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.DetalleInspeccionDto;
-import com.gamq.ambiente.dto.InspeccionDto;
-import com.gamq.ambiente.dto.TipoParametroDto;
+import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.DetalleInspeccion;
 
 
@@ -31,6 +29,21 @@ public class DetalleInspeccionMapper {
                         .setUuidUsuario(detalleInspeccion.getInspeccion().getUuidUsuario())
                         .setObservacion(detalleInspeccion.getInspeccion().getObservacion())
                         .setResultado(detalleInspeccion.getInspeccion().isResultado())
+                        .setConductorDto( detalleInspeccion.getInspeccion().getConductor() == null? null: new ConductorDto()
+                                .setUuid(detalleInspeccion.getInspeccion().getConductor().getUuid())
+                                .setNombreCompleto(detalleInspeccion.getInspeccion().getConductor().getNombreCompleto())
+                                .setTipoDocumento(detalleInspeccion.getInspeccion().getConductor().getTipoDocumento())
+                                .setNumeroDocumento(detalleInspeccion.getInspeccion().getConductor().getNumeroDocumento())
+                                .setExpedido(detalleInspeccion.getInspeccion().getConductor().getExpedido())
+                                .setEmail(detalleInspeccion.getInspeccion().getConductor().getEmail())
+                                .setEstado(detalleInspeccion.getInspeccion().getConductor().isEstado())
+                                .setTipoContribuyenteDto(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
+                                        .setUuid(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().getUuid())
+                                        .setDescripcion(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().getDescripcion())
+                                        .setEstado(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().isEstado())
+                                        .setCodigo(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().getCodigo())
+                                )
+                        )
                 );
     }
 

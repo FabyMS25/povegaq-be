@@ -47,12 +47,11 @@ public class Conductor {
     @JoinColumn(name = "id_tipo_contribuyente", nullable = false)
     private TipoContribuyente tipoContribuyente;
 
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
+    private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
 
 //    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
 //    private List<Vehiculo> vehiculoList = new ArrayList<Vehiculo>();
-
-   
 
     public Conductor(String uuid) {this.uuid = uuid;}
 
