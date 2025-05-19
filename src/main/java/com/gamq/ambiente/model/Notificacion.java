@@ -1,5 +1,6 @@
 package com.gamq.ambiente.model;
 
+import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,34 +35,38 @@ public class Notificacion {
     @Column(name = "numero_notificacion", nullable = false, length = 15)
     private String numeroNotificacion;
     @Column(name = "tipo_notificacion", nullable = false, length = 50)
-    private String tipoNotificacion;
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_limite", nullable = false)
-    private Date fechaLimite;
-    @Column(name = "vencido", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-    private boolean vencido;
+    private String tipoNotificacion; //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_asistencia", nullable = false)
     private Date fechaAsistencia;
     @Column(name = "hora_asistencia", nullable = false)
     private LocalTime horaAsistencia;
-
-
-    @Column(name = "observacion", length = 250)
+    @Column(name = "observacion", columnDefinition = "TEXT")
     private String observacion;
-    @Column(name = "status_notificacion", length = 30) //
-    private String statusNotificacion;
-    @Column(name = "recordatorio", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-    private boolean recordatorio;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_notificacion", nullable = false)
     private Date fechaNotificacion;
     @Column(name = "nombre_notificador", nullable = false, length = 100)
     private String nombreNotificador;
-    @Column(name = "uuid_usuario")
+    @Column(name = "uuid_usuario", nullable = false, length = 64)
     private String uuidUsuario;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status_notificacion", length = 30)
+    private EstadoNotificacion statusNotificacion; //ENVIADA, PENDIENTE, ENTREGADA, FALLIDA, VENCIDA
+    @Column(name = "recordatorio", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean recordatorio;
+    @Column(name = "actividad", length = 200)
+    private String actividad;
+    @Column(name = "direccion", length = 250)
+    private String direccion;
+
+    //esta caso ya existe en el tipo VENCIDA
+    //@Column(name = "vencido", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    //private boolean vencido;
+    //@Temporal(TemporalType.TIMESTAMP)
+    //@Column(name = "fecha_limite", nullable = true) // nullable = false
+    //private Date fechaLimite;
+
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

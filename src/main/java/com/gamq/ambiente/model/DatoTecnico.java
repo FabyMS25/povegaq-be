@@ -36,11 +36,11 @@ public class DatoTecnico {
     private String marca;
     @Column(name = "pais", nullable = false, length = 50)
     private String pais; //pais de fabricacion u origen o procedencia
-    @Column(name = "traccion", nullable = false, length = 50)
+    @Column(name = "traccion", nullable = true, length = 50)
     private String traccion; //delantera (FWD), trasera (RWD), total (AWD) o integral (4WD)
     @Column(name = "modelo", nullable = false, length = 50)
     private String modelo; // el year
-    @Column(name = "servicio", nullable = false, length = 50)
+    @Column(name = "servicio", nullable = true, length = 50)
     private String servicio; //particular, comercial, flota, etc.
     @Column(name = "cilindrada", precision = 20, scale = 4)
     private BigDecimal cilindrada; //2.5
@@ -48,29 +48,29 @@ public class DatoTecnico {
     private String color;
     @Column(name = "capacidad_carga", nullable = true, precision = 20, scale=4)
     private BigDecimal capacidadCarga;
-    @Column(name = "tipo_vehiculo", nullable = false, length = 50)
+    @Column(name = "tipo_vehiculo", nullable = true, length = 50)
     private String tipoVehiculo; //sedán, SUV, camioneta, furgón, camión, eco sport etc
-    @Column(name = "tipo_carroceria", nullable = false, length = 50)
+    @Column(name = "tipo_carroceria", nullable = true, length = 50)
     private String tipoCarroceria;
     @Column(name = "year_fabricacion", nullable = false)
     private Integer yearFabricacion;
-    @Column(name = "numero_puertas", nullable = false)
+    @Column(name = "numero_puertas", nullable = true)
     private Integer numeroPuertas;
     @Column(name = "tipo_combustion", nullable = false, length = 20)
     private String tipoCombustion; //gasolina , diesel, gas, electrico, hibrido
-    @Column(name = "tamano_motor", nullable = false)
+    @Column(name = "tamano_motor", nullable = true)
     private Integer tamanoMotor; //2500
     @Column(name = "tipo_motor", nullable = false, length = 50)
     private String tipoMotor; //4 cilindros,v6
-    @Column(name = "kilometraje", nullable = false, length = 50)
+    @Column(name = "kilometraje", nullable = true, length = 50)
     private BigInteger kilometraje; //150000 km mas grandes en flotas y camiones de largo viaje
     @Column(name = "emision_standard", length = 100)
     private String emisionStandard; //Euro 6
-    @Column(name = "clasificacion", nullable = false, length = 150)
+    @Column(name = "clasificacion", nullable = true, length = 150)
     private String clasificacion;
-    @Column(name = "numero_asientos", nullable = false)
+    @Column(name = "numero_asientos", nullable = true)
     private Integer numeroAsientos;
-    @Column(name ="tiempo_motor", nullable = true)
+    @Column(name ="tiempo_motor", nullable = false)
     private String tiempoMotor;
     @Column(name ="categoria_vehiculo", nullable = true)
     private String categoriaVehiculo;

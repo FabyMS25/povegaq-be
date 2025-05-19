@@ -10,7 +10,6 @@ import com.gamq.ambiente.repository.LimiteEmisionRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.LimiteEmisionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 

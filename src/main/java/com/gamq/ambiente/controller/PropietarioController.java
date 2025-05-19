@@ -19,6 +19,11 @@ public class PropietarioController {
         return Response.ok().setPayload(propietarioService.obtenerPropietarioPorUuid(uuid));
     }
 
+    @GetMapping("/numeroDocumento/{numeroDocumento}")
+    public Response getPropietarioByNumeroDocumento(@PathVariable("numeroDocumento") String numeroDocumento) {
+        return Response.ok().setPayload(propietarioService.obtenerPropietarioPorNumeroDocumento(numeroDocumento));
+    }
+
     @GetMapping
     public Response getPropietarios() {
         return Response.ok().setPayload(propietarioService.obtenerPropietarios());

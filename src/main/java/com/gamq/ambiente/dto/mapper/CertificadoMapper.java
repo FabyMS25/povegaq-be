@@ -34,6 +34,7 @@ public class CertificadoMapper {
                                 .setTipoDocumento(certificado.getInspeccion().getConductor().getTipoDocumento())
                                 .setNumeroDocumento(certificado.getInspeccion().getConductor().getNumeroDocumento())
                                 .setExpedido(certificado.getInspeccion().getConductor().getExpedido())
+                                .setNroTelefono(certificado.getInspeccion().getConductor().getNroTelefono())
                                 .setEmail(certificado.getInspeccion().getConductor().getEmail())
                                 .setEstado(certificado.getInspeccion().getConductor().isEstado())
                                 .setTipoContribuyenteDto(certificado.getInspeccion().getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()

@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.model.Infraccion;
 import com.gamq.ambiente.model.Inspeccion;
 import lombok.Getter;
@@ -24,18 +25,20 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NotificacionDto {
     private String uuid;
-    private String numeroNotificacion;
-    private String tipoNotificacion;
-    private Date fechaLimite;
-    private boolean vencido;
+    private String numeroNotificacion; // numero rojo de la boleta
+    private String tipoNotificacion;   //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     private Date fechaAsistencia;
     private LocalTime horaAsistencia;
     private String observacion;
-    private String statusNotificacion;
-    private boolean recordatorio;
-    private Date fechaNotificacion;
+    private Date fechaNotificacion;  // fecha en la que envia la notificacion
     private String nombreNotificador;
     private String uuidUsuario;
+    private EstadoNotificacion statusNotificacion;
+    private boolean recordatorio;
+
+    //private boolean vencido;
+    //private Date fechaLimite;
+
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

@@ -39,6 +39,15 @@ public class PropietarioServiceImpl implements PropietarioService {
     }
 
     @Override
+    public PropietarioDto obtenerPropietarioPorNumeroDocumento(String numeroDocumento) {
+        Optional<Propietario> propietarioOptional = propietarioRepository.findByNumeroDocumento(numeroDocumento);
+        if(propietarioOptional.isPresent()){
+            return PropietarioMapper.toPropietarioDto(propietarioOptional.get());
+        }
+        throw new ResourceNotFoundException("propietario","numero documento", numeroDocumento);
+    }
+
+    @Override
     public List<PropietarioDto> obtenerPropietarios() {
         List<Propietario> propietarioList = propietarioRepository.findAll();
         return propietarioList.stream().map( propietario -> {

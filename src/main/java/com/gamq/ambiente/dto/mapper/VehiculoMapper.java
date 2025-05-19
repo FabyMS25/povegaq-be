@@ -90,27 +90,9 @@ public class VehiculoMapper {
                                 .setEstado(vehiculo.getPropietario().getTipoContribuyente().isEstado())
                         )
                 )
-           /*     .setConductorDto( vehiculo.getConductor() == null? null: new ConductorDto()
-                        .setUuid(vehiculo.getConductor().getUuid())
-                        .setNombreCompleto(vehiculo.getConductor().getNombreCompleto())
-                        .setTipoDocumento(vehiculo.getConductor().getTipoDocumento())
-                        .setNumeroDocumento(vehiculo.getConductor().getNumeroDocumento())
-                        .setExpedido(vehiculo.getConductor().getExpedido())
-                        .setEmail(vehiculo.getConductor().getEmail())
-                        .setEstado(vehiculo.getConductor().isEstado())
-                        .setTipoContribuyenteDto(vehiculo.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
-                                .setUuid(vehiculo.getConductor().getTipoContribuyente().getUuid())
-                                .setDescripcion(vehiculo.getConductor().getTipoContribuyente().getDescripcion())
-                                .setCodigo(vehiculo.getConductor().getTipoContribuyente().getCodigo())
-                                .setEstado(vehiculo.getConductor().getTipoContribuyente().isEstado())
-                        )
-                )*/
                 .setFotoVehiculoDtoList(vehiculo.getFotoVehiculoList().stream().map(fotoVehiculo -> {
                     return FotoVehiculoMapper.toFotoVehiculoDto(fotoVehiculo);
                 }).collect(Collectors.toList()))
-             /*   .setVehiculoConductorInspeccionDtoList(vehiculo.getVehiculoConductorInspeccionList().stream().map(vehiculoConductorInspeccion -> {
-                    return VehiculoConductorInspeccionMapper.toVehiculoConductorInspeccionDto(vehiculoConductorInspeccion);
-                }).collect(Collectors.toList()))*/
                 ;
 
     }
@@ -131,29 +113,6 @@ public class VehiculoMapper {
                 .setNroCopiasPlaca(vehiculoDto.getNroCopiasPlaca())
                 .setPlacaAnterior(vehiculoDto.getPlacaAnterior())
                 .setChasis(vehiculoDto.getChasis())
-                .setPropietario( vehiculoDto.getPropietarioDto() == null? null: new Propietario()
-                        .setUuid(vehiculoDto.getPropietarioDto().getUuid())
-                        //.setNombreCompleto(vehiculoDto.getPropietarioDto().getNombreCompleto())
-                        .setNombre(vehiculoDto.getPropietarioDto().getNombre())
-                        .setPrimerApellido(vehiculoDto.getPropietarioDto().getPrimerApellido())
-                        .setSegundoApellido(vehiculoDto.getPropietarioDto().getSegundoApellido())
-                        .setApellidoEsposo(vehiculoDto.getPropietarioDto().getApellidoEsposo())
-                        .setEstadoCivil(vehiculoDto.getPropietarioDto().getEstadoCivil())
-                        .setGenero(vehiculoDto.getPropietarioDto().getGenero())
-                        .setFechaNacimiento(vehiculoDto.getPropietarioDto().getFechaNacimiento())
-
-                        .setNumeroDocumento(vehiculoDto.getPropietarioDto().getNumeroDocumento())
-                        .setTipoDocumento(vehiculoDto.getPropietarioDto().getTipoDocumento())
-                        .setExpedido(vehiculoDto.getPropietarioDto().getExpedido())
-                        .setEmail(vehiculoDto.getPropietarioDto().getEmail())
-                        .setNroTelefono(vehiculoDto.getPropietarioDto().getNroTelefono())
-                        .setEstado(vehiculoDto.getPropietarioDto().isEstado())
-                        .setTipoContribuyente(vehiculoDto.getPropietarioDto() == null? null: new TipoContribuyente()
-                                .setUuid(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getUuid())
-                                .setDescripcion(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getDescripcion())
-                                .setCodigo(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().getCodigo())
-                                .setEstado(vehiculoDto.getPropietarioDto().getTipoContribuyenteDto().isEstado())
-                        ))
                 ;
     }
 }

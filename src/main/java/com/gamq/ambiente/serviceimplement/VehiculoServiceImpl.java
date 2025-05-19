@@ -1,13 +1,16 @@
 package com.gamq.ambiente.serviceimplement;
 
+import com.gamq.ambiente.dto.DatoTecnicoDto;
 import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.dto.mapper.DatoTecnicoMapper;
 import com.gamq.ambiente.dto.mapper.VehiculoMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.DatoTecnico;
+import com.gamq.ambiente.model.Propietario;
 import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.DatoTecnicoRepository;
+import com.gamq.ambiente.repository.PropietarioRepository;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.VehiculoService;
 import com.gamq.ambiente.validators.VehiculoValidator;
@@ -16,8 +19,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import javax.validation.ConstraintViolation;
+import javax.xml.validation.Validator;
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,6 +35,9 @@ public class VehiculoServiceImpl implements VehiculoService {
     DatoTecnicoRepository datoTecnicoRepository;
     @Autowired
     VehiculoValidator vehiculoValidator;
+    @Autowired
+    PropietarioRepository propietarioRepository;
+
 
     @Override
     public VehiculoDto obtenerVehiculoPorUuid(String uuid) {
@@ -102,13 +112,34 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
-        if (vehiculoValidator.validateVehiculo(vehiculoDto) ){
+        if (vehiculoValidator.validateVehiculo(vehiculoDto) ) {
+            if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
+            }
             Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+
+            if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null){
+                Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
+                if (propietarioOptional.isPresent()){
+                    nuevoVehiculo.setPropietario(propietarioOptional.get());
+                }
+                else {
+                    throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
+                }
+            }
             Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
             vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
             return VehiculoMapper.toVehiculoDto(vehiculo);
+
         }
         throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
+    }
+
+    private boolean validarDatoTecnico(DatoTecnicoDto datoTecnicoDto) {
+        return datoTecnicoDto != null && datoTecnicoDto.getClase() != null && datoTecnicoDto.getMarca() != null
+        && datoTecnicoDto.getPais() != null && datoTecnicoDto.getModelo() != null && datoTecnicoDto.getColor() != null
+                && (datoTecnicoDto.getYearFabricacion() != null && datoTecnicoDto.getYearFabricacion() > 1900 && datoTecnicoDto.getYearFabricacion() <= Year.now().getValue()) && datoTecnicoDto.getTipoCombustion() != null && datoTecnicoDto.getTipoMotor() != null
+                && datoTecnicoDto.getTiempoMotor() != null;
     }
 
     @Override
@@ -116,6 +147,9 @@ public class VehiculoServiceImpl implements VehiculoService {
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(vehiculoDto.getUuid());
         if(vehiculoOptional.isPresent()) {
             if (!vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
+                if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
+                }
                 Vehiculo updateVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
                 updateVehiculo.setIdVehiculo(vehiculoOptional.get().getIdVehiculo());
 
@@ -129,6 +163,16 @@ public class VehiculoServiceImpl implements VehiculoService {
 
                 updateVehiculo.getDatoTecnico().setIdDatoTecnico(datoTecnicoOptional.get().getIdDatoTecnico());
                 updateVehiculo.getDatoTecnico().setVehiculo(updateVehiculo);
+
+                if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null) {
+                    Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
+                    if (propietarioOptional.isPresent()) {
+                        updateVehiculo.setPropietario(propietarioOptional.get());
+                    }
+                    else {
+                        throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
+                    }
+                }
 
                 datoTecnicoRepository.save(updateVehiculo.getDatoTecnico());
 

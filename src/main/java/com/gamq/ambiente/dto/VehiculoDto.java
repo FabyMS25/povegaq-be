@@ -12,6 +12,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,9 +43,10 @@ public class VehiculoDto {
     private String chasis;
     private boolean estado;
 
+    @Valid
     private DatoTecnicoDto datoTecnicoDto;
+
     private PropietarioDto propietarioDto;
-   // private ConductorDto conductorDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
     private List<FotoVehiculoDto> fotoVehiculoDtoList = new ArrayList<FotoVehiculoDto>();
   

@@ -11,13 +11,11 @@ public class NotificacionMapper {
                 .setFechaNotificacion(notificacion.getFechaNotificacion())
                 .setNumeroNotificacion(notificacion.getNumeroNotificacion())
                 .setObservacion(notificacion.getObservacion())
-                .setFechaLimite(notificacion.getFechaLimite())
                 .setFechaAsistencia(notificacion.getFechaAsistencia())
                 .setHoraAsistencia(notificacion.getHoraAsistencia())
                 .setNombreNotificador(notificacion.getNombreNotificador())
                 .setUuidUsuario(notificacion.getUuidUsuario())
                 .setRecordatorio(notificacion.isRecordatorio())
-                .setVencido(notificacion.isVencido())
                 .setStatusNotificacion(notificacion.getStatusNotificacion())
                 .setEstado(notificacion.isEstado());
     }
@@ -29,13 +27,11 @@ public class NotificacionMapper {
                 .setFechaNotificacion(notificacionDto.getFechaNotificacion())
                 .setNumeroNotificacion(notificacionDto.getNumeroNotificacion())
                 .setObservacion(notificacionDto.getObservacion())
-                .setFechaLimite(notificacionDto.getFechaLimite())
                 .setFechaAsistencia(notificacionDto.getFechaAsistencia())
                 .setHoraAsistencia(notificacionDto.getHoraAsistencia())
                 .setNombreNotificador(notificacionDto.getNombreNotificador())
                 .setUuidUsuario(notificacionDto.getUuidUsuario())
                 .setRecordatorio(notificacionDto.isRecordatorio())
-                .setVencido(notificacionDto.isVencido())
                 .setStatusNotificacion(notificacionDto.getStatusNotificacion())
                 .setEstado(notificacionDto.isEstado());
     }

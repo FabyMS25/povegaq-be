@@ -35,6 +35,7 @@ public class DetalleInspeccionMapper {
                                 .setTipoDocumento(detalleInspeccion.getInspeccion().getConductor().getTipoDocumento())
                                 .setNumeroDocumento(detalleInspeccion.getInspeccion().getConductor().getNumeroDocumento())
                                 .setExpedido(detalleInspeccion.getInspeccion().getConductor().getExpedido())
+                                .setNroTelefono(detalleInspeccion.getInspeccion().getConductor().getNroTelefono())
                                 .setEmail(detalleInspeccion.getInspeccion().getConductor().getEmail())
                                 .setEstado(detalleInspeccion.getInspeccion().getConductor().isEstado())
                                 .setTipoContribuyenteDto(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()

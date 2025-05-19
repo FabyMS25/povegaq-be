@@ -122,6 +122,7 @@ public class InspeccionMapper {
                             .setTipoDocumento(inspeccion.getConductor().getTipoDocumento())
                             .setNumeroDocumento(inspeccion.getConductor().getNumeroDocumento())
                             .setExpedido(inspeccion.getConductor().getExpedido())
+                            .setNroTelefono(inspeccion.getConductor().getNroTelefono())
                             .setEmail(inspeccion.getConductor().getEmail())
                             .setEstado(inspeccion.getConductor().isEstado())
                             .setTipoContribuyenteDto(inspeccion.getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()

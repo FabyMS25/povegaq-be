@@ -1,8 +1,11 @@
 package com.gamq.ambiente.controller;
 
+import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.model.Certificado;
 import com.gamq.ambiente.repository.CertificadoRepository;
+import com.gamq.ambiente.repository.NotificacionRepository;
 import com.gamq.ambiente.service.CertificadoService;
+import com.gamq.ambiente.service.NotificacionService;
 import com.gamq.ambiente.utils.GeneradorReporte;
 import com.gamq.ambiente.utils.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,6 +33,44 @@ public class ReporteController {
     private UrlUtil urlUtil;
     @Autowired
     private CertificadoRepository certificadoRepository;
+    @Autowired
+    private NotificacionService notificacionService;
+
+    @RequestMapping( value = "/notificacion", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarNotificacion(
+            @RequestParam( name = "uuidNotificacion") String uuidNotificacion,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+            int numeroIntento = 0;
+            Date fechaActual =  new Date();
+
+            if (uuidNotificacion != null ) {
+                NotificacionDto notificacionDto = notificacionService.obtenerNotificacionPorUuid(uuidNotificacion);
+                numeroIntento = notificacionService.numeroIntentoNotificacion(uuidNotificacion);
+           }
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("fechaActual", fechaActual);
+            parametros.put("numeroIntento", numeroIntento);
+            generadorReporte.generarSqlReportePdf(
+                    "notificaciones",
+                    "classpath:report/notificaciones.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
 
 
     @RequestMapping( value = "/certificado-opacidad", method= RequestMethod.GET)
@@ -64,7 +109,6 @@ public class ReporteController {
             HttpServletResponse response
     )
     {
-
         try {
             Optional<Certificado> certificadoOptional = certificadoRepository.findByCodigo(codigo);
 

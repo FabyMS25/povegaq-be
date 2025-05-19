@@ -4,9 +4,13 @@ import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.dto.response.Response;
 import com.gamq.ambiente.service.VehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vehiculo")
@@ -55,7 +59,7 @@ public class VehiculoController {
     }
 
     @PostMapping()
-    public Response createVehiculo(@Valid @RequestBody VehiculoDto vehiculoDto){
+    public Response createVehiculo(@Valid @RequestBody VehiculoDto vehiculoDto, BindingResult result){
         return Response.ok().setPayload(vehiculoService.crearVehiculo(vehiculoDto));
     }
 

@@ -28,6 +28,7 @@ public class ConductorDto {
     private String numeroDocumento;
     private Integer expedido;
     private String email;
+    private String nroTelefono;
     private boolean estado;
 
     private TipoContribuyenteDto tipoContribuyenteDto;
