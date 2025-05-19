@@ -66,11 +66,7 @@ public class Vehiculo {
     @JoinColumn(name = "id_propietario", nullable = true)
     private Propietario propietario;
 
-   // @ManyToOne(fetch = FetchType.LAZY)
-   // @JoinColumn(name = "id_conductor", nullable = true)
-   // private Conductor conductor;
-
-    @OneToOne(mappedBy = "vehiculo")
+    @OneToOne(mappedBy = "vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
     private DatoTecnico datoTecnico;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)

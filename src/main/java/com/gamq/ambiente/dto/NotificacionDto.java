@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.Valid;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,10 +36,8 @@ public class NotificacionDto {
     private String uuidUsuario;
     private EstadoNotificacion statusNotificacion;
     private boolean recordatorio;
-
-    //private boolean vencido;
-    //private Date fechaLimite;
-
+    private String actividad;
+    private String direccion;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

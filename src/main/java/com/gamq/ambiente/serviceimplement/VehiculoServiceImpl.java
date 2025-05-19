@@ -187,7 +187,7 @@ public class VehiculoServiceImpl implements VehiculoService {
     @Override
     public VehiculoDto eliminarVehiculo(String uuid) {
         Vehiculo vehiculoQBE = new Vehiculo(uuid);
-        Optional<Vehiculo> optionalVehiculo = vehiculoRepository.findOne(Example.of(vehiculoQBE));
+        Optional<Vehiculo> optionalVehiculo = vehiculoRepository.findByUuid(uuid);// .findOne(Example.of(vehiculoQBE));
         if(optionalVehiculo.isPresent()){
             Vehiculo vehiculo = optionalVehiculo.get();
             if(!vehiculo.getInspeccionList().isEmpty()){

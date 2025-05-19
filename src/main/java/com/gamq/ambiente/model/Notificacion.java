@@ -59,14 +59,6 @@ public class Notificacion {
     private String actividad;
     @Column(name = "direccion", length = 250)
     private String direccion;
-
-    //esta caso ya existe en el tipo VENCIDA
-    //@Column(name = "vencido", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-    //private boolean vencido;
-    //@Temporal(TemporalType.TIMESTAMP)
-    //@Column(name = "fecha_limite", nullable = true) // nullable = false
-    //private Date fechaLimite;
-
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
