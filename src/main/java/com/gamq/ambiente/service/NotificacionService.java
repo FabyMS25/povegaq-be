@@ -3,6 +3,7 @@ import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.NotificacionIntentoDto;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
+import com.gamq.ambiente.model.Inspeccion;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface NotificacionService {
     NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion);
     NotificacionDto eliminarNotificacion(String uuid);
     NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion);
-
+    TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion);
 }

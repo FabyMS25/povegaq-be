@@ -18,6 +18,10 @@ public class NotificacionMapper {
                 .setActividad(notificacion.getActividad())
                 .setDireccion(notificacion.getDireccion())
                 .setStatusNotificacion(notificacion.getStatusNotificacion())
+                .setNumeroIntento(notificacion.getNumeroIntento())
+                .setSancion(notificacion.getSancion())
+                .setEsDenuncia(notificacion.isEsDenuncia())
+                .setEsObservacion(notificacion.isEsObservacion())
                 .setEstado(notificacion.isEstado())
                 .setInspeccionDto(notificacion.getInspeccion()== null? null : new InspeccionDto()
                         .setUuid(notificacion.getInspeccion().getUuid())
@@ -109,10 +113,6 @@ public class NotificacionMapper {
                 .setDireccion(notificacionDto.getDireccion())
                 .setStatusNotificacion(notificacionDto.getStatusNotificacion())
                 .setEstado(notificacionDto.isEstado())
-
-
-
-
                 ;
     }
 }

@@ -1,6 +1,7 @@
 package com.gamq.ambiente.repository;
 
 import com.gamq.ambiente.model.Inspeccion;
+import com.gamq.ambiente.model.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,6 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     List<Inspeccion> findByTipoActividad(@Param("uuidTipoActividad") String uuidTipoActividad);
     @Query("SELECT i FROM Inspeccion i WHERE FUNCTION('DATE', i.fechaInspeccion) = :fechaInspeccion ")
     List<Inspeccion> findByFechaInspeccion(@Param("fechaInspeccion") Date fechaInspeccion);
+
+    List<Inspeccion> findByVehiculoOrderByFechaInspeccionDesc(Vehiculo vehiculo);
 }

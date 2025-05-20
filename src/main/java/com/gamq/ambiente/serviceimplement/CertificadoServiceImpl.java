@@ -29,8 +29,7 @@ public class CertificadoServiceImpl implements CertificadoService {
     private InspeccionRepository inspeccionRepository;
     @Autowired
     private GeneradorReporte generadorReporte;
-   // @Autowired
-   // private FechaUtil fechaUtil;
+
 
     @Override
     public CertificadoDto obtenerCertificadoPorUuid(String uuid) {

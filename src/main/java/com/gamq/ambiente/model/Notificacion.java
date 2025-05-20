@@ -59,6 +59,14 @@ public class Notificacion {
     private String actividad;
     @Column(name = "direccion", length = 250)
     private String direccion;
+    @Column(name = "numero_intento", nullable = false)
+    private int numeroIntento;
+    @Column(name = "sancion", length = 250)
+    private String sancion;
+    @Column(name = "es_denuncia", nullable = true)
+    private boolean esDenuncia;
+    @Column(name = "es_observacion", nullable = true)
+    private boolean esObservacion;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

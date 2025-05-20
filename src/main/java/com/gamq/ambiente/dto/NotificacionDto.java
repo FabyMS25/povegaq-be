@@ -12,7 +12,10 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
@@ -33,7 +36,7 @@ public class NotificacionDto {
     @NotBlank(message = "El número de notificación es obligatorio")
     private String numeroNotificacion; // numero rojo de la boleta
     @NotNull(message = "El tipo de notificación es obligatorio")
-    private TipoNotificacion typeNotificacion;   //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
+    private TipoNotificacion typeNotificacion;   //      REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     private Date fechaAsistencia;
     private LocalTime horaAsistencia;
     private String observacion;
@@ -47,6 +50,13 @@ public class NotificacionDto {
     private EstadoNotificacion statusNotificacion;
     private String actividad;
     private String direccion;
+    @NotNull(message = "El número de intento es obligatorio")
+    @Min(value = 1, message = "El número de intento debe ser al menos 1")
+    @Max(value = 3, message = "El número de intento no puede ser mayor a 3")
+    private int numeroIntento;
+    private String sancion;
+    private boolean esDenuncia;
+    private boolean esObservacion;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

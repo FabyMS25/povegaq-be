@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
 public class FechaUtil {
@@ -27,5 +28,19 @@ public class FechaUtil {
 
         // Convertir de vuelta a Date
         return Date.from(fechaVencimientoLD.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date sumarUnAnio(Date fecha) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fecha);
+        calendar.add(Calendar.YEAR, 1);  // Suma 1 año
+        return calendar.getTime();
+    }
+
+    public static Date sumarDias(Date fecha, int dias) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(fecha);
+        cal.add(Calendar.DAY_OF_YEAR, dias); // suma X días
+        return cal.getTime();
     }
 }

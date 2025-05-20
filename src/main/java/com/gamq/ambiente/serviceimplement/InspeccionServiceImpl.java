@@ -4,6 +4,8 @@ import com.gamq.ambiente.dto.DetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionDto;
 import com.gamq.ambiente.dto.mapper.DetalleInspeccionMapper;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
+import com.gamq.ambiente.enumeration.EstadoNotificacion;
+import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
@@ -204,5 +206,21 @@ public class InspeccionServiceImpl implements InspeccionService {
         return inspeccionList.stream().map(inspeccion -> {
             return InspeccionMapper.toInspeccionDto(inspeccion);
         }).collect(Collectors.toList());
+    }
+
+    public int obtenerNumeroIntentoActual(Vehiculo vehiculo) {
+        List<Inspeccion> inspecciones = inspeccionRepository
+                .findByVehiculoOrderByFechaInspeccionDesc(vehiculo);
+
+        for (Inspeccion inspeccion : inspecciones) {
+            boolean tieneNotificacionActiva = inspeccion.getNotificacionList().stream()
+                    .anyMatch(n -> n.getStatusNotificacion() != EstadoNotificacion.CUMPLIDA &&
+                            n.getStatusNotificacion() != EstadoNotificacion.VENCIDA);
+
+            if (tieneNotificacionActiva) {
+                return 2; //segunda
+            }
+        }
+        return 1; //primera
     }
 }

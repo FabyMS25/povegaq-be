@@ -9,14 +9,19 @@ import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Notificacion;
+import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
+import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.NotificacionService;
+import com.gamq.ambiente.utils.FechaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +33,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Autowired
     InspeccionRepository inspeccionRepository;
+
+    @Autowired
+    InspeccionService inspeccionService;
 
     @Override
     public NotificacionDto obtenerNotificacionPorUuid(String uuid) {
@@ -90,10 +98,15 @@ public class NotificacionServiceImpl implements NotificacionService {
         if ( inspeccionOptional.get().isResultado()){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar por que resultado de inspeccion es true");
         }
+        int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
+        notificacionDto.setTypeNotificacion(determinarTipoNotificacion(inspeccionOptional.get()));
+        notificacionDto.setFechaAsistencia(intento==1 ? FechaUtil.sumarDias(new Date(),365): FechaUtil.sumarDias(new Date(),90));
         Notificacion nuevoNotificacion = NotificacionMapper.toNotificacion(notificacionDto);
         nuevoNotificacion.setInspeccion(inspeccionOptional.get());
         return NotificacionMapper.toNotificacionDto(notificacionRepository.save(nuevoNotificacion));
     }
+
+
 
     @Override
     public NotificacionDto actualizarNotificacion(NotificacionDto notificacionDto) {
@@ -169,10 +182,24 @@ public class NotificacionServiceImpl implements NotificacionService {
         return  notificacionIntentoDto;
     }
 
-
-
     private String generarMensajeIntentoNotificacion(Integer intentoNotificacion){
         intentoNotificacion = intentoNotificacion + 1;
         return (intentoNotificacion < 3) ? intentoNotificacion.toString() + " intento disponible": "No disponible";
     }
+
+    public TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion) {
+        Vehiculo vehiculo = inspeccion.getVehiculo();
+        int intento = inspeccionService.obtenerNumeroIntentoActual(vehiculo);
+
+        if (!inspeccion.isResultado()) {
+            if (intento == 1) {
+                return TipoNotificacion.REINSPECCION_PENDIENTE;
+            } else {
+                return TipoNotificacion.INFRACCION;
+            }
+        } else {
+            return TipoNotificacion.RECORDATORIO;
+        }
+    }
+
 }
