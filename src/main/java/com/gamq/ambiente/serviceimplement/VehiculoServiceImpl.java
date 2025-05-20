@@ -191,7 +191,7 @@ public class VehiculoServiceImpl implements VehiculoService {
         if(optionalVehiculo.isPresent()){
             Vehiculo vehiculo = optionalVehiculo.get();
             if(!vehiculo.getInspeccionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Vehiculo ya esta siendo usado por las inspecciones");
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Vehiculo ya tiene inspecciones");
             }
             vehiculoRepository.delete(vehiculo);
             return VehiculoMapper.toVehiculoDto(vehiculo);

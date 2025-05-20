@@ -77,11 +77,15 @@ public class TipoParametroServiceImpl implements TipoParametroService {
     @Override
     public TipoParametroDto eliminarTipoParametro(String uuid) {
         TipoParametro tipoParametroQBE = new TipoParametro(uuid);
-        Optional<TipoParametro> optionalTipoParametro = tipoParametroRepository.findOne(Example.of(tipoParametroQBE));
+        Optional<TipoParametro> optionalTipoParametro = tipoParametroRepository.findByUuid(uuid);
         if(optionalTipoParametro.isPresent()){
             TipoParametro tipoParametro = optionalTipoParametro.get();
             if(!tipoParametro.getLimiteEmisionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Tipo Parametro ya esta siendo usado por los limites de emision");
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El Tipo Parametro es usado por los limites de emision");
+            }
+            if (!tipoParametro.getDetalleInspeccionList().isEmpty()) {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,
+                        "El Tipo Parametro es usado por el detalle de inspecciónes");
             }
             tipoParametroRepository.delete(tipoParametro);
             return TipoParametroMapper.toTipoParametroDto(tipoParametro);

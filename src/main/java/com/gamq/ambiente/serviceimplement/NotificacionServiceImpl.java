@@ -4,6 +4,7 @@ import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.NotificacionIntentoDto;
 import com.gamq.ambiente.dto.mapper.NotificacionMapper;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
+import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.Inspeccion;
@@ -30,7 +31,11 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Override
     public NotificacionDto obtenerNotificacionPorUuid(String uuid) {
-        return null;
+        Optional<Notificacion> notificacionOptional = notificacionRepository.findByUuid(uuid);
+        if(notificacionOptional.isPresent()) {
+            return NotificacionMapper.toNotificacionDto(notificacionOptional.get());
+        }
+        throw new ResourceNotFoundException("Notificacion", "uuid", uuid);
     }
 
     @Override
@@ -62,7 +67,19 @@ public class NotificacionServiceImpl implements NotificacionService {
     }
 
     @Override
+    public List<NotificacionDto> obtenerPorTipoNotificacion(TipoNotificacion typeNotificacion) {
+        List<Notificacion> notificacionList = notificacionRepository.findByTypeNotificacion(typeNotificacion);
+        return notificacionList.stream().map(notificacion -> {
+            return NotificacionMapper.toNotificacionDto(notificacion);
+        }).collect(Collectors.toList());
+   }
+
+    @Override
     public NotificacionDto crearNotificacion(NotificacionDto notificacionDto) {
+        Optional<Notificacion> notificacionOptional = notificacionRepository.findByNumeroNotificacion(notificacionDto.getNumeroNotificacion());
+        if (notificacionOptional.isPresent()){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el numero de notificacion ya existe");
+        }
         if (notificacionDto.getInspeccionDto() == null || !esPosibleNotificar(notificacionDto.getInspeccionDto().getUuid())) {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar");
         }
@@ -84,6 +101,9 @@ public class NotificacionServiceImpl implements NotificacionService {
         if(notificacionOptional.isEmpty()) {
             throw new ResourceNotFoundException("Notificacion", "uuid", notificacionDto.getUuid());
         }
+        if (notificacionRepository.exitsNotificacionLikeNumeroNotificacion(notificacionDto.getNumeroNotificacion(), notificacionDto.getUuid())){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el numero de notificacion ya existe");
+        }
         if (notificacionDto.getInspeccionDto() == null || !esPosibleNotificar(notificacionDto.getInspeccionDto().getUuid())) {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar");
         }
@@ -100,6 +120,23 @@ public class NotificacionServiceImpl implements NotificacionService {
         updateNotificacion.setInspeccion(inspeccionOptional.get());
 
         return NotificacionMapper.toNotificacionDto(notificacionRepository.save(updateNotificacion));
+    }
+
+    @Override
+    public NotificacionDto actualizarTipoNotificacion(String uuidNotificacion, TipoNotificacion nuevoTipoNotificacion) {
+        Notificacion notificacion = notificacionRepository.findByUuid(uuidNotificacion)
+                .orElseThrow(() -> new ResourceNotFoundException("notificacion", "uuid", uuidNotificacion));
+        notificacion.setTypeNotificacion(nuevoTipoNotificacion);
+        return NotificacionMapper.toNotificacionDto(notificacionRepository.save(notificacion));
+
+    }
+
+    @Override
+    public NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion) {
+        Notificacion notificacion = notificacionRepository.findByUuid(uuidNotificacion)
+                .orElseThrow( () -> new ResourceNotFoundException("notificacion", "uuid", uuidNotificacion));
+        notificacion.setStatusNotificacion(nuevoEstadoNotificacion);
+        return  NotificacionMapper.toNotificacionDto(notificacionRepository.save(notificacion));
     }
 
     @Override
@@ -131,6 +168,8 @@ public class NotificacionServiceImpl implements NotificacionService {
         );
         return  notificacionIntentoDto;
     }
+
+
 
     private String generarMensajeIntentoNotificacion(Integer intentoNotificacion){
         intentoNotificacion = intentoNotificacion + 1;

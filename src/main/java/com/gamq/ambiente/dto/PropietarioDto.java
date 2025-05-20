@@ -11,6 +11,8 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,9 +28,11 @@ import java.util.List;
 public class PropietarioDto {
         private String uuid;
 
+        @NotBlank(message = "El nombre es obligatorio")
         @Size(min= 1, max = 100)
         @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
         private String nombre;
+        @NotBlank(message = "El apellido paterno es obligatorio")
         @Size(min= 1, max = 80)
         @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
         private String primerApellido;
@@ -39,11 +43,14 @@ public class PropietarioDto {
         private Date fechaNacimiento;
 
         private String nombreCompleto;
+        @NotBlank(message = "El número de documento es obligatorio")
         @Size(min= 4, max = 15)
         @Size(max = 15, message = "El nro de documento no puede exceder los 15 caracteres")
         private String numeroDocumento;
+        @NotBlank(message = "El tipo de documento es obligatorio")
         private String tipoDocumento;
         private Integer expedido;
+        @Email(message = "El correo electrónico no tiene un formato válido")
         @Size(max = 50, message = "El correo no puede exceder los 50  caracteres")
         private String email;
         @Size(max = 15, message = "El numero de telefono no puede exceder los 15  caracteres")

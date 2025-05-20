@@ -9,7 +9,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -40,6 +42,9 @@ public class Reglamento {
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "reglamento", fetch = FetchType.LAZY)
+    private List<TipoInfraccion> tipoInfraccionList = new ArrayList<TipoInfraccion>();
 
 
     public Reglamento(String uuid) {this.uuid = uuid;}

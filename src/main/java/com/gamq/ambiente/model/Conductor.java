@@ -35,7 +35,7 @@ public class Conductor {
     private String tipoDocumento;
     @Column(name = "numero_documento", nullable = false, length = 15)
     private String numeroDocumento;
-    @Column(name = "expedido", nullable = false)
+    @Column(name = "expedido", nullable = true)
     private Integer expedido;
     @Column(name= "email", nullable = false, length = 50)
     private String email;

@@ -1,6 +1,7 @@
 package com.gamq.ambiente.model;
 
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
+import com.gamq.ambiente.enumeration.TipoNotificacion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,8 +35,9 @@ public class Notificacion {
     private String uuid;
     @Column(name = "numero_notificacion", nullable = false, length = 15)
     private String numeroNotificacion;
-    @Column(name = "tipo_notificacion", nullable = false, length = 50)
-    private String tipoNotificacion; //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_notificacion", nullable = false, length = 30)
+    private TipoNotificacion typeNotificacion; //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_asistencia", nullable = false)
     private Date fechaAsistencia;
@@ -53,8 +55,6 @@ public class Notificacion {
     @Enumerated(EnumType.STRING)
     @Column(name = "status_notificacion", length = 30)
     private EstadoNotificacion statusNotificacion; //ENVIADA, PENDIENTE, ENTREGADA, FALLIDA, VENCIDA
-    @Column(name = "recordatorio", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-    private boolean recordatorio;
     @Column(name = "actividad", length = 200)
     private String actividad;
     @Column(name = "direccion", length = 250)

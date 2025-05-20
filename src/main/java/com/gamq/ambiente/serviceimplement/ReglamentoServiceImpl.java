@@ -79,9 +79,9 @@ public class ReglamentoServiceImpl implements ReglamentoService {
         if(optionalReglamento.isPresent()){
             Reglamento reglamento = optionalReglamento.get();
 
-          /*  if(!reglamento.getTipoInfraccionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "este Reglamento ya esta siendo usado por los el tipo de infracciones");
-            }*/
+            if(!reglamento.getTipoInfraccionList().isEmpty()){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "este Reglamento ya tiene infracciones");
+            }
             reglamentoRepository.delete(reglamento);
             return ReglamentoMapper.toReglamentoDto(reglamento);
         }

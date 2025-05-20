@@ -1,6 +1,8 @@
 package com.gamq.ambiente.service;
 import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.NotificacionIntentoDto;
+import com.gamq.ambiente.enumeration.EstadoNotificacion;
+import com.gamq.ambiente.enumeration.TipoNotificacion;
 
 import java.util.List;
 
@@ -9,8 +11,12 @@ public interface NotificacionService {
     boolean esPosibleNotificar(String uuidInspeccion);
     int numeroIntentoNotificacion(String uuidInspeccion);
     List<NotificacionDto> obtenerNotificaciones();
+    List<NotificacionDto> obtenerPorTipoNotificacion(TipoNotificacion typeNotificacion);
     NotificacionDto crearNotificacion(NotificacionDto notificacionDto);
     NotificacionDto actualizarNotificacion(NotificacionDto notificacionDto);
+    NotificacionDto actualizarTipoNotificacion(String uuidNotificacion, TipoNotificacion nuevoTipoNotificacion);
+    NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion);
     NotificacionDto eliminarNotificacion(String uuid);
     NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion);
+
 }

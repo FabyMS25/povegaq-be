@@ -2,13 +2,16 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.model.TipoInfraccion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,4 +27,6 @@ public class ReglamentoDto {
     private Date fechaEmision;
     private boolean activo;
     private boolean estado;
+
+    private List<TipoInfraccionDto> tipoInfraccionDtoList = new ArrayList<TipoInfraccionDto>();
 }

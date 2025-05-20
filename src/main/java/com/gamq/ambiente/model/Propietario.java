@@ -51,7 +51,7 @@ public class Propietario {
     private String numeroDocumento;
     @Column(name = "tipo_documento", nullable = false, length = 3)
     private String tipoDocumento;
-    @Column(name = "expedido", nullable = false)
+    @Column(name = "expedido", nullable = true)
     private Integer expedido;
     @Column(name= "email", nullable = false, length = 50)
     private String email;

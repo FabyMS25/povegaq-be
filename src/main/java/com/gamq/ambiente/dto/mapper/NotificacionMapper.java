@@ -1,14 +1,13 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.InspeccionDto;
-import com.gamq.ambiente.dto.NotificacionDto;
+import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Notificacion;
 
 public class NotificacionMapper {
     public static NotificacionDto toNotificacionDto(Notificacion notificacion){
         return new NotificacionDto()
                 .setUuid(notificacion.getUuid())
-                .setTipoNotificacion(notificacion.getTipoNotificacion())
+                .setTypeNotificacion(notificacion.getTypeNotificacion())
                 .setFechaNotificacion(notificacion.getFechaNotificacion())
                 .setNumeroNotificacion(notificacion.getNumeroNotificacion())
                 .setObservacion(notificacion.getObservacion())
@@ -16,7 +15,6 @@ public class NotificacionMapper {
                 .setHoraAsistencia(notificacion.getHoraAsistencia())
                 .setNombreNotificador(notificacion.getNombreNotificador())
                 .setUuidUsuario(notificacion.getUuidUsuario())
-                .setRecordatorio(notificacion.isRecordatorio())
                 .setActividad(notificacion.getActividad())
                 .setDireccion(notificacion.getDireccion())
                 .setStatusNotificacion(notificacion.getStatusNotificacion())
@@ -35,6 +33,63 @@ public class NotificacionMapper {
                         .setGasesEscapeConforme(notificacion.getInspeccion().isGasesEscapeConforme())
                         .setFechaProximaInspeccion(notificacion.getInspeccion().getFechaProximaInspeccion())
                         .setEstado(notificacion.getInspeccion().isEstado())
+
+                        .setActividadDto(notificacion.getInspeccion().getActividad() == null? null: new ActividadDto()
+                                .setUuid(notificacion.getInspeccion().getActividad().getUuid())
+                                .setActivo(notificacion.getInspeccion().getActividad().isActivo())
+                                .setTipoActividad(notificacion.getInspeccion().getActividad().getTipoActividad())
+                                .setFechaInicio(notificacion.getInspeccion().getActividad().getFechaInicio())
+                                .setFechaFin(notificacion.getInspeccion().getActividad().getFechaFin())
+                                .setEstado(notificacion.getInspeccion().getActividad().isEstado())
+                        )
+                        .setVehiculoDto(notificacion.getInspeccion().getVehiculo() == null? null: new VehiculoDto()
+                                .setUuid(notificacion.getInspeccion().getVehiculo().getUuid())
+                                .setPlaca(notificacion.getInspeccion().getVehiculo().getPlaca())
+                                .setPoliza(notificacion.getInspeccion().getVehiculo().getPoliza())
+                                .setVinNumeroIdentificacion(notificacion.getInspeccion().getVehiculo().getVinNumeroIdentificacion())
+                                .setEsOficial(notificacion.getInspeccion().getVehiculo().isEsOficial())
+                                .setFechaRegistro(notificacion.getInspeccion().getVehiculo().getFechaRegistro())
+                                .setJurisdiccionOrigen(notificacion.getInspeccion().getVehiculo().getJurisdiccionOrigen())
+                                .setEsMovil(notificacion.getInspeccion().getVehiculo().getEsMovil())
+                                .setEsUnidadIndustrial(notificacion.getInspeccion().getVehiculo().isEsUnidadIndustrial())
+                                .setPinNumeroIdentificacion(notificacion.getInspeccion().getVehiculo().getPinNumeroIdentificacion())
+
+                                .setPropietarioDto(notificacion.getInspeccion().getVehiculo().getPropietario()== null? null: new PropietarioDto()
+                                        .setUuid(notificacion.getInspeccion().getVehiculo().getPropietario().getUuid())
+                                        .setNombre(notificacion.getInspeccion().getVehiculo().getPropietario().getNombre())
+                                        .setPrimerApellido(notificacion.getInspeccion().getVehiculo().getPropietario().getPrimerApellido())
+                                        .setSegundoApellido(notificacion.getInspeccion().getVehiculo().getPropietario().getSegundoApellido())
+                                        .setApellidoEsposo(notificacion.getInspeccion().getVehiculo().getPropietario().getApellidoEsposo())
+                                        .setNumeroDocumento(notificacion.getInspeccion().getVehiculo().getPropietario().getNumeroDocumento())
+                                        .setTipoDocumento(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoDocumento())
+                                        .setExpedido(notificacion.getInspeccion().getVehiculo().getPropietario().getExpedido())
+                                        .setEmail(notificacion.getInspeccion().getVehiculo().getPropietario().getEmail())
+                                        .setNroTelefono(notificacion.getInspeccion().getVehiculo().getPropietario().getNroTelefono())
+                                        .setEstado(notificacion.getInspeccion().getVehiculo().getPropietario().isEstado())
+                                        .setTipoContribuyenteDto(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente()== null? null: new TipoContribuyenteDto()
+                                                .setUuid(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().getUuid())
+                                                .setDescripcion(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().getDescripcion())
+                                                .setEstado(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().isEstado())
+                                                .setCodigo(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
+                                        )
+                                )
+                        )
+                        .setConductorDto( notificacion.getInspeccion().getConductor() == null? null: new ConductorDto()
+                                .setUuid(notificacion.getInspeccion().getConductor().getUuid())
+                                .setNombreCompleto(notificacion.getInspeccion().getConductor().getNombreCompleto())
+                                .setTipoDocumento(notificacion.getInspeccion().getConductor().getTipoDocumento())
+                                .setNumeroDocumento(notificacion.getInspeccion().getConductor().getNumeroDocumento())
+                                .setExpedido(notificacion.getInspeccion().getConductor().getExpedido())
+                                .setNroTelefono(notificacion.getInspeccion().getConductor().getNroTelefono())
+                                .setEmail(notificacion.getInspeccion().getConductor().getEmail())
+                                .setEstado(notificacion.getInspeccion().getConductor().isEstado())
+                                .setTipoContribuyenteDto(notificacion.getInspeccion().getConductor().getTipoContribuyente()==null? null: new TipoContribuyenteDto()
+                                        .setUuid(notificacion.getInspeccion().getConductor().getTipoContribuyente().getUuid())
+                                        .setDescripcion(notificacion.getInspeccion().getConductor().getTipoContribuyente().getDescripcion())
+                                        .setEstado(notificacion.getInspeccion().getConductor().getTipoContribuyente().isEstado())
+                                        .setCodigo(notificacion.getInspeccion().getConductor().getTipoContribuyente().getCodigo())
+                                )
+                        )
                 )
                 ;
     }
@@ -42,7 +97,7 @@ public class NotificacionMapper {
     public static Notificacion toNotificacion( NotificacionDto notificacionDto){
         return new Notificacion()
                 .setUuid(notificacionDto.getUuid())
-                .setTipoNotificacion(notificacionDto.getTipoNotificacion())
+                .setTypeNotificacion(notificacionDto.getTypeNotificacion())
                 .setFechaNotificacion(notificacionDto.getFechaNotificacion())
                 .setNumeroNotificacion(notificacionDto.getNumeroNotificacion())
                 .setObservacion(notificacionDto.getObservacion())
@@ -50,10 +105,14 @@ public class NotificacionMapper {
                 .setHoraAsistencia(notificacionDto.getHoraAsistencia())
                 .setNombreNotificador(notificacionDto.getNombreNotificador())
                 .setUuidUsuario(notificacionDto.getUuidUsuario())
-                .setRecordatorio(notificacionDto.isRecordatorio())
                 .setActividad(notificacionDto.getActividad())
                 .setDireccion(notificacionDto.getDireccion())
                 .setStatusNotificacion(notificacionDto.getStatusNotificacion())
-                .setEstado(notificacionDto.isEstado());
+                .setEstado(notificacionDto.isEstado())
+
+
+
+
+                ;
     }
 }
