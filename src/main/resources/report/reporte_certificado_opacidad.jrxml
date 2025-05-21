@@ -37,7 +37,7 @@
 		<![CDATA[select c.codigo,c.fecha_emision, c.fecha_vencimiento,
 i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,i.equipo,
  t.nombre, t.descripcion, t.unidad 
-, d.valor, d.nro_ejecucion, dt.tipo_vehiculo,dt.modelo, v.placa
+, d.valor, d.nro_ejecucion, dt.tipo_vehiculo,dt.modelo, v.placa,dt.year_fabricacion
 from certificados as c
 inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
 inner join actividades as a on a.id_actividad = i.id_actividad
@@ -47,7 +47,8 @@ inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
-and dt.estado = false]]>
+and dt.estado = false
+order by d.valor]]>
 	</queryString>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="fecha_emision" class="java.util.Date"/>
@@ -67,6 +68,7 @@ and dt.estado = false]]>
 	<field name="tipo_vehiculo" class="java.lang.String"/>
 	<field name="modelo" class="java.lang.String"/>
 	<field name="placa" class="java.lang.String"/>
+	<field name="year_fabricacion" class="java.lang.Integer"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -148,10 +150,10 @@ and dt.estado = false]]>
 				</textElement>
 				<textFieldExpression><![CDATA["Se emite la <b>certificación de control de emisión de gases vehiculares </b> para :  <br/> " +
 
-"<i><b>Vehículo: </b>" + $F{tipo_vehiculo} + "</i><br/>" +
+"<i><b>Vehículo: </b>" + $F{modelo} + "</i><br/>" +
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
-"<i><b>Modelo: </b> " + $F{modelo} + "</i><br/>" +
-"<i><b>Opacidad Máxima: </b>"+ $P{opacidad} + "</i> <br/>"+ 
+"<i><b>Modelo: </b> " + $F{year_fabricacion} + "</i><br/>" +
+"<i><b>Opacidad Máxima: </b>"+ $F{valor} + "</i> <br/>"+ 
 
 "Por tanto, se encuentra dentro los límites permisibles establecidos en normativa ambiental vigente. Con esta finalidad se adjunta hoja de verificación vehicular realizada en ambientes del Gobierno Autónomo Municipal de Quillacollo con el equipo " + $F{equipo} + " <br/> " +
 
@@ -163,6 +165,22 @@ and dt.estado = false]]>
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Quillacollo," + new java.text.SimpleDateFormat("d 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="90" y="5" width="460" height="19" uuid="c74886d4-dc36-42d6-b86a-109fcf0fa72f"/>
+				<textElement textAlignment="Left">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO MUNICIPAL DE QUILLACOLLO]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="90" y="22" width="460" height="14" uuid="5f243fa9-afc4-4a4a-8233-43cd745ca577">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

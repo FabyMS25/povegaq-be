@@ -37,7 +37,7 @@
 		<![CDATA[select 
 i.equipo,
  t.nombre, t.descripcion, t.unidad, 
- dt.tipo_vehiculo,dt.modelo, v.placa,dt.tipo_combustion,
+ dt.tipo_vehiculo,dt.modelo, dt.year_fabricacion, v.placa,dt.tipo_combustion,
     MAX(CASE WHEN d.nro_ejecucion = 1 THEN d.valor END) AS medicion_1ra,
     MAX(CASE WHEN d.nro_ejecucion = 2 THEN d.valor END) AS medicion_2da,
     MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
@@ -59,7 +59,7 @@ where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
 and dt.estado = false and le.estado = false
 GROUP BY
- t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.tipo_combustion,le.limite
+ t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.year_fabricacion,dt.tipo_combustion,le.limite
 ORDER BY
 t.nombre]]>
 	</queryString>
@@ -158,9 +158,9 @@ t.nombre]]>
 				</textElement>
 				<textFieldExpression><![CDATA["Se emite la <b>certificación de control de emisión de gases vehiculares </b> para :  <br/> " +
 
-"<i><b>Vehículo: </b>" + $F{tipo_vehiculo} + "</i><br/>" +
+"<i><b>Vehículo: </b>" + $F{modelo} + "</i><br/>" +
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
-"<i><b>Modelo: </b> " + $F{modelo} + "</i><br/>" +
+"<i><b>Modelo: </b> " + $F{year_fabricacion} + "</i><br/>" +
 "<i><b>Cuadro de verificación: </b>"+ $F{tipo_combustion} + "</i> <br/>"]]></textFieldExpression>
 			</textField>
 		</band>
