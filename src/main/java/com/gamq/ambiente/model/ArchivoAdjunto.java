@@ -32,8 +32,7 @@ public class ArchivoAdjunto {
     private String uuid;
     @Column(name = "nombre", nullable = false, columnDefinition = "TEXT")
     private String nombre;
-    @Size(max = 250, message = "La descripcion no puede exceder los 250 caracteres")
-    @Column(name="descripcion",nullable = true, length = 250)
+     @Column(name="descripcion",nullable = true, length = 250)
     private String descripcion;
     @Column(name = "ruta_archivo", nullable = false, columnDefinition = "TEXT")
     private String rutaArchivo;
