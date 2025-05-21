@@ -158,8 +158,8 @@ public class CertificadoServiceImpl implements CertificadoService {
 
     private HashMap<String, Object> prepararParametros(CertificadoDto certificado, String usuario, String baseUrl) {
         HashMap<String, Object> parametros = new HashMap<String, Object>();
-        parametros.put("titulo", "INSPECCION TECNICA VEHICULAR MUNICIPAL");
-        parametros.put("subtitulo", "CERTIFICADO DE INSPECCION TECNICA VEHICULAR");
+        parametros.put("titulo", "DIRECCION DE MEDIO AMBIENTE");
+        parametros.put("subtitulo", "INSPECCION TECNICA VEHICULAR MUNICIPAL");
         parametros.put("usuario", usuario);
         parametros.put("uuidCertificado", certificado.getUuid());
         parametros.put("fechaActual", new Date());

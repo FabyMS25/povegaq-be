@@ -48,7 +48,7 @@ inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
 and dt.estado = false
-order by d.valor]]>
+order by d.valor  LIMIT 1]]>
 	</queryString>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="fecha_emision" class="java.util.Date"/>
@@ -169,18 +169,27 @@ order by d.valor]]>
 			<staticText>
 				<reportElement x="90" y="5" width="460" height="19" uuid="c74886d4-dc36-42d6-b86a-109fcf0fa72f"/>
 				<textElement textAlignment="Left">
-					<font size="12" isBold="true"/>
+					<font size="14" isBold="true"/>
 				</textElement>
 				<text><![CDATA[GOBIERNO AUTONOMO MUNICIPAL DE QUILLACOLLO]]></text>
 			</staticText>
 			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
-				<reportElement x="90" y="22" width="460" height="14" uuid="5f243fa9-afc4-4a4a-8233-43cd745ca577">
+				<reportElement x="90" y="23" width="460" height="20" uuid="5f243fa9-afc4-4a4a-8233-43cd745ca577">
 					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="11" isBold="false"/>
+					<font size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="89" y="43" width="458" height="21" uuid="86800168-64f7-457b-884c-ca5785d6086d">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
