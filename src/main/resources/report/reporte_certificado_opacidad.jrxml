@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="557"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="432"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="808"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="182"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -34,21 +34,38 @@
 	<parameter name="opacidad" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select c.codigo,c.fecha_emision, c.fecha_vencimiento,
-i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,i.equipo,
- t.nombre, t.descripcion, t.unidad 
-, d.valor, d.nro_ejecucion, dt.tipo_vehiculo,dt.modelo, v.placa,dt.year_fabricacion
-from certificados as c
-inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
-inner join actividades as a on a.id_actividad = i.id_actividad
-inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
-inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
-inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
-inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
-where c.uuid =$P{uuidCertificado}
-and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
-and dt.estado = false
-order by d.valor  LIMIT 1]]>
+		<![CDATA[SELECT 
+  c.codigo, c.fecha_emision, c.fecha_vencimiento,
+  i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,
+  i.resultado, i.observacion, a.tipo_actividad, i.equipo,
+  t.nombre, t.descripcion, t.unidad, 
+  d.valor, d.nro_ejecucion,
+  dt.tipo_vehiculo, dt.marca, dt.modelo, v.placa, dt.year_fabricacion
+FROM certificados AS c
+INNER JOIN inspecciones AS i ON c.id_inspeccion = i.id_inspeccion
+INNER JOIN actividades AS a ON a.id_actividad = i.id_actividad
+INNER JOIN detalle_inspecciones AS d ON i.id_inspeccion = d.id_inspeccion
+INNER JOIN (
+    SELECT id_inspeccion, id_tipo_parametro, MAX(nro_ejecucion) AS max_ejec
+    FROM detalle_inspecciones
+    WHERE estado = false
+    GROUP BY id_inspeccion, id_tipo_parametro
+) AS d_max 
+  ON d.id_inspeccion = d_max.id_inspeccion 
+  AND d.id_tipo_parametro = d_max.id_tipo_parametro 
+  AND d.nro_ejecucion = d_max.max_ejec
+INNER JOIN tipo_parametros AS t ON t.id_tipo_parametro = d.id_tipo_parametro  
+INNER JOIN vehiculos AS v ON v.id_vehiculo = i.id_vehiculo
+INNER JOIN datos_tecnicos AS dt ON dt.id_vehiculo = v.id_vehiculo
+WHERE LOWER(trim(t.nombre)) like 'opacidad%' and
+  c.uuid = $P{uuidCertificado}
+  AND c.estado = false 
+  AND i.estado = false 
+  AND d.estado = false 
+  AND t.estado = false 
+  AND a.estado = false 
+  AND v.estado = false 
+  AND dt.estado = false]]>
 	</queryString>
 	<field name="codigo" class="java.lang.String"/>
 	<field name="fecha_emision" class="java.util.Date"/>
@@ -69,6 +86,7 @@ order by d.valor  LIMIT 1]]>
 	<field name="modelo" class="java.lang.String"/>
 	<field name="placa" class="java.lang.String"/>
 	<field name="year_fabricacion" class="java.lang.Integer"/>
+	<field name="marca" class="java.lang.String"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -150,10 +168,11 @@ order by d.valor  LIMIT 1]]>
 				</textElement>
 				<textFieldExpression><![CDATA["Se emite la <b>certificación de control de emisión de gases vehiculares </b> para :  <br/> " +
 
-"<i><b>Vehículo: </b>" + $F{modelo} + "</i><br/>" +
+"<i><b>Vehículo: </b>" + $F{marca} + " " + $F{modelo} + "</i><br/>" +
 "<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
 "<i><b>Modelo: </b> " + $F{year_fabricacion} + "</i><br/>" +
-"<i><b>Opacidad Máxima: </b>"+ $F{valor} + "</i> <br/>"+ 
+"<i><b>Opacidad Máxima: </b>"+($F{valor} != null ?new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{valor})).setScale(2, java.math.RoundingMode.HALF_UP)):"") + " " + $F{unidad}
+ + "</i> <br/>"+ 
 
 "Por tanto, se encuentra dentro los límites permisibles establecidos en normativa ambiental vigente. Con esta finalidad se adjunta hoja de verificación vehicular realizada en ambientes del Gobierno Autónomo Municipal de Quillacollo con el equipo " + $F{equipo} + " <br/> " +
 

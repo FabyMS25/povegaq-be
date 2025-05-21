@@ -47,26 +47,6 @@ public class NotificacionServiceImpl implements NotificacionService {
     }
 
     @Override
-    public boolean esPosibleNotificar(String uuidInspeccion) {
-        int cantidad = getCantidadNotificaciones(uuidInspeccion);
-        return cantidad < 3; // máximo 3 intentos válidos
-    }
-
-    @Override
-    public int numeroIntentoNotificacion(String uuidInspeccion) {
-        return getCantidadNotificaciones(uuidInspeccion);
-    }
-
-    private int getCantidadNotificaciones(String uuidInspeccion) {
-        List<EstadoNotificacion> estadosValidos = List.of(
-                EstadoNotificacion.ENTREGADA,
-                EstadoNotificacion.PENDIENTE
-        );
-        int cantidad = notificacionRepository.countByInspeccion_UuidAndStatusNotificacionIn(uuidInspeccion, estadosValidos);
-        return cantidad;
-    }
-
-    @Override
     public List<NotificacionDto> obtenerNotificaciones() {
         List<Notificacion> notificacionList = notificacionRepository.findAll();
         return  notificacionList.stream().map( notificacion -> {
@@ -105,8 +85,6 @@ public class NotificacionServiceImpl implements NotificacionService {
         nuevoNotificacion.setInspeccion(inspeccionOptional.get());
         return NotificacionMapper.toNotificacionDto(notificacionRepository.save(nuevoNotificacion));
     }
-
-
 
     @Override
     public NotificacionDto actualizarNotificacion(NotificacionDto notificacionDto) {
@@ -164,6 +142,11 @@ public class NotificacionServiceImpl implements NotificacionService {
         throw new ResourceNotFoundException("Notificacion","uuid", uuid);
     }
 
+    //PROCESOS DE NOTIFICACIONES
+    public NotificacionDto EncontrarNotificacionPendientePorUuidVehiculo(String uuidVehiculo){
+        return null;
+    }
+
     @Override
     public NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion) {
         //intento = 1 plazo 1 year
@@ -201,5 +184,27 @@ public class NotificacionServiceImpl implements NotificacionService {
             return TipoNotificacion.RECORDATORIO;
         }
     }
+
+    @Override
+    public int numeroIntentoNotificacion(String uuidInspeccion) {
+        return getCantidadNotificaciones(uuidInspeccion);
+    }
+
+    private int getCantidadNotificaciones(String uuidInspeccion) {
+        List<EstadoNotificacion> estadosValidos = List.of(
+                EstadoNotificacion.ENTREGADA,
+                EstadoNotificacion.PENDIENTE
+        );
+        int cantidad = notificacionRepository.countByInspeccion_UuidAndStatusNotificacionIn(uuidInspeccion, estadosValidos);
+        return cantidad;
+    }
+
+    @Override
+    public boolean esPosibleNotificar(String uuidInspeccion) {
+        int cantidad = getCantidadNotificaciones(uuidInspeccion);
+        return cantidad < 3; // máximo 3 intentos válidos
+    }
+
+
 
 }
