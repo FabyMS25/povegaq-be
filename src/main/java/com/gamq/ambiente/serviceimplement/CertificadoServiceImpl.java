@@ -63,6 +63,15 @@ public class CertificadoServiceImpl implements CertificadoService {
         if(certificadoOptional.isEmpty()){
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()) {
+                if (!inspeccionOptional.get().isResultado()){
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado por el resultado de la inspeccion  es Negativo(no paso la prueba)");
+                }
+                if (inspeccionOptional.get().getCertificadoList().size() > 0) {
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspccion ya tiene un certificado");
+                }
+                if (inspeccionOptional.get().getDetalleInspeccionList().size()==0){
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion no tiene Detalles de inspeccion");
+                }
                 String codigo = UUID.randomUUID().toString();
                 Certificado nuevoCertificado = CertificadoMapper.toCertificado(certificadoDto);
                 nuevoCertificado.setCodigo(codigo);
