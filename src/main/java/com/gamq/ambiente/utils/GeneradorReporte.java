@@ -62,7 +62,9 @@ public class GeneradorReporte {
                 logo64 = new String(Base64.encodeBase64(logoResource.getInputStream().readAllBytes()), "UTF-8");
             }
             parametros.put("logo64", logo64);
-            parametros.put("qr" , new String(Base64.encodeBase64(generadorCodigoQRService.generateQRCodeImage((String) parametros.get("url"))),"UTF-8"));
+            if (parametros.containsKey("url") && parametros.get("url") != null) {
+                parametros.put("qr", new String(Base64.encodeBase64(generadorCodigoQRService.generateQRCodeImage((String) parametros.get("url"))), "UTF-8"));
+            }
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros,conn);
 
             response.setContentType("application/pdf");

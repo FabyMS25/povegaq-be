@@ -47,22 +47,23 @@ public class ReporteController {
         try {
             String nombreUsuario = headers.getOrDefault("usuario", "Admin");
             HashMap<String, Object> parametros = new HashMap<String,Object>();
-            BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+           // BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
             int numeroIntento = 0;
             Date fechaActual =  new Date();
 
             if (uuidNotificacion != null ) {
                 NotificacionDto notificacionDto = notificacionService.obtenerNotificacionPorUuid(uuidNotificacion);
-                numeroIntento = notificacionService.numeroIntentoNotificacion(uuidNotificacion);
+              //  numeroIntento = notificacionService.numeroIntentoNotificacion(uuidNotificacion);
            }
 
             parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("subtitulo", "");
             parametros.put("usuario", nombreUsuario);
             parametros.put("fechaActual", fechaActual);
-            parametros.put("numeroIntento", numeroIntento);
+            parametros.put("uuidNotificacion", uuidNotificacion);
             generadorReporte.generarSqlReportePdf(
-                    "notificaciones",
-                    "classpath:report/notificaciones.jrxml",
+                    "reporte_notificacion",
+                    "classpath:report/reporte_notificacion.jrxml",
                     parametros,
                     response
             );

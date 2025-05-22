@@ -112,6 +112,10 @@ public class NotificacionMapper {
                 .setActividad(notificacionDto.getActividad())
                 .setDireccion(notificacionDto.getDireccion())
                 .setStatusNotificacion(notificacionDto.getStatusNotificacion())
+                .setNumeroIntento(notificacionDto.getNumeroIntento())
+                .setSancion(notificacionDto.getSancion())
+                .setEsDenuncia(notificacionDto.isEsDenuncia())
+                .setEsObservacion(notificacionDto.isEsObservacion())
                 .setEstado(notificacionDto.isEstado())
                 ;
     }

@@ -63,9 +63,9 @@ public class Notificacion {
     private int numeroIntento;
     @Column(name = "sancion", length = 250)
     private String sancion;
-    @Column(name = "es_denuncia", nullable = true)
+    @Column(name = "es_denuncia", nullable = true,columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esDenuncia;
-    @Column(name = "es_observacion", nullable = true)
+    @Column(name = "es_observacion", nullable = true,columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esObservacion;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
