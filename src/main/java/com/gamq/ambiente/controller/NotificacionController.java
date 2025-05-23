@@ -39,6 +39,11 @@ public class NotificacionController {
         return Response.ok().setPayload(notificacionService.crearNotificacion(notificacionDto));
     }
 
+    @GetMapping("/previa-vista/{uuidInspeccion}")
+    public Response getNotificacionPreviaVistaByUuidInspeccion(@PathVariable("uuidInspeccion") String uuidInspeccion) {
+        return Response.ok().setPayload(notificacionService.generarNotificacionVistaPrevia(uuidInspeccion));
+    }
+
     @PutMapping()
     public Response updateNotificacion(@Valid @RequestBody NotificacionDto notificacionDto){
         return Response.ok().setPayload(notificacionService.actualizarNotificacion(notificacionDto));

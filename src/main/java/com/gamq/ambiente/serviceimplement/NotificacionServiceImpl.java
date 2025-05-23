@@ -77,12 +77,28 @@ public class NotificacionServiceImpl implements NotificacionService {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar por que resultado de inspeccion es true");
         }
 
+        Notificacion nuevoNotificacion = NotificacionMapper.toNotificacion(notificacionDto);
+        nuevoNotificacion.setInspeccion(inspeccionOptional.get());
+        return NotificacionMapper.toNotificacionDto(notificacionRepository.save(nuevoNotificacion));
+    }
+
+    @Override
+    public NotificacionDto generarNotificacionVistaPrevia(String uuidInpeccion) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInpeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("inspeccion", "uuid", uuidInpeccion);
+        }
+        if ( inspeccionOptional.get().isResultado()){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una notificacion por que el resultado de inspeccion Positivo o true");
+        }
         int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
 
+        NotificacionDto notificacionDto = new NotificacionDto();
+        notificacionDto.setActividad( inspeccionOptional.get().getActividad().getTipoActividad());
         if ( !existeNotificacionActivaReinspeccion(inspeccionOptional.get().getVehiculo())) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(new Date(), 365));
+            notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.ENTREGADA);
             notificacionDto.setObservacion("Se detectó exceso en emisión. Plazo 1 año para adecuación técnica.");
             notificacionDto.setNumeroIntento(1);
@@ -96,9 +112,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setNumeroIntento(2);
             notificacionDto.setSancion("Multa 3er grado");
         }
-
         if ( intento > 2 ){
-
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL); // o solo INFRACCION
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(new Date());
@@ -107,12 +121,8 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setSancion("Multa 3er grado por incumplimiento final");
             notificacionDto.setNumeroIntento(3);
         }
-
-        Notificacion nuevoNotificacion = NotificacionMapper.toNotificacion(notificacionDto);
-        nuevoNotificacion.setInspeccion(inspeccionOptional.get());
-        return NotificacionMapper.toNotificacionDto(notificacionRepository.save(nuevoNotificacion));
+        return notificacionDto;
     }
-
 
 
     @Override
@@ -187,6 +197,15 @@ public class NotificacionServiceImpl implements NotificacionService {
         return cantidad < 3; // máximo 3 intentos válidos
     }
 
+    private int getCantidadNotificaciones(String uuidInspeccion) {
+        List<EstadoNotificacion> estadosValidos = List.of(
+                EstadoNotificacion.ENTREGADA,
+                EstadoNotificacion.PENDIENTE
+        );
+        int cantidad = notificacionRepository.countByInspeccion_UuidAndStatusNotificacionIn(uuidInspeccion, estadosValidos);
+        return cantidad;
+    }
+
     //PROCESOS DE NOTIFICACIONES EN EVALUACION
     public NotificacionDto EncontrarNotificacionPendientePorUuidVehiculo(String uuidVehiculo){
         return null;
@@ -238,14 +257,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         return getCantidadNotificaciones(uuidInspeccion);
     }
 
-    private int getCantidadNotificaciones(String uuidInspeccion) {
-        List<EstadoNotificacion> estadosValidos = List.of(
-                EstadoNotificacion.ENTREGADA,
-                EstadoNotificacion.PENDIENTE
-        );
-        int cantidad = notificacionRepository.countByInspeccion_UuidAndStatusNotificacionIn(uuidInspeccion, estadosValidos);
-        return cantidad;
-    }
+
 
 
 }

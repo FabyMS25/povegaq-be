@@ -14,6 +14,7 @@ public interface NotificacionService {
     List<NotificacionDto> obtenerNotificaciones();
     List<NotificacionDto> obtenerPorTipoNotificacion(TipoNotificacion typeNotificacion);
     NotificacionDto crearNotificacion(NotificacionDto notificacionDto);
+    NotificacionDto generarNotificacionVistaPrevia(String uuidInpeccion);
     NotificacionDto actualizarNotificacion(NotificacionDto notificacionDto);
     NotificacionDto actualizarTipoNotificacion(String uuidNotificacion, TipoNotificacion nuevoTipoNotificacion);
     NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion);
