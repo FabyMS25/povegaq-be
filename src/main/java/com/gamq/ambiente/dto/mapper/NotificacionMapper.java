@@ -21,7 +21,6 @@ public class NotificacionMapper {
                 .setNumeroIntento(notificacion.getNumeroIntento())
                 .setSancion(notificacion.getSancion())
                 .setEsDenuncia(notificacion.isEsDenuncia())
-                .setEsObservacion(notificacion.isEsObservacion())
                 .setEstado(notificacion.isEstado())
                 .setInspeccionDto(notificacion.getInspeccion()== null? null : new InspeccionDto()
                         .setUuid(notificacion.getInspeccion().getUuid())
@@ -115,7 +114,6 @@ public class NotificacionMapper {
                 .setNumeroIntento(notificacionDto.getNumeroIntento())
                 .setSancion(notificacionDto.getSancion())
                 .setEsDenuncia(notificacionDto.isEsDenuncia())
-                .setEsObservacion(notificacionDto.isEsObservacion())
                 .setEstado(notificacionDto.isEstado())
                 ;
     }

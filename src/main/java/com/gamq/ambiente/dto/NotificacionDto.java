@@ -35,28 +35,26 @@ public class NotificacionDto {
 
     @NotBlank(message = "El número de notificación es obligatorio")
     private String numeroNotificacion; // numero rojo de la boleta
-    @NotNull(message = "El tipo de notificación es obligatorio")
     private TipoNotificacion typeNotificacion;   //      REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     private Date fechaAsistencia;
+    @NotNull(message = "La hora de notificación es obligatoria")
     private LocalTime horaAsistencia;
     private String observacion;
-    @NotNull(message = "La fecha de notificación es obligatoria")
     private Date fechaNotificacion;  // fecha en la que envia la notificacion
     @NotBlank(message = "El nombre del notificador es obligatorio")
     private String nombreNotificador;
     @NotBlank(message = "El UUID del usuario es obligatorio")
     private String uuidUsuario;
-    @NotNull(message = "El estado de la notificación es obligatorio")
     private EstadoNotificacion statusNotificacion;
+    @NotNull(message = "La actividad es obligatorio")
     private String actividad;
+    @NotNull(message = "La actividad es obligatorio")
     private String direccion;
-    @NotNull(message = "El número de intento es obligatorio")
-    @Min(value = 1, message = "El número de intento debe ser al menos 1")
-    @Max(value = 3, message = "El número de intento no puede ser mayor a 3")
     private int numeroIntento;
     private String sancion;
+    @NotNull(message = "Si es Denuncia es true caso contrario es una Observacion")
     private boolean esDenuncia;
-    private boolean esObservacion;
+
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

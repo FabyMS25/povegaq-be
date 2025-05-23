@@ -37,7 +37,6 @@ public class InfraccionMapper {
                         .setFechaProximaInspeccion(infraccion.getInspeccion().getFechaProximaInspeccion())
                         .setEstado(infraccion.getInspeccion().isEstado())
                 )
-
                 ;
     }
 

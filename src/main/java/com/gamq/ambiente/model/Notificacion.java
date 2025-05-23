@@ -37,7 +37,7 @@ public class Notificacion {
     private String numeroNotificacion;
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_notificacion", nullable = false, length = 30)
-    private TipoNotificacion typeNotificacion; //      RESULTADO FALSO,  REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
+    private TipoNotificacion typeNotificacion; //     REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_asistencia", nullable = false)
     private Date fechaAsistencia;
@@ -65,8 +65,6 @@ public class Notificacion {
     private String sancion;
     @Column(name = "es_denuncia", nullable = true,columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esDenuncia;
-    @Column(name = "es_observacion", nullable = true,columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
-    private boolean esObservacion;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

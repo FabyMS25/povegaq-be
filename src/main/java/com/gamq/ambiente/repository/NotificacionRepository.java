@@ -3,6 +3,7 @@ package com.gamq.ambiente.repository;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.model.Notificacion;
+import com.gamq.ambiente.model.Vehiculo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +21,10 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
     boolean exitsNotificacionLikeNumeroNotificacion(@Param("numeroNotificacion") String numeroNotificacion,
                                                     @Param("uuidNotificacion") String uuidNotificacion);
     List<Notificacion> findByTypeNotificacion(TipoNotificacion typeNotificacion);
+
+    boolean existsByInspeccion_VehiculoAndTypeNotificacionAndStatusNotificacionIn(
+            Vehiculo vehiculo,
+            TipoNotificacion tipo,
+            List<EstadoNotificacion> estados
+    );
 }

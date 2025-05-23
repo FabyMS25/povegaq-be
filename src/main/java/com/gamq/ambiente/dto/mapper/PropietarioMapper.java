@@ -73,9 +73,6 @@ public class PropietarioMapper {
                         .setCodigo(propietarioDto.getTipoContribuyenteDto().getCodigo())
                         .setEstado(propietarioDto.getTipoContribuyenteDto().isEstado())
                 )
-            //    .setVehiculoList(propietarioDto.getVehiculoDtoList().stream().map(vehiculoDto -> {
-            //        return VehiculoMapper.toVehiculo(vehiculoDto);
-            //    }).collect(Collectors.toList()))
                 ;
     }
 

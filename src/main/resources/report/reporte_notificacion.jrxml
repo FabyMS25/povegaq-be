@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="744"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="245"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="581"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="408"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="188"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -33,7 +33,7 @@
 	<parameter name="qr" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select n.numero_notificacion, n.fecha_asistencia,n.hora_asistencia,n.es_denuncia,n.es_observacion,n.actividad,n.direccion,n.observacion, n.sancion,n.nombre_notificador, n.fecha_notificacion,
+		<![CDATA[select n.numero_notificacion, n.fecha_asistencia,n.hora_asistencia,n.es_denuncia,n.actividad,n.direccion,n.observacion, n.sancion,n.nombre_notificador, n.fecha_notificacion,
 p.nombre || ' ' || 
 p.primer_apellido || ' ' || 
   COALESCE(p.segundo_apellido) || ' ' || 
@@ -49,7 +49,7 @@ and i.estado = false
 and v.estado = false
 and p.estado = false
 union
-select n.numero_notificacion, n.fecha_asistencia,n.hora_asistencia,n.es_denuncia,n.es_observacion,n.actividad,n.direccion,n.observacion, n.sancion,n.nombre_notificador, n.fecha_notificacion,
+select n.numero_notificacion, n.fecha_asistencia,n.hora_asistencia,n.es_denuncia,n.actividad,n.direccion,n.observacion, n.sancion,n.nombre_notificador, n.fecha_notificacion,
 p.nombre_completo, p.numero_documento, n.numero_intento from notificaciones as n
 inner join inspecciones as i on i.id_inspeccion = n.id_inspeccion
 inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
@@ -58,20 +58,7 @@ where n.uuid =$P{uuidNotificacion}
 and n.estado = false
 and i.estado = false
 and v.estado = false
-and p.estado = false 
-
-
-
-
-
-
-
-
-
-
-
-
-]]>
+and p.estado = false]]>
 	</queryString>
 	<field name="nombre_completo" class="java.lang.String"/>
 	<field name="numero_notificacion" class="java.lang.String"/>
@@ -79,7 +66,6 @@ and p.estado = false
 	<field name="fecha_asistencia" class="java.sql.Date"/>
 	<field name="hora_asistencia" class="java.sql.Time"/>
 	<field name="es_denuncia" class="java.lang.Boolean"/>
-	<field name="es_observacion" class="java.lang.Boolean"/>
 	<field name="actividad" class="java.lang.String"/>
 	<field name="direccion" class="java.lang.String"/>
 	<field name="observacion" class="java.lang.String"/>
@@ -123,7 +109,7 @@ and p.estado = false
 				<textFieldExpression><![CDATA["Se notifica a: <u>"  + $F{nombre_completo} + "</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  con C.I. : <u>" + $F{numero_documento} + " </u>                  <br/> " +
 "para que asista el día: <u>" + (new java.text.SimpleDateFormat("EEEE", new java.util.Locale("es", "ES"))).format($F{fecha_asistencia}) + "</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; en fecha <u>" + (new java.text.SimpleDateFormat("dd/MM/yyyy")).format($F{fecha_asistencia}) + "</u>, a horas <u>" + $F{hora_asistencia} + "</u> <br/>" +
 "En las oficinas de la Unidad de Medio Ambiente, a objeto de aclarar la:  <br/>" +
-"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        "    +  ($F{es_denuncia} ? "DENUNCIA" : "" )  + "      " + ($F{es_observacion} ?  "OBSERVACION" : "") + " <br/>" +
+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        "    +  ($F{es_denuncia} ? "DENUNCIA" : "OBSERVACION" )    + " <br/>" +
 "Actividad: <u>" + $F{actividad} + "</u>                                                     <br/>" +
 "Dirección: <u>" + $F{direccion} + "</u>                                                     <br/>" +
 "Observaciones: <u>" + $F{observacion} + "</u>                                                     <br/>" +
