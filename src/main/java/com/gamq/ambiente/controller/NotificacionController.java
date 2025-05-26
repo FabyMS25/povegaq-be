@@ -21,10 +21,10 @@ public class NotificacionController {
         return Response.ok().setPayload(notificacionService.obtenerNotificacionPorUuid(uuid));
     }
 
-    @GetMapping("/intentos/{uuidInspeccion}")
+   /* @GetMapping("/intentos/{uuidInspeccion}")
     public Response getNotificacionIntentosByUuidInspeccion(@PathVariable("uuidInspeccion") String uuidInspeccion){
         return Response.ok().setPayload(notificacionService.ObtenerNotificacionIntentoPorInspeccion(uuidInspeccion));
-    }
+    }*/
 
     @GetMapping()
     public Response getAllNotificaciones(){ return Response.ok().setPayload(notificacionService.obtenerNotificaciones());}

@@ -21,6 +21,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,12 +69,12 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (notificacionOptional.isPresent()){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el numero de notificacion ya existe");
         }
-        if (notificacionDto.getInspeccionDto() == null || !esPosibleNotificar(notificacionDto.getInspeccionDto().getUuid())) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar");
-        }
         Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(notificacionDto.getInspeccionDto().getUuid());
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("inspeccion", "uuid", notificacionDto.getInspeccionDto().getUuid());
+        }
+        if (!esPosibleNotificar(inspeccionOptional.get().getVehiculo())) {
+                  throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "ya no es posible notificar");
         }
         if ( inspeccionOptional.get().isResultado()){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar por que resultado de inspeccion es true");
@@ -96,7 +98,7 @@ public class NotificacionServiceImpl implements NotificacionService {
 
         NotificacionDto notificacionDto = new NotificacionDto();
         notificacionDto.setActividad( inspeccionOptional.get().getActividad().getTipoActividad());
-        if ( !existeNotificacionActivaReinspeccion(inspeccionOptional.get().getVehiculo())) {
+        if ( !existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365));
@@ -104,7 +106,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setObservacion("Se detectó exceso en emisión. Plazo 1 año para adecuación técnica.");
             notificacionDto.setNumeroIntento(1);
         }
-        if ( existeNotificacionActivaReinspeccion(inspeccionOptional.get().getVehiculo())) {
+        if ( (intento == 1) && existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(new Date(),90));
@@ -113,7 +115,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setNumeroIntento(2);
             notificacionDto.setSancion("Multa 3er grado");
         }
-        if ( intento > 2 ){
+        if ( intento+ 1 > 2 ){
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL); // o solo INFRACCION
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(new Date());
@@ -136,12 +138,13 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (notificacionRepository.exitsNotificacionLikeNumeroNotificacion(notificacionDto.getNumeroNotificacion(), notificacionDto.getUuid())){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el numero de notificacion ya existe");
         }
-        if (notificacionDto.getInspeccionDto() == null || !esPosibleNotificar(notificacionDto.getInspeccionDto().getUuid())) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar");
-        }
+
         Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(notificacionDto.getInspeccionDto().getUuid());
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("inspeccion", "uuid", notificacionDto.getInspeccionDto().getUuid());
+        }
+        if (!esPosibleNotificar(inspeccionOptional.get().getVehiculo())) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar");
         }
         if ( inspeccionOptional.get().isResultado()){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "no es posible notificar por que resultado de inspeccion es true");
@@ -167,6 +170,16 @@ public class NotificacionServiceImpl implements NotificacionService {
     public NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion) {
         Notificacion notificacion = notificacionRepository.findByUuid(uuidNotificacion)
                 .orElseThrow( () -> new ResourceNotFoundException("notificacion", "uuid", uuidNotificacion));
+        LocalDate fechaPlazo = notificacion.getFechaAsistencia()
+                .toInstant()
+                .atZone(ZoneId.of("America/La_Paz"))
+                .toLocalDate();
+
+        if (nuevoEstadoNotificacion == EstadoNotificacion.VENCIDA &&
+                LocalDate.now().isAfter(fechaPlazo)
+        ){
+
+        }
         notificacion.setStatusNotificacion(nuevoEstadoNotificacion);
         return  NotificacionMapper.toNotificacionDto(notificacionRepository.save(notificacion));
     }
@@ -191,83 +204,25 @@ public class NotificacionServiceImpl implements NotificacionService {
         }).collect(Collectors.toList());
     }
 
-    //PROCESOS DE NOTIFICACIONES VALIDOS
+    @Override
+    public boolean esPosibleNotificar(Vehiculo vehiculo) {
+        int cantidad = getCantidadNotificacionesVencidas(vehiculo);
+        return cantidad < 3; // máximo 3 intentos válidos contar desde 0,1,2
+    }
 
-    private  boolean existeNotificacionActivaReinspeccion(Vehiculo vehiculo) {
+    private  boolean existeNotificacionVencidaReinspeccion(Vehiculo vehiculo) {
         return notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndStatusNotificacionIn(
                 vehiculo,
                 TipoNotificacion.REINSPECCION_PENDIENTE,
-                Arrays.asList(EstadoNotificacion.PENDIENTE, EstadoNotificacion.ENTREGADA, EstadoNotificacion.ENVIADA)
+                Arrays.asList(EstadoNotificacion.VENCIDA)
         );
     }
 
-    @Override
-    public boolean esPosibleNotificar(String uuidInspeccion) {
-        int cantidad = getCantidadNotificaciones(uuidInspeccion);
-        return cantidad < 3; // máximo 3 intentos válidos
-    }
-
-    private int getCantidadNotificaciones(String uuidInspeccion) {
+    private int getCantidadNotificacionesVencidas(Vehiculo vehiculo) {
         List<EstadoNotificacion> estadosValidos = List.of(
-                EstadoNotificacion.ENTREGADA,
-                EstadoNotificacion.PENDIENTE
+                EstadoNotificacion.VENCIDA
         );
-        int cantidad = notificacionRepository.countByInspeccion_UuidAndStatusNotificacionIn(uuidInspeccion, estadosValidos);
+        int cantidad = notificacionRepository.countByInspeccion_VehiculoAndStatusNotificacionIn(vehiculo, estadosValidos);
         return cantidad;
     }
-
-    //PROCESOS DE NOTIFICACIONES EN EVALUACION
-    public NotificacionDto EncontrarNotificacionPendientePorUuidVehiculo(String uuidVehiculo){
-        return null;
-    }
-
-    @Override
-    public NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion) {
-        //intento = 1 plazo 1 year
-        //intento =2 plazo 90 dias
-        //intento = 3 plazo inicia un proceso
-        int intentosActuales = getCantidadNotificaciones(uuidInspeccion);
-
-        boolean puedeEmitirNueva = intentosActuales < 3;
-
-        NotificacionIntentoDto notificacionIntentoDto = new NotificacionIntentoDto(
-                uuidInspeccion,
-                intentosActuales,
-                puedeEmitirNueva,
-                generarMensajeIntentoNotificacion(intentosActuales)
-        );
-        return  notificacionIntentoDto;
-    }
-
-    private String generarMensajeIntentoNotificacion(Integer intentoNotificacion){
-        intentoNotificacion = intentoNotificacion + 1;
-        return (intentoNotificacion < 3) ? intentoNotificacion.toString() + " intento disponible": "No disponible";
-    }
-
-    public TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion) {
-        Vehiculo vehiculo = inspeccion.getVehiculo();
-        int intento = inspeccionService.obtenerNumeroIntentoActual(vehiculo);
-
-        if (!inspeccion.isResultado()) {
-            if (intento == 1) {
-                return TipoNotificacion.REINSPECCION_PENDIENTE;
-            } else if (intento == 2) {
-                return TipoNotificacion.INFRACCION;
-            }
-            else {
-                return TipoNotificacion.INFRACCION_FINAL;
-            }
-        } else {
-            return TipoNotificacion.RECORDATORIO;
-        }
-    }
-
-    @Override
-    public int numeroIntentoNotificacion(String uuidInspeccion) {
-        return getCantidadNotificaciones(uuidInspeccion);
-    }
-
-
-
-
 }

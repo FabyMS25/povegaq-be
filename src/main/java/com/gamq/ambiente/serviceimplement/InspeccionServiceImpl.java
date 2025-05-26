@@ -215,7 +215,8 @@ public class InspeccionServiceImpl implements InspeccionService {
         for (Inspeccion inspeccion : inspecciones) {
             boolean tieneNotificacionActiva = inspeccion.getNotificacionList().stream()
                     .anyMatch(n -> n.getStatusNotificacion() != EstadoNotificacion.CUMPLIDA &&
-                            n.getStatusNotificacion() != EstadoNotificacion.VENCIDA);
+                            n.getStatusNotificacion() != EstadoNotificacion.FALLIDA
+                    );
 
             if (tieneNotificacionActiva) {
                 return 2; //segunda

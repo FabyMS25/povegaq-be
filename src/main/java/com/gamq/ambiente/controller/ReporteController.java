@@ -28,6 +28,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/reporte")
 public class ReporteController {
+    @Value("${spring.jackson.time-zone}")
+    private String zonaHorario;
     @Autowired
     private GeneradorReporte generadorReporte;
     @Autowired
@@ -51,13 +53,10 @@ public class ReporteController {
         try {
             String nombreUsuario = headers.getOrDefault("usuario", "Admin");
             HashMap<String, Object> parametros = new HashMap<String,Object>();
-           // BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-            int numeroIntento = 0;
             Date fechaActual =  new Date();
 
             if (uuidNotificacion != null ) {
                 NotificacionDto notificacionDto = notificacionService.obtenerNotificacionPorUuid(uuidNotificacion);
-              //  numeroIntento = notificacionService.numeroIntentoNotificacion(uuidNotificacion);
            }
 
             parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
@@ -76,9 +75,6 @@ public class ReporteController {
             System.out.println(e.getLocalizedMessage());
         }
     }
-
-    @Value("${spring.jackson.time-zone}")
-    private String zonaHorario;
 
     @RequestMapping( value = "/por-rangofechas", method= RequestMethod.GET)
     @ResponseBody

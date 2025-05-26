@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
     Optional<Notificacion> findByUuid(String uuid);
     Optional<Notificacion> findByNumeroNotificacion(String numeroNotificacion);
-    int countByInspeccion_UuidAndStatusNotificacionIn(String uuid, List<EstadoNotificacion> estados);
+    int countByInspeccion_VehiculoAndStatusNotificacionIn(Vehiculo vehiculo, List<EstadoNotificacion> estados);
     @Query("SELECT case when count(n) > 0 then true else false end FROM Notificacion n WHERE lower(n.numeroNotificacion) = lower(:numeroNotificacion) AND n.uuid <> :uuidNotificacion")
     boolean exitsNotificacionLikeNumeroNotificacion(@Param("numeroNotificacion") String numeroNotificacion,
                                                     @Param("uuidNotificacion") String uuidNotificacion);
