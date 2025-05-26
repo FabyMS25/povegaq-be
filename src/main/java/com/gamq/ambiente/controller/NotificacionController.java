@@ -65,4 +65,11 @@ public class NotificacionController {
     public Response deleteNotificacion(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(notificacionService.eliminarNotificacion(uuid));
     }
+
+    @GetMapping("/vencidas")
+    public Response getNotificacionesVendidas() {
+        return Response.ok().setPayload(notificacionService.obtenerNotificacionesPorFechaAsistenciaVencida());
+    }
+
+
 }

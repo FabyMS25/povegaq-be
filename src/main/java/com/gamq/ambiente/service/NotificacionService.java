@@ -19,6 +19,8 @@ public interface NotificacionService {
     NotificacionDto actualizarTipoNotificacion(String uuidNotificacion, TipoNotificacion nuevoTipoNotificacion);
     NotificacionDto actualizarEstadoNotificacion(String uuidNotificacion, EstadoNotificacion nuevoEstadoNotificacion);
     NotificacionDto eliminarNotificacion(String uuid);
+    List<NotificacionDto> obtenerNotificacionesPorFechaAsistenciaVencida();
+
     NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion);
-    TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion);
+     TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion);
 }

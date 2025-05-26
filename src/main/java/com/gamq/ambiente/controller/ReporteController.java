@@ -6,9 +6,11 @@ import com.gamq.ambiente.repository.CertificadoRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
 import com.gamq.ambiente.service.CertificadoService;
 import com.gamq.ambiente.service.NotificacionService;
+import com.gamq.ambiente.utils.FechaUtil;
 import com.gamq.ambiente.utils.GeneradorReporte;
 import com.gamq.ambiente.utils.UrlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +19,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/reporte")
@@ -35,6 +38,7 @@ public class ReporteController {
     private CertificadoRepository certificadoRepository;
     @Autowired
     private NotificacionService notificacionService;
+
 
     @RequestMapping( value = "/notificacion", method= RequestMethod.GET)
     @ResponseBody
@@ -72,6 +76,43 @@ public class ReporteController {
             System.out.println(e.getLocalizedMessage());
         }
     }
+
+    @Value("${spring.jackson.time-zone}")
+    private String zonaHorario;
+
+    @RequestMapping( value = "/por-rangofechas", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarDetalleNotificacionesPorRangoDeFechas(
+            @RequestParam( name = "fechaInicio") Date fechaInicio,
+            @RequestParam( name = "fechaFin") Date fechaFin,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("subtitulo", "");
+            ZoneId zona = ZoneId.of(zonaHorario);
+            Date fechaInicioAjustada = FechaUtil.ajustarFechaInicioDia(fechaInicio,zona);
+            Date fechaFinAjustada = FechaUtil.ajustarFechaFinDia(fechaFin,zona);
+            parametros.put("fechaInicial",new Timestamp(fechaInicioAjustada.getTime()));
+            parametros.put("fechaFinal", new Timestamp(fechaFinAjustada.getTime()));
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_mensual_notificacion",
+                    "classpath:report/reporte_mensual_notificacion.jrxml",
+                    parametros,
+                    response
+            );
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
 
 
     @RequestMapping( value = "/certificado-opacidad", method= RequestMethod.GET)

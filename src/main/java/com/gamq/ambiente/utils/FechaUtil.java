@@ -1,6 +1,6 @@
 package com.gamq.ambiente.utils;
 
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -11,6 +11,10 @@ import java.util.Date;
 import java.util.Set;
 
 public class FechaUtil {
+//    @Value("${spring.jackson.time-zone}")
+//    private static String zonaHorario;
+   // private static final ZoneId zona = ZoneId.of(zonaHorario);
+
     private static final int GESTION_ACTUAL = LocalDate.now().getYear();
     public static Date calcularFechaVencimiento(Date fechaEntrega) {
         // Convertir Date a LocalDate
@@ -83,4 +87,32 @@ public class FechaUtil {
         long diasHabiles = contarDiasHabiles(fechaInicial, hoy);
         return diasHabiles > 15;
     }
+
+
+
+        // Ajusta la fecha al inicio del día (00:00:00.000)
+        public static Date ajustarFechaInicioDia(Date fecha, ZoneId zona) {
+            //ZoneId zona = ZoneId.of(zonaHorario);
+            return Date.from(
+                    fecha.toInstant()
+                            .atZone(zona)
+                            .toLocalDate()
+                            .atStartOfDay(zona)
+                            .toInstant()
+            );
+        }
+
+        // Ajusta la fecha al final del día (23:59:59.999)
+        public static Date ajustarFechaFinDia(Date fecha, ZoneId zona) {
+           // ZoneId zona = ZoneId.of(zonaHorario);
+            return Date.from(
+                    fecha.toInstant()
+                            .atZone(zona)
+                            .toLocalDate()
+                            .atTime(23, 59, 59, 999_000_000) // hasta el último milisegundo
+                            .atZone(zona)
+                            .toInstant()
+            );
+        }
+
 }

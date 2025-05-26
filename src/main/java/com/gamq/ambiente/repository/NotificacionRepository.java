@@ -27,4 +27,7 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
             TipoNotificacion tipo,
             List<EstadoNotificacion> estados
     );
+
+    @Query("SELECT n FROM Notificacion n WHERE (n.fechaAsistencia < CURRENT_DATE) and n.statusNotificacion NOT IN :estadoNotificacionList")
+    List<Notificacion> findNotificacionesByFechaAsistenciaVencida(List<EstadoNotificacion> estadoNotificacionList);
 }

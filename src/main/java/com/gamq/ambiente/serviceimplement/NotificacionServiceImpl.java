@@ -2,6 +2,7 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.NotificacionIntentoDto;
+import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.dto.mapper.NotificacionMapper;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
@@ -121,6 +122,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setSancion("Multa 3er grado por incumplimiento final");
             notificacionDto.setNumeroIntento(3);
         }
+        notificacionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccionOptional.get()));
         return notificacionDto;
     }
 
@@ -179,6 +181,14 @@ public class NotificacionServiceImpl implements NotificacionService {
             return NotificacionMapper.toNotificacionDto(notificacion);
         }
         throw new ResourceNotFoundException("Notificacion","uuid", uuid);
+    }
+
+    @Override
+    public List<NotificacionDto> obtenerNotificacionesPorFechaAsistenciaVencida() {
+        List<Notificacion> notificacionList = notificacionRepository.findNotificacionesByFechaAsistenciaVencida(Arrays.asList(EstadoNotificacion.CUMPLIDA, EstadoNotificacion.FALLIDA));
+        return notificacionList.stream().map(notificacion -> {
+            return NotificacionMapper.toNotificacionDto(notificacion);
+        }).collect(Collectors.toList());
     }
 
     //PROCESOS DE NOTIFICACIONES VALIDOS
