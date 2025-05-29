@@ -41,7 +41,8 @@ dependencies {
 	//jasperreport
 	implementation 'net.sf.jasperreports:jasperreports:6.19.1'
 	implementation 'net.sf.jasperreports:jasperreports-fonts:6.19.1'
-
+    //documentacion
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 	//
 	implementation 'com.google.zxing:core:3.4.1'
 	implementation 'com.google.zxing:javase:3.4.1'

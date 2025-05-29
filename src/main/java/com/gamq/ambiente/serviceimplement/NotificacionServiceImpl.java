@@ -17,6 +17,7 @@ import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.NotificacionService;
 import com.gamq.ambiente.utils.FechaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class NotificacionServiceImpl implements NotificacionService {
+    @Value("${spring.jackson.time-zone}")
+    private String zonaHorario;
     @Autowired
     NotificacionRepository notificacionRepository;
 
@@ -172,13 +175,13 @@ public class NotificacionServiceImpl implements NotificacionService {
                 .orElseThrow( () -> new ResourceNotFoundException("notificacion", "uuid", uuidNotificacion));
         LocalDate fechaPlazo = notificacion.getFechaAsistencia()
                 .toInstant()
-                .atZone(ZoneId.of("America/La_Paz"))
+                .atZone(ZoneId.of(zonaHorario))
                 .toLocalDate();
 
         if (nuevoEstadoNotificacion == EstadoNotificacion.VENCIDA &&
-                LocalDate.now().isAfter(fechaPlazo)
+                !LocalDate.now().isAfter(fechaPlazo)
         ){
-
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la notificacion tiene plazo");
         }
         notificacion.setStatusNotificacion(nuevoEstadoNotificacion);
         return  NotificacionMapper.toNotificacionDto(notificacionRepository.save(notificacion));

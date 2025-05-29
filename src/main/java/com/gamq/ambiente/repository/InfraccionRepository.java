@@ -18,8 +18,6 @@ public interface InfraccionRepository extends JpaRepository<Infraccion, Long> {
     List<Infraccion> findByFechaInfraccion(@Param("fechaInfraccion") Date fechaInfraccion);
     boolean existsByInspeccionUuidAndTipoInfraccionUuid(String uuidInspeccion, String uuidTipoInfraccion);
 
-    //SELECT i FROM Infraccion i
-    //WHERE i.inspeccion.vehiculo = :vehiculo
     //2025
     List<Infraccion> findByInspeccionVehiculo(Vehiculo vehiculo);
     @Query("SELECT i FROM Infraccion i WHERE i.inspeccion.vehiculo = :vehiculo")

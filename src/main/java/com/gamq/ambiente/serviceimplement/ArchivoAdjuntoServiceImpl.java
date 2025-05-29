@@ -83,7 +83,7 @@ public class ArchivoAdjuntoServiceImpl implements ArchivoAdjuntoService {
                 }
             }
             else {
-                throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND,"ta tarea no existe");
+                throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND,"el uuid del requisito de inspecion no existe");
             }
         }
         throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el nombre del archivo ya existe");

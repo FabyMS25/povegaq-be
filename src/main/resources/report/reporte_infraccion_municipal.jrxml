@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="505"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="484"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="cm"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<parameter name="logo64" class="java.lang.String">
+		<defaultValueExpression><![CDATA["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Título de Reporte"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Usuario Default"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="uuidInfraccion" class="java.lang.String"/>
+	<parameter name="subtitulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subtitulo"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechaActual" class="java.util.Date"/>
+	<parameter name="lugarInspeccion" class="java.lang.String"/>
+	<parameter name="actividad" class="java.lang.String"/>
+	<parameter name="gradoInfraccion" class="java.lang.String"/>
+	<parameter name="placa" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT i.estado_pago, i.fecha_infraccion, i.fecha_pago, i.monto_total, i.numero_tasa, i.status_infraccion
+	FROM infracciones as i 
+	where i.estado = false and i.uuid =  $P{uuidInfraccion}]]>
+	</queryString>
+	<field name="fecha_infraccion" class="java.util.Date"/>
+	<field name="monto_total" class="java.math.BigDecimal"/>
+	<field name="estado_pago" class="java.lang.Boolean"/>
+	<field name="fecha_pago" class="java.util.Date"/>
+	<field name="numero_tasa" class="java.lang.String"/>
+	<field name="status_infraccion" class="java.lang.String"/>
+	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="457" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{logo64}))]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="11" y="80" width="539" height="40" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BOLETA DE INFRACCIÓN AMBIENTAL POR EMISIÓN DE GASES VEHICULARES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="90" y="5" width="460" height="19" uuid="c74886d4-dc36-42d6-b86a-109fcf0fa72f"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO MUNICIPAL DE QUILLACOLLO]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="90" y="23" width="360" height="20" uuid="5f243fa9-afc4-4a4a-8233-43cd745ca577">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="89" y="43" width="361" height="21" uuid="86800168-64f7-457b-884c-ca5785d6086d">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="40" y="420" width="483" height="30" uuid="f721e469-934b-418b-8f22-f04ef39fe181"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Tiene 10 días hábiles para pagar o presentar descargo…]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="470" y="51" width="80" height="14" uuid="ad8bc7fd-1e5c-4d1d-8d87-bd7b65eb3d2e"/>
+				<textFieldExpression><![CDATA[$P{usuario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="430" y="51" width="39" height="14" uuid="3bc40143-4013-4f4b-b185-f9f29af2b922"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Usuario:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="385" y="65" width="84" height="14" uuid="a106452d-aa70-46f3-9c91-d61c4cf5b0d6"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Fecha Impresion:]]></text>
+			</staticText>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="470" y="65" width="80" height="14" uuid="03f119bb-6039-4086-8e26-06728dc96355"/>
+				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="179" y="140" width="160" height="20" uuid="a4bc3a53-31a0-4eb4-ad1b-77e5bf524288"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_infraccion}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="140" width="128" height="20" uuid="ce5cc6d4-2c17-4f41-9d2c-2edd5eda80ad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha de Infraccion:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="160" width="40" height="20" uuid="87d66f51-7640-418e-aab7-1444b2b61efe"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Placa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="90" y="160" width="233" height="20" uuid="17745170-f6a1-4bbb-8552-347750ffbaae"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{placa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="180" width="140" height="20" uuid="476e670a-cac9-4cb8-8996-e652487be160"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre del Conductor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="347" y="140" width="89" height="20" uuid="c01a52ec-636d-40c8-ae0a-7627ad0eb332"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Numero Tasa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="438" y="140" width="80" height="20" uuid="f50467a3-b09f-43a4-abd1-e0c86ea8bdb8"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{numero_tasa}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="271" y="330" width="110" height="20" uuid="4d46dc34-f2e5-4b92-9ebe-3868084d81ce"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto Total(UFV) :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="381" y="330" width="140" height="20" uuid="0ce1f338-b01a-45bc-92c0-bf601cf00032"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{monto_total}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="260" width="110" height="20" uuid="b8dddbdb-8606-4418-8670-d1332adc4abb"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar Infraccion:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="280" width="110" height="20" uuid="c81259a6-e813-4baf-bb84-9d5238fa5beb"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Actividad:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="260" width="330" height="20" uuid="c4a299b0-c93f-41a8-bcc8-0565de6ec16d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{lugarInspeccion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="280" width="330" height="20" uuid="4be4432a-ce67-4618-b638-41778e99b5d2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{actividad}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="230" width="110" height="20" uuid="aae55914-312c-4e75-86f1-89236967f677"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Grado Infraccion:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="160" y="230" width="280" height="20" uuid="ec1ff1b9-5d23-4516-91aa-dee0d6a1a5c4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{gradoInfraccion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20"/>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="40"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</summary>
+</jasperReport>

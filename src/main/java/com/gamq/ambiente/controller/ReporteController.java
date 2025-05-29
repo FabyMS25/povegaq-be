@@ -1,10 +1,13 @@
 package com.gamq.ambiente.controller;
 
+import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.NotificacionDto;
+import com.gamq.ambiente.dto.mapper.InfraccionMapper;
 import com.gamq.ambiente.model.Certificado;
 import com.gamq.ambiente.repository.CertificadoRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
 import com.gamq.ambiente.service.CertificadoService;
+import com.gamq.ambiente.service.InfraccionService;
 import com.gamq.ambiente.service.NotificacionService;
 import com.gamq.ambiente.utils.FechaUtil;
 import com.gamq.ambiente.utils.GeneradorReporte;
@@ -40,6 +43,8 @@ public class ReporteController {
     private CertificadoRepository certificadoRepository;
     @Autowired
     private NotificacionService notificacionService;
+    @Autowired
+    private InfraccionService infraccionService;
 
 
     @RequestMapping( value = "/notificacion", method= RequestMethod.GET)
@@ -184,6 +189,57 @@ public class ReporteController {
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+        }
+    }
+
+    @RequestMapping( value = "/infraccion", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarReporteMulta(
+            @RequestParam( name = "uuid") String infraccionUuid,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+            String gradoInfraccion="";
+            String placa="";
+            String lugarInspeccion="";
+            Date fechaActual =  new Date();
+            String actividad ="";
+
+            if (!infraccionUuid.equalsIgnoreCase("0")) {
+                InfraccionDto multaDto =  infraccionService.obtenerInfraccionPorUuid(infraccionUuid);//   multaService.obtenerMultaPorUuid(multaUuid);
+                lugarInspeccion = multaDto.getInspeccionDto().getLugarInspeccion();
+                gradoInfraccion = multaDto.getTipoInfraccionDto().getGrado();
+                placa = multaDto.getInspeccionDto().getVehiculoDto().getPlaca();  // 2025 como obtener cuando no tiene placa
+                actividad = multaDto.getInspeccionDto().getActividadDto().getTipoActividad();
+               // nombre Funcionario que genero la infraccion;
+            }
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("subtitulo", "MULTA");
+            //con que reglamento o articulo se geero la infraccion
+            parametros.put("lugarInspeccion", lugarInspeccion);
+            parametros.put("actividad", actividad);
+            parametros.put("gradoInfraccion", gradoInfraccion);
+            parametros.put("placa", placa);
+            parametros.put("fechaActual", fechaActual);
+            parametros.put("uuidInfraccion", infraccionUuid);
+            //parametros.put("nombrefuncionario", nombreFuncionario);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_infraccion_municipal",
+                    "classpath:report/reporte_infracion_municipal.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
         }
     }
 }

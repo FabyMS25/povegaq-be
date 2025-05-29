@@ -18,7 +18,7 @@ public class GeneradorInfraccionServiceImpl {
     @Autowired
     TipoInfraccionRepository tipoInfraccionRepository;
 
-
+    //Optimizar el generador de inspecciones
     public Infraccion generarDesdeInspeccion(Inspeccion inspeccion) {
         // Obtener historial de infracciones del vehículo
         List<Infraccion> historial = infraccionRepository.findByInspeccionVehiculo(inspeccion.getVehiculo());
@@ -50,6 +50,51 @@ public class GeneradorInfraccionServiceImpl {
 
         // Guardar y devolver
         return infraccionRepository.save(infraccion);
+    }
+
+    private String clasificarGradoCompleto(Inspeccion inspeccion, List<Infraccion> historial) {
+        boolean falloActual = !inspeccion.isResultado();
+
+        // 3ER GRADO: Segunda inspección fallida
+        if (falloActual) {
+            Optional<Inspeccion> anteriorFallida = historial.stream()
+                    .map(Infraccion::getInspeccion)
+                    .filter(Objects::nonNull)
+                    .filter(i -> !i.isResultado())
+                    .max(Comparator.comparing(Inspeccion::getFechaInspeccion));
+
+            if (anteriorFallida.isPresent() &&
+                    inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
+                return "TERCER GRADO";//GradoInfraccion.TERCER;
+            }
+        }
+
+        // 2DO GRADO: Reincidencia en no tener certificación o no pagar multas
+        long infraccionesNoPagadas = historial.stream()
+                .filter(i -> !i.isEstadoPago())
+                .count();
+
+        if (infraccionesNoPagadas >= 2) {
+            return "SEGUNDO GRADO"; //GradoInfraccion.SEGUNDO;
+        }
+
+        long inspeccionesFallidas = historial.stream()
+                .map(Infraccion::getInspeccion)
+                .filter(Objects::nonNull)
+                .filter(i -> !i.isResultado())
+                .count();
+
+        if (inspeccionesFallidas >= 2) {
+            return "SEGUNDO GRADO";// GradoInfraccion.SEGUNDO;
+        }
+
+        // 1ER GRADO: Primera vez que falla inspección
+        if (falloActual) {
+            return "PRIMER GRADO"; //GradoInfraccion.PRIMER;
+        }
+
+        // No aplica infracción
+        return null;
     }
 
     private String clasificarGrado(Inspeccion inspeccion, List<Infraccion> historial) {

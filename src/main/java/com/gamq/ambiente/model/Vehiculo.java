@@ -1,9 +1,7 @@
 package com.gamq.ambiente.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -19,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+//@ToString(exclude = {"inspeccionList", "fotoVehiculoList", "datoTecnico"}) // Evita el ciclo desde este lado
 @Entity
 @Table(name = "vehiculos", indexes = @Index(name = "idx_vehi", columnList = "uuid", unique = true))
 @SQLDelete(sql = "UPDATE vehiculos SET estado=true WHERE id_vehiculo=?")
@@ -60,6 +59,7 @@ public class Vehiculo {
     private boolean estado;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -74,6 +74,27 @@ public class Vehiculo {
 
    
     public Vehiculo(String uuid) {this.uuid = uuid;}
+
+    @Override
+    public String toString() {
+        return "Vehiculo{" +
+                "idVehiculo=" + idVehiculo +
+                ", uuid='" + uuid + '\'' +
+                ", placa='" + placa + '\'' +
+                ", poliza='" + poliza + '\'' +
+                ", vinNumeroIdentificacion='" + vinNumeroIdentificacion + '\'' +
+                ", esOficial=" + esOficial +
+                ", fechaRegistro=" + fechaRegistro +
+                ", jurisdiccionOrigen='" + jurisdiccionOrigen + '\'' +
+                ", esMovil=" + esMovil +
+                ", esUnidadIndustrial=" + esUnidadIndustrial +
+                ", pinNumeroIdentificacion='" + pinNumeroIdentificacion + '\'' +
+                ", nroCopiasPlaca=" + nroCopiasPlaca +
+                ", placaAnterior='" + placaAnterior + '\'' +
+                ", chasis='" + chasis + '\'' +
+                ", estado=" + estado +
+                '}';
+    }
 
     @PrePersist
     public void initializeUuid() {

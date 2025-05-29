@@ -1,9 +1,7 @@
 package com.gamq.ambiente.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -19,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+//@ToString(exclude = {"vehiculo"}) //  Esto evita recursión infinita
 @Entity
 @Table(name = "inspecciones", indexes = @Index(name = "idx_insp", columnList = "uuid", unique = true))
 @SQLDelete(sql = "UPDATE inspecciones SET estado=true WHERE id_inspeccion=?")
@@ -65,6 +64,7 @@ public class Inspeccion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vehiculo", nullable = false)
+    @JsonBackReference
     private Vehiculo vehiculo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -96,6 +96,24 @@ public class Inspeccion {
     private List<RequisitoInspeccion> requisitoInspeccionList = new ArrayList<>();
 
     public Inspeccion(String uuid) {this.uuid = uuid;}
+
+    @Override
+    public String toString() {
+        return "Inspeccion{" +
+                "idInspeccion=" + idInspeccion +
+                ", uuid='" + uuid + '\'' +
+                ", fechaInspeccion=" + fechaInspeccion +
+                ", resultado=" + resultado +
+                ", lugarInspeccion='" + lugarInspeccion + '\'' +
+                ", nombreInspector='" + nombreInspector + '\'' +
+                ", equipo='" + equipo + '\'' +
+                ", altitud=" + altitud +
+                ", examenVisualConforme=" + examenVisualConforme +
+                ", gasesEscapeConforme=" + gasesEscapeConforme +
+                ", fechaProximaInspeccion=" + fechaProximaInspeccion +
+                ", estado=" + estado +
+                '}';
+    }
 
     @PrePersist
     public void initializeUuid() {

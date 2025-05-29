@@ -1,12 +1,18 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.InfraccionDto;
+import com.gamq.ambiente.dto.InspeccionDto;
+import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
+import com.gamq.ambiente.dto.mapper.InspeccionMapper;
+import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.*;
 import com.gamq.ambiente.service.InfraccionService;
+import com.gamq.ambiente.utils.FechaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -87,19 +93,6 @@ public class InfraccionServiceImpl implements InfraccionService {
     }
 
     @Override
-    public InfraccionDto generarInfraccion(String uuidInspeccion) {
-        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
-        if(inspeccionOptional.isEmpty()){
-            throw new ResourceNotFoundException("Inspeccion","uuid", uuidInspeccion);
-        }
-        Infraccion infraccion = generadorInfraccionService.generarDesdeInspeccion(inspeccionOptional.get());
-        if(infraccion == null){
-            throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar INFRACCION para inspeccion "+ uuidInspeccion);
-        }
-        return InfraccionMapper.toInfraccionDto(infraccion);
-    }
-
-    @Override
     public InfraccionDto actualizarInfraccion(InfraccionDto infraccionDto) {
         Optional<Infraccion> infraccionOptional = infraccionRepository.findByUuid(infraccionDto.getUuid());
         if(infraccionOptional.isPresent()) {
@@ -134,23 +127,76 @@ public class InfraccionServiceImpl implements InfraccionService {
         }
         throw new ResourceNotFoundException("Infraccion","uuid", uuid);
     }
+     //EVALUAR LOS METODOS
+    @Override
+    public InfraccionDto generarInfraccion(String uuidInspeccion) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("Inspeccion","uuid", uuidInspeccion);
+        }
+        Infraccion infraccion = generadorInfraccionService.generarDesdeInspeccion(inspeccionOptional.get());
+        if(infraccion == null){
+            throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar INFRACCION para inspeccion "+ uuidInspeccion);
+        }
+        return InfraccionMapper.toInfraccionDto(infraccion);
+    }
 
-    public boolean evaluarResultadoInspeccion(String uuidInspeccion) {
-        List<DetalleInspeccion> detalles = detalleInspeccionRepository
-                .findByInspeccionUuidOrderByNroEjecucionAsc(uuidInspeccion);
-
-        if (detalles.isEmpty()) {
-            throw new RuntimeException("No hay mediciones para esta inspección");
+    public InfraccionDto procesarVistaPreviaSegundaInspeccion(String  uuidInspeccion) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("inspeccion", "uuid", uuidInspeccion);
+        }
+        if ( inspeccionOptional.get().isResultado()){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una infraccion por que el resultado de inspeccion Positivo o true");
         }
 
-        int medicionesMalas = 0;
-        for (DetalleInspeccion detalle : detalles) {
-            if (detalle.getValor().compareTo(new BigDecimal("5.0")) > 0) { //Constantes.LIMITE_PERMITIDO
-                medicionesMalas++;
-            }
-        }
+        // Multa de tercer grado por no adecuar el vehículo
+         return  vistaPreviaInfraccion(inspeccionOptional.get(), "TERCER GRADO",inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente(),"No adecuó su vehículo después de la segunda inspección.");
+            // generarNotificacion(inspeccion, TipoNotificacion.INFRACCION);
+        //} //else {
+        //  emitirCertificado(inspeccion);
+        //}
+    }
 
-        boolean fallo = medicionesMalas > 0; // puedes ajustar esta regla si deseas "2 o más fallas", etc.
-        return fallo;
+    /**
+     * Si ha pasado 1 año desde la primera inspección sin corregir el vehiculo  procesa infracción de 3er grado.
+     */
+    public InfraccionDto verificarVistaPreviaAdecuacionDentroDePlazo(String uuidInspeccion) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("inspeccion", "uuid", uuidInspeccion);
+        }
+        if ( inspeccionOptional.get().isResultado()){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una infraccion por que el resultado de inspeccion Positivo o true");
+        }
+        Date fechaLimite = FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365);
+        if (new Date().after(fechaLimite)) {
+            return vistaPreviaInfraccion(inspeccionOptional.get(), "TERCER  GRADO",inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente() , "No adecuó el vehículo dentro del año establecido.");
+        }
+        return null;
+    }
+
+    public InfraccionDto vistaPreviaInfraccionGeneral(String uuidInspeccion, String grado, TipoContribuyente tipoContribuyente, String motivo) {
+        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
+        if(inspeccionOptional.isEmpty()){
+            throw new ResourceNotFoundException("inspeccion", "uuid", uuidInspeccion);
+        }
+        if ( inspeccionOptional.get().isResultado()){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una infraccion por que el resultado de inspeccion Positivo o true");
+        }
+       return vistaPreviaInfraccion(inspeccionOptional.get(), grado, tipoContribuyente, motivo);
+    }
+
+    private InfraccionDto vistaPreviaInfraccion(Inspeccion inspeccion, String grado, TipoContribuyente tipoContribuyente, String descripcion) {
+        Optional<TipoInfraccion> tipo = tipoInfraccionRepository.findByGradoAndTipoContribuyente( grado, tipoContribuyente);
+        InfraccionDto  infraccionDto = new InfraccionDto();
+        infraccionDto.setFechaInfraccion(new Date());
+        infraccionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccion));
+        infraccionDto.setTipoInfraccionDto(TipoInfraccionMapper.toTipoInfraccionDto(tipo.get()));
+        infraccionDto.setMontoTotal(tipo.get().getValorUFV());
+        infraccionDto.setStatusInfraccion(StatusInfraccion.PENDIENTE.name());
+        infraccionDto.setEstadoPago(false);
+        infraccionDto.setEstado(true);
+        return infraccionDto;
     }
 }
