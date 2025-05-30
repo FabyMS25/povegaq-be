@@ -134,11 +134,11 @@ public class InfraccionServiceImpl implements InfraccionService {
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("Inspeccion","uuid", uuidInspeccion);
         }
-        Infraccion infraccion = generadorInfraccionService.generarDesdeInspeccion(inspeccionOptional.get());
-        if(infraccion == null){
+        InfraccionDto infraccionDto = generadorInfraccionService.generarDesdeInspeccion(inspeccionOptional.get());
+        if(infraccionDto == null){
             throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar INFRACCION para inspeccion "+ uuidInspeccion);
         }
-        return InfraccionMapper.toInfraccionDto(infraccion);
+        return infraccionDto;//  InfraccionMapper.toInfraccionDto(infraccion);
     }
 
     public InfraccionDto procesarVistaPreviaSegundaInspeccion(String  uuidInspeccion) {

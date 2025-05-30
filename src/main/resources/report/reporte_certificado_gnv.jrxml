@@ -43,25 +43,22 @@ i.equipo,
     MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
 	MAX(CASE WHEN d.nro_ejecucion = 4 THEN d.valor END) AS medicion_4ta,
 	MAX(CASE WHEN d.nro_ejecucion = 5 THEN d.valor END) AS medicion_5ta,
-    le.limite AS limite_permisible
+    d.limite_permisible
 from certificados as c
 inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
 inner join actividades as a on a.id_actividad = i.id_actividad
 inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
 inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
-LEFT JOIN 
-    limites_emision le 
-    ON le.id_tipo_parametro = t.id_tipo_parametro 
-    --AND le.tipo_combustible = 'GNV'
+
 inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
-and dt.estado = false and le.estado = false
+and dt.estado = false 
 GROUP BY
- t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion,dt.tipo_combustion,le.limite
+ t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion,dt.tipo_combustion,d.limite_permisible
 ORDER BY
-t.nombre ]]>
+t.nombre]]>
 	</queryString>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="descripcion" class="java.lang.String"/>
@@ -223,26 +220,22 @@ t.nombre ]]>
 			<textField>
 				<reportElement x="221" y="10" width="40" height="15" uuid="ba4b1f3d-cb42-4919-b797-a09a12655646"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{medicion_2da} != null ? "2da" : ""
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{medicion_2da} != null ? "2da" : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="263" y="10" width="40" height="15" uuid="76272208-a149-4eda-942f-c1554b652a71"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{medicion_3ra} != null ? "3ra" : ""
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{medicion_3ra} != null ? "3ra" : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="304" y="10" width="40" height="15" uuid="3fe03582-512c-4e17-81c6-e702aeb532ba"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{medicion_4ta} != null ? "4ta" : ""
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{medicion_4ta} != null ? "4ta" : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="346" y="10" width="40" height="15" uuid="31835005-6916-487a-8364-6948175786bf"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{medicion_5ta} != null ? "5ta" : ""
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{medicion_5ta} != null ? "5ta" : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -266,8 +259,7 @@ t.nombre ]]>
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622b468f-e453-4c7e-a566-bbb7376d39ee"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[($F{medicion_1ra} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_1ra})).setScale(2, java.math.RoundingMode.HALF_UP)):"")
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{medicion_1ra} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_1ra})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="221" y="1" width="40" height="13" isRemoveLineWhenBlank="true" uuid="ed024d74-abda-46c7-95bf-75727be32fe9">

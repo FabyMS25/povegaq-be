@@ -39,6 +39,9 @@ public class DetalleInspeccion {
     @Column(name = "nro_ejecucion", nullable = false)
     private Integer nroEjecucion;
 
+    @Column(name = "limite_permisible",  nullable = false, precision = 20, scale = 4)
+    private BigDecimal limitePermisible;
+
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

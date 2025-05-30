@@ -43,6 +43,12 @@ public class Infraccion {
     private Date fechaPago;
     @Column(name = "numero_tasa", nullable = true, length = 15)
     private String numeroTasa;
+    @Column(name = "motivo", nullable = false, length = 250)
+    private String motivo;
+    @Column(name = "nombre_registrador", nullable = false, length = 100)
+    private String nombreRegistrador;
+    @Column(name = "uuid_usuario", nullable = false, length = 64)
+    private String uuidUsuario;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

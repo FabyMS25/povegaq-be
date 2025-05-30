@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,10 @@ public class InfraccionDto {
     private boolean estadoPago;
     private Date fechaPago;
     private String numeroTasa;
+    @NotNull
+    private String motivo;
+    private String nombreRegistrador;
+    private String uuidUsuario;
     private boolean estado;
 
     @Valid

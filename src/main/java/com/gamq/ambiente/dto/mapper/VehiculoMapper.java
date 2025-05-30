@@ -84,12 +84,6 @@ public class VehiculoMapper {
                         .setEstadoCivil(vehiculo.getPropietario().getEstadoCivil())
                         .setGenero(vehiculo.getPropietario().getGenero())
                         .setFechaNacimiento(vehiculo.getPropietario().getFechaNacimiento())
-
-
-
-
-
-
                         .setTipoContribuyenteDto(vehiculo.getPropietario() == null? null: new TipoContribuyenteDto()
                                 .setUuid(vehiculo.getPropietario().getTipoContribuyente().getUuid())
                                 .setDescripcion(vehiculo.getPropietario().getTipoContribuyente().getDescripcion())

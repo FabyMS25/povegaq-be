@@ -32,13 +32,18 @@
 	</parameter>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<parameter name="lugarInspeccion" class="java.lang.String"/>
-	<parameter name="actividad" class="java.lang.String"/>
-	<parameter name="gradoInfraccion" class="java.lang.String"/>
-	<parameter name="placa" class="java.lang.String"/>
+	<parameter name="nombreCompleto" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT i.estado_pago, i.fecha_infraccion, i.fecha_pago, i.monto_total, i.numero_tasa, i.status_infraccion
-	FROM infracciones as i 
-	where i.estado = false and i.uuid =  $P{uuidInfraccion}]]>
+		<![CDATA[SELECT i.estado_pago, i.fecha_infraccion, i.fecha_pago, i.monto_total, i.numero_tasa, i.status_infraccion, i.motivo,
+COALESCE(v.placa, v.poliza, v.vin_numero_identificacion, v.pin_numero_identificacion) AS placa, 
+i.nombre_registrador,a.tipo_actividad, t.grado
+FROM infracciones as i 
+inner join tipo_infracciones as t on t.id_tipo_infraccion = i.id_tipo_infraccion
+inner join inspecciones as ip on ip.id_inspeccion = i.id_inspeccion	
+inner join vehiculos as v on v.id_vehiculo = ip.id_vehiculo
+inner join actividades as a on a.id_actividad = ip.id_actividad
+where t.estado= false and a.estado = false and v.estado = false and ip.estado = false and i.estado = false 
+and i.uuid = $P{uuidInfraccion}]]>
 	</queryString>
 	<field name="fecha_infraccion" class="java.util.Date"/>
 	<field name="monto_total" class="java.math.BigDecimal"/>
@@ -46,6 +51,11 @@
 	<field name="fecha_pago" class="java.util.Date"/>
 	<field name="numero_tasa" class="java.lang.String"/>
 	<field name="status_infraccion" class="java.lang.String"/>
+	<field name="placa" class="java.lang.String"/>
+	<field name="tipo_actividad" class="java.lang.String"/>
+	<field name="grado" class="java.lang.String"/>
+	<field name="motivo" class="java.lang.String"/>
+	<field name="nombre_registrador" class="java.lang.String"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
@@ -58,7 +68,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="457" splitType="Stretch">
+		<band height="476" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image scaleImage="FillFrame" onErrorType="Blank">
 				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
@@ -100,11 +110,11 @@
 				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="40" y="420" width="483" height="30" uuid="f721e469-934b-418b-8f22-f04ef39fe181"/>
+				<reportElement x="50" y="450" width="483" height="20" uuid="f721e469-934b-418b-8f22-f04ef39fe181"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
-				<text><![CDATA[Tiene 10 días hábiles para pagar o presentar descargo…]]></text>
+				<text><![CDATA[Tiene x días hábiles para pagar o presentar descargo…]]></text>
 			</staticText>
 			<textField>
 				<reportElement x="470" y="51" width="80" height="14" uuid="ad8bc7fd-1e5c-4d1d-8d87-bd7b65eb3d2e"/>
@@ -125,97 +135,126 @@
 				<textFieldExpression><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new java.util.Date())]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="179" y="140" width="160" height="20" uuid="a4bc3a53-31a0-4eb4-ad1b-77e5bf524288"/>
+				<reportElement x="179" y="137" width="160" height="20" uuid="a4bc3a53-31a0-4eb4-ad1b-77e5bf524288"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fecha_infraccion}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="50" y="140" width="128" height="20" uuid="ce5cc6d4-2c17-4f41-9d2c-2edd5eda80ad"/>
+				<reportElement x="50" y="136" width="128" height="20" uuid="ce5cc6d4-2c17-4f41-9d2c-2edd5eda80ad"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha de Infraccion:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="160" width="40" height="20" uuid="87d66f51-7640-418e-aab7-1444b2b61efe"/>
+				<reportElement x="50" y="159" width="40" height="20" uuid="87d66f51-7640-418e-aab7-1444b2b61efe"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Placa:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="90" y="160" width="233" height="20" uuid="17745170-f6a1-4bbb-8552-347750ffbaae"/>
+				<reportElement x="90" y="159" width="220" height="20" uuid="17745170-f6a1-4bbb-8552-347750ffbaae"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{placa}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="50" y="180" width="140" height="20" uuid="476e670a-cac9-4cb8-8996-e652487be160"/>
+				<reportElement x="50" y="183" width="140" height="20" uuid="476e670a-cac9-4cb8-8996-e652487be160"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Nombre del Conductor:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="347" y="140" width="89" height="20" uuid="c01a52ec-636d-40c8-ae0a-7627ad0eb332"/>
+				<reportElement x="347" y="137" width="89" height="20" uuid="c01a52ec-636d-40c8-ae0a-7627ad0eb332"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Numero Tasa:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="438" y="140" width="80" height="20" uuid="f50467a3-b09f-43a4-abd1-e0c86ea8bdb8"/>
+				<reportElement x="438" y="137" width="80" height="20" isRemoveLineWhenBlank="true" uuid="f50467a3-b09f-43a4-abd1-e0c86ea8bdb8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{numero_tasa}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="271" y="330" width="110" height="20" uuid="4d46dc34-f2e5-4b92-9ebe-3868084d81ce"/>
+				<reportElement x="220" y="310" width="160" height="20" uuid="4d46dc34-f2e5-4b92-9ebe-3868084d81ce"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Monto Total(UFV) :]]></text>
+				<text><![CDATA[Monto Total a Pagar(UFV) :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="381" y="330" width="140" height="20" uuid="0ce1f338-b01a-45bc-92c0-bf601cf00032"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<reportElement x="380" y="310" width="138" height="20" uuid="0ce1f338-b01a-45bc-92c0-bf601cf00032"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{monto_total}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="50" y="260" width="110" height="20" uuid="b8dddbdb-8606-4418-8670-d1332adc4abb"/>
+				<reportElement x="50" y="252" width="110" height="20" uuid="b8dddbdb-8606-4418-8670-d1332adc4abb"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Lugar Infraccion:]]></text>
+				<text><![CDATA[Lugar Inspeccion:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="50" y="280" width="110" height="20" uuid="c81259a6-e813-4baf-bb84-9d5238fa5beb"/>
+				<reportElement x="50" y="277" width="70" height="20" uuid="c81259a6-e813-4baf-bb84-9d5238fa5beb"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Actividad:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="160" y="260" width="330" height="20" uuid="c4a299b0-c93f-41a8-bcc8-0565de6ec16d"/>
+				<reportElement x="160" y="252" width="330" height="20" uuid="c4a299b0-c93f-41a8-bcc8-0565de6ec16d"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{lugarInspeccion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="160" y="280" width="330" height="20" uuid="4be4432a-ce67-4618-b638-41778e99b5d2"/>
+				<reportElement x="120" y="276" width="330" height="20" uuid="4be4432a-ce67-4618-b638-41778e99b5d2"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{actividad}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{tipo_actividad}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="50" y="230" width="110" height="20" uuid="aae55914-312c-4e75-86f1-89236967f677"/>
+				<reportElement x="50" y="229" width="110" height="20" uuid="aae55914-312c-4e75-86f1-89236967f677"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Grado Infraccion:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="160" y="230" width="280" height="20" uuid="ec1ff1b9-5d23-4516-91aa-dee0d6a1a5c4"/>
+				<reportElement x="160" y="229" width="280" height="20" uuid="ec1ff1b9-5d23-4516-91aa-dee0d6a1a5c4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{gradoInfraccion}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{grado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="206" width="50" height="20" uuid="6a323cbb-f190-479f-945a-54fd0f260327"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Motivo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="206" width="418" height="20" uuid="ae439b56-9830-4ea0-9193-5c2b025520a5"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{motivo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="190" y="183" width="328" height="20" uuid="ef4e846f-f372-473f-82ff-87a1feddde7c"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{nombreCompleto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="179" y="380" width="202" height="20" uuid="bc3d212b-25eb-466a-a4bf-0e4226c7b681"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA FUNCIONARIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="179" y="400" width="202" height="20" uuid="602b1135-20b4-455f-a7b7-a8e4cc03e17f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre_registrador}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

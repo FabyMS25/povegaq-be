@@ -28,6 +28,7 @@ public class DetalleInspeccionDto {
     private boolean resultadoParcial;
     private Integer tipoPrueba;
     private Integer nroEjecucion;
+    private BigDecimal limitePermisible;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;
