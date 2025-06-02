@@ -13,7 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface ReglamentoRepository extends JpaRepository<Reglamento, Long> {
+    @Query("SELECT r FROM Reglamento r WHERE r.uuid = :uuid AND r.estado = false")
     Optional<Reglamento> findByUuid(String uuid);
+    @Query("SELECT r FROM Reglamento r WHERE r.codigo = :codigo AND r.estado = false")
     Optional<Reglamento> findByCodigo(String codigo);
     @Query("SELECT r FROM Reglamento r WHERE r.activo = true")
     Optional<Reglamento> findActivoReglamento();

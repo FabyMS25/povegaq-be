@@ -4,6 +4,8 @@ import com.gamq.ambiente.dto.LimiteEmisionDto;
 import com.gamq.ambiente.dto.mapper.LimiteEmisionMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
+import com.gamq.ambiente.model.DatoTecnico;
+import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.LimiteEmision;
 import com.gamq.ambiente.model.TipoParametro;
 import com.gamq.ambiente.repository.LimiteEmisionRepository;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -129,4 +132,61 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         limiteEmisionRepository.save(limiteEmision);
         return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
     }
+
+    @Override
+    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud) {
+        try {
+        List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
+        List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
+                .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
+                .filter(l -> l.getTipoMotor() != null && l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
+                .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(datoTecnico.getTipoCombustion()))
+                .filter(l-> l.getClaseVehiculo() != null && l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
+                // si es null deja pasar
+                .filter(l -> l.getCategoriaVehiculo() == null
+                        || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
+
+               // .filter(l ->l.getCategoriaVehiculo() != null &&  l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
+                .filter(l -> matchBetweenInteger(l.getYearFabricacionInicio(), l.getYearFabricacionFin(), datoTecnico.getYearFabricacion()))
+                .filter(l -> matchBetweenInteger(l.getAltitudMinima(), l.getAltitudMaxima(), altitud) )
+                .filter(l -> matchBetweenBigDecimal(l.getCilindradaMinimo(), l.getCilindradaMaximo(), datoTecnico.getCilindrada()))
+                .filter(l -> matchBetweenBigDecimal(l.getPesoBrutoMinimo(), l.getPesoBrutoMaximo(), datoTecnico.getCapacidadCarga()))
+                .filter(l -> matchEqualsIgnoreCase(l.getTiempoMotor(), datoTecnico.getTiempoMotor()))
+                .filter(LimiteEmision::isActivo)
+                //.filter(LimiteEmision::isEstado)
+                .collect(Collectors.toList());
+        return limiteEmisionFitrados.stream().map(limiteEmision -> {
+            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
+        }).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace(); // solo para depuración, luego eliminar
+            throw new RuntimeException("Error al buscar límites de emisión: " + e.getMessage(), e);
+        }
+    }
+
+    private boolean matchBetweenBigDecimal(Integer min, Integer max, BigDecimal value) {
+
+        // Si el valor medido es nulo, se considera válido solo si también no hay rangos definidos
+        if (value == null) {
+            return min == null && max == null;
+        }
+        //if (min == null && max == null) return true;
+        int val = value.intValue();
+        return (min == null || val >= min) && (max == null || val <= max);
+    }
+
+    private boolean matchBetweenInteger(Integer min, Integer max, Integer value) {
+        // Si el valor medido es nulo, se considera válido solo si también no hay rangos definidos
+        if (value == null) {
+            return min == null && max == null;
+        }
+        //if (value == null) return true;
+        return (min == null || value >= min) && (max == null || value <= max);
+    }
+
+    private boolean matchEqualsIgnoreCase(String a, String b) {
+        if (a == null || b == null) return true; // Si alguno es nulo, se considera que no filtra
+        return a.trim().equalsIgnoreCase(b.trim());
+    }
+
 }

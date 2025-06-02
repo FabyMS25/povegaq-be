@@ -1,9 +1,5 @@
 package com.gamq.ambiente.utils;
 
-import com.gamq.ambiente.dto.ConductorDto;
-import com.gamq.ambiente.dto.InspeccionDto;
-import com.gamq.ambiente.dto.PropietarioDto;
-import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.model.Conductor;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Propietario;

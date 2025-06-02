@@ -39,7 +39,7 @@ public class LimiteEmision {
     @Column(name="cilindrada_maximo", nullable = true)
     private Integer cilindradaMaximo;
 
-    @Column(name ="categoria_vehiculo", nullable = true, length =250)
+    @Column(name ="categoria_vehiculo", nullable = false, length =250)
     private String categoriaVehiculo;  //livianos pesados motocicletas
     @Column(name ="categoria", nullable = true, length = 250)
     private String categoria;

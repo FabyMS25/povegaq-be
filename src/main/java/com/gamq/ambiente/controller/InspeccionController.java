@@ -2,6 +2,7 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.InspeccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.service.ComparacionEmisionService;
 import com.gamq.ambiente.service.InspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import java.util.Date;
 public class InspeccionController {
     @Autowired
     InspeccionService inspeccionService;
+    @Autowired
+    ComparacionEmisionService comparacionEmisionService;
 
     @GetMapping("/uuid/{uuid}")
     public Response getInspeccionByUuid(@PathVariable("uuid") String uuid) {
@@ -58,6 +61,12 @@ public class InspeccionController {
     @DeleteMapping("/{uuid}")
     public Response deleteInspeccion(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(inspeccionService.eliminarInspeccion(uuid));
+    }
+
+    @PostMapping("/validar-inspeccion/{uuidInspeccion}")
+    public Response validarInspeccion(@PathVariable("uuidInspeccion") String uuidInspeccion){
+        comparacionEmisionService.validarInspeccion(uuidInspeccion);
+        return Response.ok().setPayload("Operacion completada");
     }
 
 }

@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -32,10 +33,12 @@ public class LimiteEmisionDto {
     private String tipoCombustible;
     private Integer cilindradaMinimo;
     private Integer cilindradaMaximo;
+    @NotBlank(message = "La categoría del vehículo es requerida")
     private String categoriaVehiculo; //liviano, mediano y pesado
     private String categoria;
     private Integer yearFabricacionInicio;
     private Integer yearFabricacionFin;
+    @NotNull(message = "El límite de emisión es requerido")
     private BigDecimal limite;
 
     private Integer pesoBrutoMinimo; // en kilogramos
@@ -56,6 +59,7 @@ public class LimiteEmisionDto {
     private boolean activo;
     private boolean estado;
 
+    @NotNull(message = "El tipo de parámetro es requerido")
     private TipoParametroDto tipoParametroDto;
 
 }

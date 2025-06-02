@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface LimiteEmisionRepository extends JpaRepository<LimiteEmision, Long> {
+    @Query("SELECT l FROM LimiteEmision l WHERE l.uuid = :uuid AND l.estado = false")
     Optional<LimiteEmision> findByUuid(String uuid);
     Optional<LimiteEmision> findByTipoCombustible(String tipoCombustible);
     @Query("SELECT l FROM LimiteEmision l WHERE l.activo = true AND l.tipoParametro.uuid = :uuidTipoParametro")
@@ -29,4 +30,19 @@ public interface LimiteEmisionRepository extends JpaRepository<LimiteEmision, Lo
     boolean exitsLimiteEmisionLikeNombreTipoParametro(@Param("tipoCombustible") String tipoCombustible,
                                                       @Param("nombreTipoParametro") String nombreTipoParametro,
                                                       @Param("uuidLimiteEmision") String uuidLimiteEmision);
+    @Query("SELECT l FROM LimiteEmision l " +
+            "WHERE l.tipoParametro.nombre = :tipoParametro " +
+            "AND l.tipoCombustible = :tipoCombustible " +
+            "AND l.tipoMotor = :tipoMotor " +
+           // "AND l.tipoControl = :tipoControl " +
+            "AND :yearFabricacion BETWEEN l.yearFabricacionInicio AND l.yearFabricacionFin " +
+            "AND :altitud BETWEEN l.altitudMinima AND l.altitudMaxima")
+    Optional<LimiteEmision> findByParametros(
+            @Param("tipoParametro") String tipoParametro,
+            @Param("tipoCombustible") String tipoCombustible,
+            @Param("tipoMotor") String tipoMotor,
+          //  @Param("tipoControl") String tipoControl,
+            @Param("yearFabricacion") Integer yearFabricacion,
+            @Param("altitud") Integer altitud
+    );
 }
