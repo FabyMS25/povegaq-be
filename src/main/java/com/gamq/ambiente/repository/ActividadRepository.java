@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +23,7 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long> {
 
     @Query("SELECT a FROM Actividad a WHERE YEAR(a.fechaInicio) = :year AND a.estado = false ")
     List<Actividad> findActividadesPorAnio(Integer year);
+
+    @Query("SELECT a FROM Actividad a WHERE a.activo = true AND a.fechaInicio <= :rangoFin AND a.fechaFin >= :rangoInicio")
+    List<Actividad> findActividadesBetweenFechas(@Param("rangoInicio") Date rangoInicio, @Param("rangoFin") Date rangoFin);
 }

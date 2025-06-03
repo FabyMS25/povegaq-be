@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/actividad")
@@ -58,6 +60,13 @@ public class ActividadController {
     public Response updateActividadActivo(@PathVariable String uuid,
                                           @RequestParam boolean activo){
         return Response.ok().setPayload(actividadService.actualizarActividadActivo(uuid, activo));
+    }
+
+    @GetMapping("/entre-fechas")
+    public Response obtenerActividadesEntreFechas(
+            @RequestParam("inicio") Date rangoInicio,
+            @RequestParam("fin") Date rangoFin) {
+        return Response.ok().setPayload (actividadService.obtenerActividadesEntreFechas(rangoInicio, rangoFin));
     }
 }
 

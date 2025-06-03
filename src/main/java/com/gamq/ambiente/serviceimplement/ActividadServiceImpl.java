@@ -8,6 +8,7 @@ import com.gamq.ambiente.model.Actividad;
 import com.gamq.ambiente.model.LimiteEmision;
 import com.gamq.ambiente.repository.ActividadRepository;
 import com.gamq.ambiente.service.ActividadService;
+import com.gamq.ambiente.validators.ActividadValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ import java.util.stream.Collectors;
 public class ActividadServiceImpl implements ActividadService {
     @Autowired
     ActividadRepository actividadRepository;
+    @Autowired
+    ActividadValidator actividadValidator;
 
     @Override
     public ActividadDto obtenerActividadPorUuid(String uuid) {
@@ -51,6 +54,9 @@ public class ActividadServiceImpl implements ActividadService {
 
     @Override
     public ActividadDto crearActividad(ActividadDto actividadDto) {
+        if(!actividadValidator.validateFechaInicioFinActividad(actividadDto)){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+        }
         String tipoActividad = actividadDto.getTipoActividad();
         if(tipoActividad==null){ throw new ResourceNotFoundException("actividad","tipo actividad", tipoActividad);}
         Optional<Actividad> actividadOptional = actividadRepository.findByTipoActividad(tipoActividad);
@@ -63,6 +69,9 @@ public class ActividadServiceImpl implements ActividadService {
 
     @Override
     public ActividadDto actualizarActividad(ActividadDto actividadDto) {
+        if(!actividadValidator.validateFechaInicioFinActividad(actividadDto)){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+        }
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(actividadDto.getUuid());
         if(actividadOptional.isPresent()) {
             if (!actividadRepository.exitsActividadLikeTipoActividad(actividadDto.getTipoActividad().toLowerCase(), actividadDto.getUuid())) {
@@ -122,5 +131,13 @@ public class ActividadServiceImpl implements ActividadService {
         }
         actividadRepository.save(actividad);
         return ActividadMapper.toActividadDto(actividad);
+    }
+
+    @Override
+    public List<ActividadDto> obtenerActividadesEntreFechas(Date rangoInicio, Date rangoFin) {
+        List<Actividad> actividadList = actividadRepository.findActividadesBetweenFechas(rangoInicio, rangoFin);
+        return actividadList.stream().map(actividad -> {
+            return ActividadMapper.toActividadDto(actividad);
+        }).collect(Collectors.toList());
     }
 }

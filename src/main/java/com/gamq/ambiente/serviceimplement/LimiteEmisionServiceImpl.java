@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -137,23 +138,84 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud) {
         try {
         List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
+
+            //prueba paso a paso
+           /* List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
+            System.out.println("Total inicial: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de tipoParametro: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
+
+                    .collect(Collectors.toList());
+
+            System.out.println("Después de tipoMotor: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getTipoCombustible() == null || l.getTipoCombustible().equalsIgnoreCase(datoTecnico.getTipoCombustion()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de tipoCombustible: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de claseVehiculo: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getCategoriaVehiculo() == null || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de categoriaVehiculo: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> matchBetweenInteger(l.getYearFabricacionInicio(), l.getYearFabricacionFin(), datoTecnico.getYearFabricacion()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de yearFabricacion: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> matchBetweenInteger(l.getAltitudMinima(), l.getAltitudMaxima(), altitud))
+                    .collect(Collectors.toList());
+            System.out.println("Después de altitud: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> matchBetweenBigDecimal(l.getCilindradaMinimo(), l.getCilindradaMaximo(), datoTecnico.getCilindrada()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de cilindrada: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> matchBetweenBigDecimal(l.getPesoBrutoMinimo(), l.getPesoBrutoMaximo(), datoTecnico.getCapacidadCarga()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de pesoBruto: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> matchEqualsIgnoreCase(l.getTiempoMotor(), datoTecnico.getTiempoMotor()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de tiempoMotor: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(LimiteEmision::isActivo)
+                    .collect(Collectors.toList());
+            System.out.println("Después de isActivo: " + resultado.size()); */
+
+
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
                 .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
-                .filter(l -> l.getTipoMotor() != null && l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
+                .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
                 .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(datoTecnico.getTipoCombustion()))
-                .filter(l-> l.getClaseVehiculo() != null && l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
+                .filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
                 // si es null deja pasar
                 .filter(l -> l.getCategoriaVehiculo() == null
                         || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
 
-               // .filter(l ->l.getCategoriaVehiculo() != null &&  l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
                 .filter(l -> matchBetweenInteger(l.getYearFabricacionInicio(), l.getYearFabricacionFin(), datoTecnico.getYearFabricacion()))
                 .filter(l -> matchBetweenInteger(l.getAltitudMinima(), l.getAltitudMaxima(), altitud) )
                 .filter(l -> matchBetweenBigDecimal(l.getCilindradaMinimo(), l.getCilindradaMaximo(), datoTecnico.getCilindrada()))
                 .filter(l -> matchBetweenBigDecimal(l.getPesoBrutoMinimo(), l.getPesoBrutoMaximo(), datoTecnico.getCapacidadCarga()))
                 .filter(l -> matchEqualsIgnoreCase(l.getTiempoMotor(), datoTecnico.getTiempoMotor()))
                 .filter(LimiteEmision::isActivo)
-                //.filter(LimiteEmision::isEstado)
                 .collect(Collectors.toList());
         return limiteEmisionFitrados.stream().map(limiteEmision -> {
             return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
@@ -170,7 +232,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         if (value == null) {
             return min == null && max == null;
         }
-        //if (min == null && max == null) return true;
+        if (min == null && max == null) return true;
         int val = value.intValue();
         return (min == null || val >= min) && (max == null || val <= max);
     }
@@ -180,13 +242,13 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         if (value == null) {
             return min == null && max == null;
         }
-        //if (value == null) return true;
+        if (min == null && max == null) {return true;};  //2025
         return (min == null || value >= min) && (max == null || value <= max);
     }
 
-    private boolean matchEqualsIgnoreCase(String a, String b) {
-        if (a == null || b == null) return true; // Si alguno es nulo, se considera que no filtra
-        return a.trim().equalsIgnoreCase(b.trim());
+    private boolean matchEqualsIgnoreCase(String dataLimiteEmision, String dataDatoTecnico) {
+        if (dataLimiteEmision == null || dataDatoTecnico == null) return true; // Si alguno es nulo, se considera que no filtra
+        return dataLimiteEmision.trim().equalsIgnoreCase(dataDatoTecnico.trim());
     }
 
 }

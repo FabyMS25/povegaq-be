@@ -2,6 +2,7 @@ package com.gamq.ambiente.service;
 
 import com.gamq.ambiente.dto.ActividadDto;
 
+import java.util.Date;
 import java.util.List;
 
 public interface ActividadService {
@@ -14,4 +15,5 @@ public interface ActividadService {
     List<ActividadDto> obtenerActividadesActivas();
     List<ActividadDto> obtenerActividadesPorAnio(Integer year);
     ActividadDto actualizarActividadActivo(String uuid, boolean nuevoActivo);
+    List<ActividadDto> obtenerActividadesEntreFechas(Date rangoInicio, Date rangoFin);
 }
