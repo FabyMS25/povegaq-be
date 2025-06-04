@@ -4,6 +4,7 @@ import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
+import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.InfraccionRepository;
@@ -26,7 +27,7 @@ public class GeneradorInfraccionServiceImpl {
         List<Infraccion> historial = infraccionRepository.findByInspeccionVehiculo(inspeccion.getVehiculo());
 
         // Clasificar grado de infraccion segun reglas de documento
-        String grado = clasificarGrado(inspeccion, historial);
+        GradoInfraccion grado = clasificarGrado(inspeccion, historial);
         if (grado == null) return null;// No hay infraccion
 
         // Obtener tipo de contribuyente
@@ -48,7 +49,7 @@ public class GeneradorInfraccionServiceImpl {
         TipoInfraccion tipoInfraccion = tipoInfraccionRepository
                 .findByGradoAndTipoContribuyente(grado, tipoContribuyente)
                 .orElseThrow(() -> new IllegalStateException("No se encontro tipo de infraccion para grado: "
-                        + grado + " y contribuyente" ));
+                        + grado.name() + " y contribuyente" ));
 
         // Crear nueva infraccion
         InfraccionDto infraccionDto = new InfraccionDto();
@@ -67,7 +68,7 @@ public class GeneradorInfraccionServiceImpl {
         return  infraccionDto; // infraccionRepository.save(infraccion);
     }
 
-    private String clasificarGrado(Inspeccion inspeccion, List<Infraccion> historial) {
+    private GradoInfraccion clasificarGrado(Inspeccion inspeccion, List<Infraccion> historial) {
         boolean resultadoFallo = !inspeccion.isResultado();
 
         // Verificar si accedió a una segunda inspección sin readecuar (Art. 19.1)
@@ -77,14 +78,14 @@ public class GeneradorInfraccionServiceImpl {
                         n.getStatusNotificacion() == EstadoNotificacion.VENCIDA);
 
         if (tieneNotificacionInfraccionVencidaSegundoIntento) {
-            return "TERCER_GRADO"; // Art. 19.1
+            return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO"; // Art. 19.1
         }
 
         // Reincidencia no paga → Segundo grado (Art. 18.2)
         long infraccionesNoPagadas = historial.stream()
                 .filter(i -> !i.isEstadoPago())
                 .count();
-        if (infraccionesNoPagadas >= 2) return "SEGUNDO_GRADO";
+        if (infraccionesNoPagadas >= 2) return GradoInfraccion.SEGUNDO_GRADO; // "SEGUNDO_GRADO";
 
         // Si no pasó inspección y ya falló antes → Tercer grado (Art. 19.2)
         if (resultadoFallo) {
@@ -96,10 +97,10 @@ public class GeneradorInfraccionServiceImpl {
 
             if (anteriorFallida.isPresent() &&
                     inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
-                return "TERCER_GRADO";
+                return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO";
             }
 
-            return "PRIMER_GRADO"; // Art. 17
+            return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
         }
 
         return null; // No hay infracción

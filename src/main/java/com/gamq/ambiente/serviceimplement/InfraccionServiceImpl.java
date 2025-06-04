@@ -6,6 +6,7 @@ import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
+import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
@@ -151,7 +152,7 @@ public class InfraccionServiceImpl implements InfraccionService {
         }
 
         // Multa de tercer grado por no adecuar el vehículo
-         return  vistaPreviaInfraccion(inspeccionOptional.get(), "TERCER GRADO",inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente(),"No adecuó su vehículo después de la segunda inspección.");
+         return  vistaPreviaInfraccion(inspeccionOptional.get(), GradoInfraccion.TERCER_GRADO,inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente(),"No adecuó su vehículo después de la segunda inspección.");
             // generarNotificacion(inspeccion, TipoNotificacion.INFRACCION);
         //} //else {
         //  emitirCertificado(inspeccion);
@@ -171,12 +172,12 @@ public class InfraccionServiceImpl implements InfraccionService {
         }
         Date fechaLimite = FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365);
         if (new Date().after(fechaLimite)) {
-            return vistaPreviaInfraccion(inspeccionOptional.get(), "TERCER  GRADO",inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente() , "No adecuó el vehículo dentro del año establecido.");
+            return vistaPreviaInfraccion(inspeccionOptional.get(), GradoInfraccion.TERCER_GRADO,inspeccionOptional.get().getVehiculo().getPropietario().getTipoContribuyente() , "No adecuó el vehículo dentro del año establecido.");
         }
         return null;
     }
 
-    public InfraccionDto vistaPreviaInfraccionGeneral(String uuidInspeccion, String grado, TipoContribuyente tipoContribuyente, String motivo) {
+    public InfraccionDto vistaPreviaInfraccionGeneral(String uuidInspeccion, GradoInfraccion grado, TipoContribuyente tipoContribuyente, String motivo) {
         Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuidInspeccion);
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("inspeccion", "uuid", uuidInspeccion);
@@ -187,7 +188,7 @@ public class InfraccionServiceImpl implements InfraccionService {
        return vistaPreviaInfraccion(inspeccionOptional.get(), grado, tipoContribuyente, motivo);
     }
 
-    private InfraccionDto vistaPreviaInfraccion(Inspeccion inspeccion, String grado, TipoContribuyente tipoContribuyente, String descripcion) {
+    private InfraccionDto vistaPreviaInfraccion(Inspeccion inspeccion, GradoInfraccion grado, TipoContribuyente tipoContribuyente, String descripcion) {
         Optional<TipoInfraccion> tipo = tipoInfraccionRepository.findByGradoAndTipoContribuyente( grado, tipoContribuyente);
         InfraccionDto  infraccionDto = new InfraccionDto();
         infraccionDto.setFechaInfraccion(new Date());

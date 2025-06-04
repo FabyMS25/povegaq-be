@@ -2,6 +2,7 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.TipoInfraccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.service.TipoInfraccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class TipoInfraccionController {
     }
 
     @GetMapping("/grado/{grado}")
-    public Response getTipoInfraccionByGrado(@PathVariable("grado") String grado){
+    public Response getTipoInfraccionByGrado(@PathVariable("grado") GradoInfraccion grado){
         return Response.ok().setPayload(tipoInfraccionService.obtenerTipoInfraccionPorGrado(grado));
     }
 

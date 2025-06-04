@@ -2,6 +2,7 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.TipoInfraccionDto;
 import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
+import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.Reglamento;
@@ -40,12 +41,12 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
     }
 
     @Override
-    public TipoInfraccionDto obtenerTipoInfraccionPorGrado(String grado) {
+    public TipoInfraccionDto obtenerTipoInfraccionPorGrado(GradoInfraccion grado) {
         Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByGrado(grado);
         if(tipoInfraccionOptional.isPresent()){
             return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionOptional.get());
         }
-        throw new ResourceNotFoundException("Tipo Infraccion", "grado", grado);
+        throw new ResourceNotFoundException("Tipo Infraccion", "grado", grado.name());
     }
 
     @Override
@@ -65,7 +66,7 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El uuid de reglamentoDto no puede ser vacío");
         }
 
-        String grado = tipoInfraccionDto.getGrado();
+        GradoInfraccion grado = tipoInfraccionDto.getGrado();
         Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findTipoInfraccionByUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getTipoContribuyenteDto().getUuid(), grado);
         if(tipoInfraccionOptional.isEmpty()){
             Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());

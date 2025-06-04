@@ -1,6 +1,7 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.CertificadoDto;
+import com.gamq.ambiente.dto.InspeccionDto;
 import com.gamq.ambiente.dto.mapper.CertificadoMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
@@ -67,7 +68,7 @@ public class CertificadoServiceImpl implements CertificadoService {
                     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado por el resultado de la inspeccion  es Negativo(no paso la prueba)");
                 }
                 if (inspeccionOptional.get().getCertificadoList().size() > 0) {
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspccion ya tiene un certificado");
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion ya tiene un certificado");
                 }
                 if (inspeccionOptional.get().getDetalleInspeccionList().size()==0){
                     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion no tiene Detalles de inspeccion");

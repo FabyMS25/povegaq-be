@@ -1,5 +1,6 @@
 package com.gamq.ambiente.model;
 
+import com.gamq.ambiente.enumeration.GradoInfraccion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +32,9 @@ public class TipoInfraccion {
     private Long idTipoInfraccion;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
+    @Enumerated(EnumType.STRING)
     @Column(name = "grado", nullable = false, length = 250)
-    private String grado;
+    private GradoInfraccion grado;
     @Column(name = "valor_ufv", precision = 20, scale = 4)
     private BigDecimal valorUFV;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
