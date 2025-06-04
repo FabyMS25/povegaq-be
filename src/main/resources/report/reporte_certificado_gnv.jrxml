@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="612"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="378"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="786"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="204"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -54,7 +54,7 @@ inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 where c.uuid =$P{uuidCertificado}
 and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false and v.estado=false
-and dt.estado = false 
+and dt.estado = false and c.es_valido = true
 GROUP BY
  t.nombre, t.descripcion, t.unidad, i.equipo, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion,dt.tipo_combustion,d.limite_permisible
 ORDER BY

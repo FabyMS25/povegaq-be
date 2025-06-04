@@ -59,7 +59,7 @@ INNER JOIN vehiculos AS v ON v.id_vehiculo = i.id_vehiculo
 INNER JOIN datos_tecnicos AS dt ON dt.id_vehiculo = v.id_vehiculo
 WHERE LOWER(trim(t.nombre)) like 'opacidad%' and
   c.uuid = $P{uuidCertificado}
-  AND c.estado = false 
+  AND c.estado = false AND c.es_valido = true
   AND i.estado = false 
   AND d.estado = false 
   AND t.estado = false 
