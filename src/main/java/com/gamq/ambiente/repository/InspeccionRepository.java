@@ -22,5 +22,5 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     @Query("SELECT i FROM Inspeccion i WHERE FUNCTION('DATE', i.fechaInspeccion) = :fechaInspeccion ")
     List<Inspeccion> findByFechaInspeccion(@Param("fechaInspeccion") Date fechaInspeccion);
 
-    List<Inspeccion> findByVehiculoOrderByFechaInspeccionDesc(Vehiculo vehiculo);
+    List<Inspeccion> findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(Vehiculo vehiculo);
 }

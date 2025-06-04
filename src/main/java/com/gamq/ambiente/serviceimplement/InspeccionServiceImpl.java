@@ -210,7 +210,7 @@ public class InspeccionServiceImpl implements InspeccionService {
 
     public int obtenerNumeroIntentoActual(Vehiculo vehiculo) {
         List<Inspeccion> inspecciones = inspeccionRepository
-                .findByVehiculoOrderByFechaInspeccionDesc(vehiculo);
+                .findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(vehiculo);
 
         for (Inspeccion inspeccion : inspecciones) {
             boolean tieneNotificacionActiva = inspeccion.getNotificacionList().stream()

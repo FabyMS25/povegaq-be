@@ -94,9 +94,16 @@ public class NotificacionServiceImpl implements NotificacionService {
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("inspeccion", "uuid", uuidInpeccion);
         }
+
         if ( inspeccionOptional.get().isResultado()){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una notificacion por que el resultado de inspeccion Positivo o true");
         }
+
+        if (notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(inspeccionOptional.get().getVehiculo(), TipoNotificacion.REINSPECCION_PENDIENTE, new Date() ) ){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "Tiene un notificacion vigente");
+        }
+
+
         int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
 
         NotificacionDto notificacionDto = new NotificacionDto();

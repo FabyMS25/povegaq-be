@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +31,15 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 
     @Query("SELECT n FROM Notificacion n WHERE (n.fechaAsistencia < CURRENT_DATE) and n.statusNotificacion NOT IN :estadoNotificacionList")
     List<Notificacion> findNotificacionesByFechaAsistenciaVencida(List<EstadoNotificacion> estadoNotificacionList);
+
+    boolean existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(
+            Vehiculo vehiculo,
+            TipoNotificacion tipo,
+            Date fecha);
+
+    List<Notificacion> findByTypeNotificacionAndStatusNotificacionInAndFechaAsistenciaBefore(
+            TipoNotificacion tipoNotificacion,
+            List<EstadoNotificacion> estadosNotificacion,
+            Date fechaActual
+    );
 }
