@@ -33,7 +33,6 @@ public class LimiteEmisionDto {
     private String tipoCombustible;
     private Integer cilindradaMinimo;
     private Integer cilindradaMaximo;
-    @NotBlank(message = "La categoría del vehículo es requerida")
     private String categoriaVehiculo; //liviano, mediano y pesado
     private String categoria;
     private Integer yearFabricacionInicio;

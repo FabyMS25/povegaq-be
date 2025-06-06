@@ -2,6 +2,7 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.NotificacionIntentoDto;
+import com.gamq.ambiente.dto.NotificacionIntentoView;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.dto.mapper.NotificacionMapper;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
@@ -102,13 +103,20 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(inspeccionOptional.get().getVehiculo(), TipoNotificacion.REINSPECCION_PENDIENTE, new Date() ) ){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "Tiene un notificacion vigente");
         }
+        Optional<NotificacionIntentoDto> notificacionIntentoDto = notificacionRepository.getNumeroIntentoNotificacionByUuidVehiculo(inspeccionOptional.get().getVehiculo().getUuid()).map(vi->
+                new NotificacionIntentoDto(
+                        vi.getUuidVehiculo(),
+                        vi.getIntentosValidos(),
+                        vi.getPuedeEmitirNuevaNotificacion(),
+                        vi.getProximoTipoNotificacion())
+                );
 
-
-        int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
+       // int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
 
         NotificacionDto notificacionDto = new NotificacionDto();
         notificacionDto.setActividad( inspeccionOptional.get().getActividad().getTipoActividad());
-        if ( !existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
+       // if ( intento == 1 && !existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
+        if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365));
@@ -116,7 +124,8 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setObservacion("Se detectó exceso en emisión. Plazo 1 año para adecuación técnica.");
             notificacionDto.setNumeroIntento(1);
         }
-        if ( (intento == 1) && existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
+        if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
+       // if ( (intento == 2) && existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(new Date(),90));
@@ -125,7 +134,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setNumeroIntento(2);
             notificacionDto.setSancion("Multa 3er grado");
         }
-        if ( intento+ 1 > 2 ){
+        if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL); // o solo INFRACCION
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(new Date());

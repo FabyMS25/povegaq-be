@@ -1,5 +1,6 @@
 package com.gamq.ambiente.dto;
 
+import com.gamq.ambiente.enumeration.TipoNotificacion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificacionIntentoDto {
-    private String uuidInspeccion;
+    private String uuidVehiculo;
     private int intentosValidos;
     private boolean puedeEmitirNuevaNotificacion;
-    private String mensaje;
+    private TipoNotificacion proximoTipoNotificacion;
 }

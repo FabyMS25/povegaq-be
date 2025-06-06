@@ -1,9 +1,7 @@
 package com.gamq.ambiente.service;
 import com.gamq.ambiente.dto.NotificacionDto;
-import com.gamq.ambiente.dto.NotificacionIntentoDto;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
-import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Vehiculo;
 
 import java.util.List;

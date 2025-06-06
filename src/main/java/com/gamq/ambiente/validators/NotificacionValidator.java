@@ -29,4 +29,19 @@ public class NotificacionValidator {
             notificacionRepository.save(noticion);
         }
     }
+
+    public void verificarInfraccionesVencidas(){
+        Date fechaActual = new Date();
+
+        List<Notificacion> vencidas = notificacionRepository.findByTypeNotificacionAndStatusNotificacionInAndFechaAsistenciaBefore(
+                TipoNotificacion.INFRACCION,
+                List.of(EstadoNotificacion.PENDIENTE, EstadoNotificacion.ENVIADA, EstadoNotificacion.ENTREGADA),
+                fechaActual
+        );
+
+        for (Notificacion noticion : vencidas) {
+            noticion.setStatusNotificacion(EstadoNotificacion.VENCIDA);
+            notificacionRepository.save(noticion);
+        }
+    }
 }
