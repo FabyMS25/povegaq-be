@@ -29,9 +29,9 @@ public class InfraccionController {
     public Response getInfraccionByVehiculo(@PathVariable("uuidVehiculo") String uuidVehiculo) {
         return Response.ok().setPayload(infraccionService.obtenerInfraccionPorVehiculo(uuidVehiculo));
     }
-    @GetMapping("/fecha/{fecha}")
+    @GetMapping("/fecha")
     @Operation(summary = "Buscar Infraccion por fecha", description = "Retorna los datos de la Infraccion de una Inspeccion")
-    public Response getInfraccionByFecha(@PathVariable("fecha") Date fecha){
+    public Response getInfraccionByFecha(@RequestParam Date fecha){
         return Response.ok().setPayload(infraccionService.obtenerInfraccionPorFecha(fecha));
     }
 
