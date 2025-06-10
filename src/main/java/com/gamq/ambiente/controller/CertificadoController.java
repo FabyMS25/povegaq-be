@@ -2,6 +2,7 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.CertificadoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.scheduler.CertificadoScheduledTask;
 import com.gamq.ambiente.service.CertificadoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +17,8 @@ import javax.validation.Valid;
 public class CertificadoController {
     @Autowired
     CertificadoService certificadoService;
+    @Autowired
+    CertificadoScheduledTask certificadoScheduledTask;
 
     @GetMapping("/uuid/{uuid}")
     @Operation(summary = "Buscar certificado por UUID", description = "Retorna los datos del certificado de Inspeccion")
@@ -58,5 +61,11 @@ public class CertificadoController {
     public Response updateCertificadoValido(@PathVariable String uuid,
                                             @RequestParam boolean valido){
         return Response.ok().setPayload(certificadoService.actualizarCertificadoValido(uuid, valido));
+    }
+
+    @PostMapping("/ejecutar-validez")
+    public Response ejecutarVerificacionManual() {
+        certificadoScheduledTask.ejecutarValidacionDiaria();
+        return Response.ok().setPayload("Verificación de certificados ejecutada correctamente.");
     }
 }

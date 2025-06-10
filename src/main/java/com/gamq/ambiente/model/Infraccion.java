@@ -10,7 +10,9 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -65,6 +67,9 @@ public class Infraccion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_notificacion", nullable = true)
     private Notificacion notificacion;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "infraccion", fetch = FetchType.LAZY)
+    private List<Alerta> alertaList = new ArrayList<Alerta>();
 
     public Infraccion(String uuid) {this.uuid = uuid;}
 

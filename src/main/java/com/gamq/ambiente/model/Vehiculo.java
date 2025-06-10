@@ -62,6 +62,9 @@ public class Vehiculo {
     @JsonManagedReference
     private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
+    private List<Alerta> alertaList = new ArrayList<Alerta>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = true)
     private Propietario propietario;

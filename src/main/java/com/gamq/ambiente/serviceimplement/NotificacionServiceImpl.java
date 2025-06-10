@@ -9,9 +9,11 @@ import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
+import com.gamq.ambiente.model.Alerta;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.Notificacion;
 import com.gamq.ambiente.model.Vehiculo;
+import com.gamq.ambiente.repository.AlertaRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
 import com.gamq.ambiente.service.InspeccionService;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -40,6 +43,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Autowired
     InspeccionService inspeccionService;
+
+    @Autowired
+    AlertaRepository alertaRepository;
 
     @Override
     public NotificacionDto obtenerNotificacionPorUuid(String uuid) {
@@ -86,7 +92,8 @@ public class NotificacionServiceImpl implements NotificacionService {
 
         Notificacion nuevoNotificacion = NotificacionMapper.toNotificacion(notificacionDto);
         nuevoNotificacion.setInspeccion(inspeccionOptional.get());
-        return NotificacionMapper.toNotificacionDto(notificacionRepository.save(nuevoNotificacion));
+        Notificacion nuevoNotificacionGrabada =  notificacionRepository.save(nuevoNotificacion);
+        return NotificacionMapper.toNotificacionDto(nuevoNotificacionGrabada);
     }
 
     @Override
@@ -243,5 +250,20 @@ public class NotificacionServiceImpl implements NotificacionService {
         );
         int cantidad = notificacionRepository.countByInspeccion_VehiculoAndStatusNotificacionIn(vehiculo, estadosValidos);
         return cantidad;
+    }
+
+    @Transactional
+    public void generarAlertaParaNotificacion(Notificacion notificacion){
+        if(notificacion.getInspeccion().isResultado() && notificacion.getInspeccion().getVehiculo() != null){
+            Alerta alerta = new Alerta();
+            alerta.setNotificacion(notificacion);
+            alerta.setEstado(false);
+            alerta.setFechaAlerta(notificacion.getFechaNotificacion());
+            alerta.setMensaje("El vehiculo con placa " + notificacion.getInspeccion().getVehiculo().getPlaca() + " tiene una notificacion");
+            alerta.setTipo("NOTIFICACION");
+            alerta.setRolDestinatario(notificacion.getInspeccion().getVehiculo() != null?"PROPIETARIO":"CONDUCTOR");
+            alerta.setUuidDestinatario( notificacion.getInspeccion().getVehiculo() != null? notificacion.getInspeccion().getVehiculo().getPropietario().getUuid(): notificacion.getInspeccion().getConductor().getUuid());
+            alertaRepository.save(alerta);
+        }
     }
 }

@@ -75,6 +75,9 @@ public class Notificacion {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "notificacion", fetch = FetchType.LAZY)
     private List<Infraccion> infraccionList = new ArrayList<Infraccion>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "notificacion", fetch = FetchType.LAZY)
+    private List<Alerta> alertaList = new ArrayList<Alerta>();
+
     public Notificacion(String uuid) {this.uuid = uuid;}
 
     @PrePersist

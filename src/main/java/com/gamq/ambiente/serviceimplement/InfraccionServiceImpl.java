@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class InfraccionServiceImpl implements InfraccionService {
     GeneradorInfraccionServiceImpl generadorInfraccionService;
     @Autowired
     VehiculoRepository vehiculoRepository;
+    @Autowired
+    AlertaRepository alertaRepository;
 
     @Override
     public InfraccionDto obtenerInfraccionPorUuid(String uuid) {
@@ -90,7 +93,9 @@ public class InfraccionServiceImpl implements InfraccionService {
         Infraccion nuevoInfraccion = InfraccionMapper.toInfraccion(infraccionDto);
         nuevoInfraccion.setInspeccion(inspeccionOptional.get());
         nuevoInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
-        return InfraccionMapper.toInfraccionDto(infraccionRepository.save(nuevoInfraccion));
+        Infraccion nuevoInfraccionGrabada = infraccionRepository.save(nuevoInfraccion);
+        generarAlertaParaInfraccion(nuevoInfraccionGrabada);
+        return InfraccionMapper.toInfraccionDto(nuevoInfraccionGrabada);
     }
 
     @Override
@@ -200,4 +205,20 @@ public class InfraccionServiceImpl implements InfraccionService {
         infraccionDto.setEstado(true);
         return infraccionDto;
     }
+
+    @Transactional
+    public void generarAlertaParaInfraccion(Infraccion infraccion){
+        if(infraccion.getInspeccion().isResultado() && infraccion.getInspeccion().getVehiculo() != null){
+            Alerta alerta = new Alerta();
+            alerta.setInfraccion(infraccion);
+            alerta.setEstado(false);
+            alerta.setFechaAlerta(infraccion.getFechaInfraccion());
+            alerta.setMensaje("El vehiculo con placa " + infraccion.getInspeccion().getVehiculo().getPlaca() + " tiene una notificacion");
+            alerta.setTipo("INFRACCION");
+            alerta.setRolDestinatario(infraccion.getInspeccion().getVehiculo() != null?"PROPIETARIO":"CONDUCTOR");
+            alerta.setUuidDestinatario( infraccion.getInspeccion().getVehiculo() != null? infraccion.getInspeccion().getVehiculo().getPropietario().getUuid(): infraccion.getInspeccion().getConductor().getUuid());
+            alertaRepository.save(alerta);
+        }
+    }
+
 }
