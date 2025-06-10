@@ -1,6 +1,7 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
+import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.DetalleInspeccionRepository;
@@ -10,6 +11,7 @@ import com.gamq.ambiente.service.ComparacionEmisionService;
 import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.LimiteEmisionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -35,6 +37,11 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
         if(inspeccionOptional.isEmpty()){
             throw new ResourceNotFoundException("Inspeccion", "uuid", inspeccionUuid);
         }
+        if(inspeccionOptional.get().getDetalleInspeccionList().size() <=0){
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"No existe Datos en el Detalle inspeccion");
+        }
+
+        boolean resultadoGeneral = true;
         for (DetalleInspeccion detalle : inspeccionOptional.get().getDetalleInspeccionList()) {
             Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(detalle.getTipoParametro().getUuid());
             DatoTecnico datoTecnico = inspeccionOptional.get().getVehiculo().getDatoTecnico();
@@ -55,11 +62,13 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
             if (valorMedido.compareTo(limite.getLimite()) > 0) {
                 detalle.setResultadoParcial(false);
                 detalle.setLimitePermisible(limite.getLimite());
+                resultadoGeneral = false;
             } else {
                 detalle.setResultadoParcial(true);
                 detalle.setLimitePermisible(limite.getLimite());
             }
             detalleInspeccionRepository.save(detalle);
         }
+        inspeccionRepository.save(inspeccionOptional.get().setResultado(resultadoGeneral));
     }
 }
