@@ -61,8 +61,6 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public EventoDto crearEvento(EventoDto eventoDto) {
-       // String institucion = eventoDto.getInstitucion();
-        //if(institucion==null){ throw new ResourceNotFoundException("Evento","Institucion", institucion);}
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(eventoDto.getActividadDto().getUuid());
         if (actividadOptional.isPresent()) {
             Evento nuevoEvento = EventoMapper.toEvento(eventoDto);

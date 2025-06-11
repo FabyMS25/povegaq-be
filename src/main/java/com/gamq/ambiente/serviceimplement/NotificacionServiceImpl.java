@@ -118,11 +118,9 @@ public class NotificacionServiceImpl implements NotificacionService {
                         vi.getProximoTipoNotificacion())
                 );
 
-       // int intento = inspeccionService.obtenerNumeroIntentoActual(inspeccionOptional.get().getVehiculo());
 
         NotificacionDto notificacionDto = new NotificacionDto();
         notificacionDto.setActividad( inspeccionOptional.get().getActividad().getTipoActividad());
-       // if ( intento == 1 && !existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
         if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
@@ -132,7 +130,6 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setNumeroIntento(1);
         }
         if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
-       // if ( (intento == 2) && existeNotificacionVencidaReinspeccion(inspeccionOptional.get().getVehiculo())) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(new Date(),90));
@@ -142,7 +139,7 @@ public class NotificacionServiceImpl implements NotificacionService {
             notificacionDto.setSancion("Multa 3er grado");
         }
         if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
-            notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL); // o solo INFRACCION
+            notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL);
             notificacionDto.setFechaNotificacion(new Date());
             notificacionDto.setFechaAsistencia(new Date());
             notificacionDto.setStatusNotificacion(EstadoNotificacion.PENDIENTE);

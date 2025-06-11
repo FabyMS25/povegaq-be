@@ -92,35 +92,29 @@ public class ConductorServiceImpl implements ConductorService {
             if (vehiculo.getPropietario() != null){
                 throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un propietario: Será reasignado? ");
             }
-            // si el vehiculo no tiene propietario
-           /// if ( vehiculo.getPropietario() == null){
-              /*  if (vehiculo.getConductor() != null) {
-                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El vehículo ya tiene un conductor: Será reasignado? ");
-                }*/
-                boolean tienePlaca = vehiculo.getPlaca() != null && !vehiculo.getPlaca().trim().isEmpty();
-                boolean tienePinSinPlaca = vehiculo.getPinNumeroIdentificacion() != null && !tienePlaca;
+            boolean tienePlaca = vehiculo.getPlaca() != null && !vehiculo.getPlaca().trim().isEmpty();
+            boolean tienePinSinPlaca = vehiculo.getPinNumeroIdentificacion() != null && !tienePlaca;
 
-                if (tienePlaca) {
-                    if (placasVehiculo.contains(vehiculo.getPlaca().toLowerCase().trim())) {
-                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la placa del vehiculo'" + vehiculo.getPlaca() + "' ya existe o es duplicado");
-                    }
-                    placasVehiculo.add(vehiculo.getPlaca().toLowerCase().trim());
+            if (tienePlaca) {
+                if (placasVehiculo.contains(vehiculo.getPlaca().toLowerCase().trim())) {
+                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la placa del vehiculo'" + vehiculo.getPlaca() + "' ya existe o es duplicado");
                 }
+                placasVehiculo.add(vehiculo.getPlaca().toLowerCase().trim());
+            }
 
-                if (tienePinSinPlaca){
-                    if (placasVehiculo.contains(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim())) {
-                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el PIN o numero identificacion del vehiculo'" + vehiculo.getPinNumeroIdentificacion() + "' ya existe o es duplicado");
-                    }
-                    placasVehiculo.add(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim());
+            if (tienePinSinPlaca){
+                if (placasVehiculo.contains(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim())) {
+                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el PIN o numero identificacion del vehiculo'" + vehiculo.getPinNumeroIdentificacion() + "' ya existe o es duplicado");
                 }
-                if( tienePlaca || tienePinSinPlaca) {
-                   //ojo vehiculo.setConductor(nuevoConductor);
-                    vehiculoList.add(vehiculo);
-                }
-                else {
-                    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el verifique los datos del vehiculo no tiene placa ese vehiculo");
-                }
-            //}
+                placasVehiculo.add(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim());
+            }
+            if( tienePlaca || tienePinSinPlaca) {
+               //ojo vehiculo.setConductor(nuevoConductor);
+                vehiculoList.add(vehiculo);
+            }
+            else {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el verifique los datos del vehiculo no tiene placa ese vehiculo");
+            }
         } );
         return vehiculoList;
     }
@@ -146,16 +140,6 @@ public class ConductorServiceImpl implements ConductorService {
                     Conductor updateConductor = ConductorMapper.toConductor(conductorDto);
                     updateConductor.setIdConductor(conductorOptional.get().getIdConductor());
                     updateConductor.setTipoContribuyente( tipoContribuyenteOptional.get());
-
-             /*       conductorOptional.get().getVehiculoList().forEach(vehiculo -> {
-                        vehiculo.setConductor(null);
-                    });
-
-                    conductorOptional.get().getVehiculoList().clear();
-                    List<Vehiculo> vehiculoList = mapearVehiculos(conductorDto.getVehiculoDtoList(),conductorOptional.get());
-
-                    updateConductor.setVehiculoList(vehiculoList);*/
-
                     return ConductorMapper.toConductorDto(conductorRepository.save(updateConductor));
                 }
                 else {

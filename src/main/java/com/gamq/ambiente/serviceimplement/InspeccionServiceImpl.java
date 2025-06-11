@@ -178,8 +178,7 @@ public class InspeccionServiceImpl implements InspeccionService {
 
     @Override
     public InspeccionDto eliminarInspeccion(String uuid) {
-        Inspeccion inspeccionQBE = new Inspeccion(uuid);
-       // Optional<Inspeccion> optionalInspeccion = inspeccionRepository.findOne(Example.of(inspeccionQBE));
+       Inspeccion inspeccionQBE = new Inspeccion(uuid);
        Optional<Inspeccion> optionalInspeccion =  inspeccionRepository.findByUuid(uuid);
         if(optionalInspeccion.isPresent()){
             Inspeccion inspeccion = optionalInspeccion.get();

@@ -25,8 +25,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         }
         try {
             byte[] bytes = multipartFile.getBytes();
-            //String extensionFile = multipartFile.getOriginalFilename().split("\\.")[1];
-            //String extensionFile = multipartFile.getContentType().split("\\/")[1];
             String[] parts = multipartFile.getOriginalFilename().split("\\.");
             String extensionFile = parts[parts.length-1];
             nombreOriginalFile = multipartFile.getOriginalFilename().split("\\.")[0];
@@ -64,7 +62,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         Path uploadPath = Paths.get(rootPath);
         try {
             String nombreArchivo = '/' + fileName;
-            Path file = Paths.get(uploadPath + nombreArchivo);  //this.dirLocation.resolve(fileName).normalize();
+            Path file = Paths.get(uploadPath + nombreArchivo);
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {

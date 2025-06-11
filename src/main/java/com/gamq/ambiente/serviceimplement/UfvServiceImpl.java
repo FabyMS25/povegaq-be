@@ -81,12 +81,6 @@ public class UfvServiceImpl implements UfvService {
         Optional<Ufv> optionalUfv = ufvRepository.findOne(Example.of(ufvQBE));
         if(optionalUfv.isPresent()){
             Ufv ufv = optionalUfv.get();
-         /*   if(!Ufv.getInsumoBaseList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "esta tipo de parametro ya esta siendo usado por los insumos");
-            }
-            if(!Ufv.getInsumoList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "esta tipo de parametro ya esta siendo usado por los proyectos");
-            }*/
             ufvRepository.delete(ufv);
             return UfvMapper.toUfvDto(ufv);
         }

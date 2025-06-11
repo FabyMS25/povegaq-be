@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class NumeroALiteralUtils {
-  //  @Autowired
-  //  ProyectoRepository proyectoRepository;
 
     public String cantidadToLiteral(Double s) {
         StringBuilder result = new StringBuilder();
@@ -124,10 +122,5 @@ public class NumeroALiteralUtils {
         }
         return res;
     }
-
-//    public BigDecimal ajustar(BigDecimal valor,String uuidProyecto) {
-//        int decimales = proyectoRepository.getCantidadDecimalesByUuid(uuidProyecto);
-//        return valor.setScale(decimales, RoundingMode.HALF_EVEN);
-//    }
 
 }

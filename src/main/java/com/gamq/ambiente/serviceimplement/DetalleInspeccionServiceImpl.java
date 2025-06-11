@@ -187,21 +187,4 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
         return nuevoDetalleInspeccion;
     }
-
-  /*  private Inspeccion obtenerInspeccion(String inspeccionUuid) {
-        Optional<Inspeccion> optionalInspeccion = inspeccionRepository.findByUuid(inspeccionUuid);// moduloRepository.findByUuid(moduloUuid);
-        if(optionalInspeccion.isEmpty()){
-            throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid de la inspeccion no existe");
-        }
-        return optionalInspeccion.get();
-    }
-
-    private TipoParametro obtenerTipoParametro(String tipoParametroUuid) {
-        Optional<TipoParametro> optionalTipoParametro = tipoParametroRepository.findByUuid(tipoParametroUuid);
-        if(optionalTipoParametro.isEmpty()){
-            throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid del tipo de parametro para detalle inspeccion no existe");
-        }
-        return optionalTipoParametro.get();
-    }*/
-
 }

@@ -56,7 +56,6 @@ public class GeneradorReporte {
 
             //load logo
             String logo64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
-            //Resource logoResource = resourceLoader.getResource("classpath:imagenes/gamq1.jpg");
             Resource logoResource = resourceLoader.getResource("classpath:image/gamq1.jpg");
             if(logoResource.exists()) {
                 logo64 = new String(Base64.encodeBase64(logoResource.getInputStream().readAllBytes()), "UTF-8");

@@ -31,23 +31,6 @@ public class DatoTecnicoServiceImpl implements DatoTecnicoService {
         }
         throw new ResourceNotFoundException("Dato Tecnico", "uuid", uuid);
     }
-/*
-    @Override
-    public DatoTecnicoDto obtenerDatoTecnicoPorUuidVehiculo(String vehiculoUuid) {
-        Optional<DatoTecnico> datoTecnicoOptional = datoTecnicoRepository.findByUuidVehiculo(vehiculoUuid);
-        if(datoTecnicoOptional.isPresent()){
-            return DatoTecnicoMapper.toDatoTecnicoDto(datoTecnicoOptional.get());
-        }
-        throw new ResourceNotFoundException("Dato Tecnico", "uuid vehiculo", vehiculoUuid);
-    }
-
-    @Override
-    public List<DatoTecnicoDto> obtenerDatoTecnicos() {
-        List<DatoTecnico> datoTecnicoList = datoTecnicoRepository.findAll();
-        return  datoTecnicoList.stream().map( datoTecnico -> {
-            return  DatoTecnicoMapper.toDatoTecnicoDto(datoTecnico);
-        }).collect(Collectors.toList());
-    }*/
 
     @Override
     public DatoTecnicoDto crearDatoTecnico(DatoTecnicoDto datoTecnicoDto) {
