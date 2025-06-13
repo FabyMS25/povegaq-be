@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="550"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="439"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="406"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="584"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="cm"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<parameter name="logo64" class="java.lang.String">
+		<defaultValueExpression><![CDATA["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Título de Reporte"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Usuario Default"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="uuidCertificado" class="java.lang.String"/>
+	<parameter name="subtitulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subtitulo"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="qr" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select c.codigo,c.fecha_emision, c.fecha_vencimiento,
+i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector,i.resultado, i.observacion, a.tipo_actividad,
+ t.nombre, t.descripcion, t.unidad 
+, d.valor, d.nro_ejecucion
+from certificados as c
+inner join inspecciones as i on c.id_inspeccion = i.id_inspeccion
+inner join actividades as a on a.id_actividad = i.id_actividad
+inner join detalle_inspecciones as d on i.id_inspeccion = d.id_inspeccion
+inner join tipo_parametros as t on t.id_tipo_parametro = d.id_tipo_parametro  
+where c.uuid = $P{uuidCertificado}
+and c.estado = false and i.estado = false and d.estado = false and t.estado =false and a.estado = false]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="fecha_emision" class="java.util.Date"/>
+	<field name="fecha_vencimiento" class="java.util.Date"/>
+	<field name="fecha_inspeccion" class="java.util.Date"/>
+	<field name="nombre_inspector" class="java.lang.String"/>
+	<field name="lugar_inspeccion" class="java.lang.String"/>
+	<field name="resultado" class="java.lang.Boolean"/>
+	<field name="observacion" class="java.lang.String"/>
+	<field name="tipo_actividad" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="unidad" class="java.lang.String"/>
+	<field name="valor" class="java.math.BigDecimal"/>
+	<field name="nro_ejecucion" class="java.lang.Integer"/>
+	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="420" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{logo64}))]]></imageExpression>
+			</image>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="90" y="19" width="416" height="14" uuid="eac57d3b-c458-4ab2-acb4-c9a216a6b1fa">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="90" y="4" width="416" height="17" uuid="f92bbecf-76ac-4a7d-a7f3-7452f3fcea99"/>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO MUNICIPAL DE QUILLACOLLO]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="9" y="71" width="539" height="20" uuid="bdbed198-1ffb-4fd3-9400-60e5c30fc7e1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="16" y="107" width="94" height="14" uuid="0627a460-4ef1-4c5e-8736-c244218f7892"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo Inspeccion:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="16" y="122" width="44" height="14" uuid="bbcc4d3e-8740-49fa-934f-a210792adc67"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lugar:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="320" y="106" width="120" height="14" uuid="d55de508-7969-47f5-80b3-0b128484b437"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Inspeccion:]]></text>
+			</staticText>
+			<textField pattern="dd/MMM/yyyy">
+				<reportElement x="440" y="106" width="105" height="14" uuid="8f74001a-75ca-49cf-8a37-52e36b0e7677"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{fecha_inspeccion} != null ?  new SimpleDateFormat("dd/MMM/yyyy").format($F{fecha_inspeccion}):"")]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="9" y="136" width="539" height="1" uuid="9c6372a7-870e-4657-ac47-586bd3f7d058"/>
+			</line>
+			<line>
+				<reportElement x="9" y="106" width="540" height="1" uuid="334c5bc8-2d87-4104-8152-ee78bd0840ac"/>
+			</line>
+			<line>
+				<reportElement x="9" y="106" width="1" height="30" uuid="bfc13760-6543-4020-8cdf-55d921c6e54c"/>
+			</line>
+			<line>
+				<reportElement x="549" y="106" width="1" height="30" uuid="d549c1a7-dbb5-44ef-b5a4-f38628d8a6f8"/>
+			</line>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="218" y="89" width="44" height="14" uuid="430f5507-938d-4406-9cca-f51f77ebb93c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="261" y="89" width="216" height="14" uuid="c63b7a5d-5901-4ff7-9f8d-120d429d6c02"/>
+				<textElement verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="9" y="152" width="252" height="20" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[I.- CARACTERISTICAS DEL VEHICULO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="173" width="110" height="21" uuid="e6198df6-55ec-4e42-b5e2-714e081ad21e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Titular o Propietario:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="194" width="110" height="21" uuid="2ded3bb9-c923-43ef-8f6e-998de009eaf9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Placa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="216" width="110" height="21" uuid="14d13c12-f066-4274-92ec-169cdd097cba"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Categoria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="239" width="110" height="21" uuid="62bad302-63c0-4567-a1b9-8556f015bee7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Marca:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="260" width="110" height="21" uuid="a66ba6b6-e12b-4380-83dc-fad29714f3c0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Modelo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="281" width="110" height="21" uuid="701922d4-b8d3-431a-8203-f4d7c40065d2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Año de Fab:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="303" width="110" height="21" uuid="5cabfe1f-91e7-4a37-91ed-335b572b7f56"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Kilometraje:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="197" width="110" height="21" uuid="349ede7b-a47e-4429-880d-9374de4311bc"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Combustible:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="219" width="110" height="21" uuid="49bd8fad-749f-44a0-9ffc-83345e9243b8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[VIN/Nro Serie:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="242" width="110" height="21" uuid="e4bebfaa-1b0e-4736-9c15-117ca815c66e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nro Motor:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="263" width="110" height="21" uuid="af2c62b6-8963-4f6e-b9b7-aaab515d8f6b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Carroceria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="284" width="110" height="21" uuid="2399c9df-840a-4d8a-ac05-d23fa27a86ad"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Marca Carroceria:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="306" width="110" height="21" uuid="e77b4bf9-42b3-4be3-b6cd-74608017436c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nro eje/Nro Ruedas:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="198" width="139" height="21" uuid="0901ce93-952e-441b-9e1a-2208abf2b084"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Nro Asientos/Pasajeros:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="220" width="110" height="21" uuid="c862b702-15db-40d5-ae0a-b908b703c8ce"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Largo/Ancho/Alto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="371" y="243" width="110" height="21" uuid="b5c7cf93-50a9-429b-a78d-7b8bc649a0e4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Color(es):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="264" width="110" height="21" uuid="3954a9eb-e801-4662-9b45-3929d4726253"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Peso neto(kg):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="285" width="110" height="21" uuid="6eb00156-9ff6-4ed5-b5f0-628fa95b30a7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Peso bruto veh(kg):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="372" y="307" width="110" height="21" uuid="da28d53f-4b7f-498f-bc77-d2adb0d1e3b8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Carga Util:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="328" width="251" height="20" uuid="2ec1939c-3c69-492f-a688-7e35f5a7385f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[II.- DATOS DE LOS EQUIPOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="11" y="380" width="250" height="20" uuid="8a9c7d3f-3206-413e-a395-66305c68c179"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[III.- RESULTADO OBTENIDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="400" width="149" height="20" uuid="3908e7de-6ffc-406a-9713-f1d78ce5f60f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMISIONES DE GASES]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement key="" x="385" y="327" width="85" height="85" uuid="229c4c17-9cc6-4eba-a403-e4fdce04d0a5"/>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{qr}))]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="200" y="400" width="175" height="20" uuid="fa0922ba-1a1b-41e2-9d3e-72ce4bf95c0e"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{resultado} ? "APROBADO" : "DESAPROBADO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="320" y="122" width="120" height="14" uuid="417a00a1-1431-4f26-add1-80fdfda769ac"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimiento:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="440" y="121" width="105" height="15" uuid="d20a44ba-92af-44a0-8be3-8b5ad95792af"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fecha_vencimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="107" width="210" height="13" uuid="207929d5-13f8-48d2-a809-c6814c333319"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo_actividad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="123" width="299" height="14" uuid="428d9b35-b516-4bcb-9a9c-5ef770f11a15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{lugar_inspeccion}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement x="30" y="-1" width="111" height="20" uuid="f139ae95-fa77-4d35-834e-c8465eefd6c3"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contaminantes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="297" y="0" width="111" height="20" uuid="4a82fbce-be6c-4af6-bfdf-0c51c485f132"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Medicion]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" mode="Transparent" x="30" y="0" width="80" height="20" isRemoveLineWhenBlank="true" uuid="d548b0a3-4f16-442e-a599-6c6c63f4ee0d"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="297" y="1" width="108" height="20" isRemoveLineWhenBlank="true" uuid="499b6512-bbbf-46bf-8fc6-7d1617f19742"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="1" width="80" height="18" uuid="29b76cb8-741f-47f8-a314-a539024ac3a4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="8053c8cd-35d4-4ff3-bce3-ba999ccb070f"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="190" y="0" width="100" height="19" uuid="0329dc41-6393-4c1b-8cc9-c551d7990b35">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="af919984-90f9-46fe-af03-8765783e2556"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{unidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="40"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</summary>
+</jasperReport>

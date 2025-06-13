@@ -1,7 +1,7 @@
-FROM openjdk:11-jdk
+FROM openjdk:17-jdk
 WORKDIR /app
 COPY build/libs/*.jar /app.jar
-EXPOSE 8085
+EXPOSE 8090
 ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]
 
 
