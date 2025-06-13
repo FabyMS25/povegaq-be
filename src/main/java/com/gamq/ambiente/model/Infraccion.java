@@ -1,5 +1,6 @@
 package com.gamq.ambiente.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,6 +62,11 @@ public class Infraccion {
     private TipoInfraccion tipoInfraccion;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_vehiculo", nullable = false)
+    @JsonBackReference
+    private Vehiculo vehiculo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_inspeccion", nullable = true)
     private Inspeccion inspeccion;
 
@@ -72,6 +78,24 @@ public class Infraccion {
     private List<Alerta> alertaList = new ArrayList<Alerta>();
 
     public Infraccion(String uuid) {this.uuid = uuid;}
+
+    @Override
+    public String toString() {
+        return "Inspeccion{" +
+                "idInfraccion=" + idInfraccion +
+                ", uuid='" + uuid + '\'' +
+                ", fechaInfraccion=" + fechaInfraccion +
+                ", montoTotal=" + montoTotal +
+                ", statusInfraccion=" + statusInfraccion +
+                ", estadoPago=" + estadoPago +
+                ", fechaPago=" + fechaPago +
+                ", numeroTasa='" + numeroTasa + '\'' +
+                ", motivo='" + motivo + '\'' +
+                ", nombreRegistrador='" + nombreRegistrador + '\'' +
+                ", uuidUsuario='" + uuidUsuario + '\'' +
+                ", estado=" + estado +
+                '}';
+    }
 
     @PrePersist
     public void initializeUuid() {

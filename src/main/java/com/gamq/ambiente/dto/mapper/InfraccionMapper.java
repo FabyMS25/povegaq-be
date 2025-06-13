@@ -1,8 +1,6 @@
 package com.gamq.ambiente.dto.mapper;
 
-import com.gamq.ambiente.dto.InfraccionDto;
-import com.gamq.ambiente.dto.InspeccionDto;
-import com.gamq.ambiente.dto.TipoInfraccionDto;
+import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Infraccion;
 
 public class InfraccionMapper {
@@ -19,12 +17,23 @@ public class InfraccionMapper {
                 .setNombreRegistrador(infraccion.getNombreRegistrador())
                 .setUuidUsuario(infraccion.getUuidUsuario())
                 .setEstado(infraccion.isEstado())
+             //2025
+
                 .setTipoInfraccionDto(infraccion.getTipoInfraccion()==null? null: new TipoInfraccionDto()
                         .setUuid(infraccion.getTipoInfraccion().getUuid())
                         .setGrado(infraccion.getTipoInfraccion().getGrado())
                         .setValorUFV(infraccion.getTipoInfraccion().getValorUFV())
                         .setEstado(infraccion.getTipoInfraccion().isEstado())
                 )
+                .setVehiculoDto(infraccion.getVehiculo()==null? null: new VehiculoDto()
+                        .setUuid(infraccion.getVehiculo().getUuid())
+                        .setPlaca(infraccion.getVehiculo().getPlaca())
+                        .setEsOficial(infraccion.getVehiculo().isEsOficial())
+                        .setPoliza(infraccion.getVehiculo().getPoliza())
+                        .setVinNumeroIdentificacion(infraccion.getVehiculo().getVinNumeroIdentificacion())
+                        .setPinNumeroIdentificacion(infraccion.getVehiculo().getPinNumeroIdentificacion())
+                )
+
                 .setInspeccionDto(infraccion.getInspeccion()==null? null: new InspeccionDto()
                         .setUuid(infraccion.getInspeccion().getUuid())
                         .setResultado(infraccion.getInspeccion().isResultado())
@@ -34,11 +43,17 @@ public class InfraccionMapper {
                         .setNombreInspector(infraccion.getInspeccion().getNombreInspector())
                         .setUuidUsuario(infraccion.getInspeccion().getUuidUsuario())
                         .setAltitud(infraccion.getInspeccion().getAltitud())
-                        .setEquipo(infraccion.getInspeccion().getEquipo())
+                        //.setEquipo(infraccion.getInspeccion().getEquipo())
                         .setExamenVisualConforme(infraccion.getInspeccion().isExamenVisualConforme())
                         .setGasesEscapeConforme(infraccion.getInspeccion().isGasesEscapeConforme())
                         .setFechaProximaInspeccion(infraccion.getInspeccion().getFechaProximaInspeccion())
                         .setEstado(infraccion.getInspeccion().isEstado())
+                        .setEquipoDto(infraccion.getInspeccion().getEquipo()==null?null: new EquipoDto()
+                                .setUuid(infraccion.getInspeccion().getEquipo().getUuid())
+                                .setNombre(infraccion.getInspeccion().getEquipo().getNombre())
+                                .setVersion(infraccion.getInspeccion().getEquipo().getVersion())
+                                .setEstado(infraccion.getInspeccion().getEquipo().isEstado())
+                        )
                 )
                 ;
     }
@@ -47,11 +62,14 @@ public class InfraccionMapper {
         return new Infraccion()
                 .setUuid(infraccionDto.getUuid())
                 .setFechaInfraccion(infraccionDto.getFechaInfraccion())
+                .setMontoTotal(infraccionDto.getMontoTotal())
+                .setStatusInfraccion(infraccionDto.getStatusInfraccion())
                 .setEstadoPago(infraccionDto.isEstadoPago())
                 .setFechaPago(infraccionDto.getFechaPago())
-                .setMontoTotal(infraccionDto.getMontoTotal())
                 .setNumeroTasa(infraccionDto.getNumeroTasa())
-                .setStatusInfraccion(infraccionDto.getStatusInfraccion())
+                .setMotivo(infraccionDto.getMotivo())
+                .setNombreRegistrador(infraccionDto.getNombreRegistrador())
+                .setUuidUsuario(infraccionDto.getUuidUsuario())
                 .setEstado(infraccionDto.isEstado());
     }
 }

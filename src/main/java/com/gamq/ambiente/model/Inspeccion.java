@@ -44,8 +44,8 @@ public class Inspeccion {
     @Column(name = "uuid_usuario")
     private String uuidUsuario;
 
-    @Column(name = "equipo", nullable = false, length = 100)
-    private String equipo;
+  //  @Column(name = "equipo", nullable = false, length = 100)
+  //  private String equipo;
 
     @Column(name = "altitud", nullable = true)
     private Integer altitud;
@@ -70,6 +70,10 @@ public class Inspeccion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_actividad", nullable = false)
     private Actividad actividad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_equipo", nullable = false)
+    private Equipo equipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_evento", nullable = true)  // Puede ser NULL

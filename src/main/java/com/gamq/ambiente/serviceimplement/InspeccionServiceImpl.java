@@ -101,7 +101,7 @@ public class InspeccionServiceImpl implements InspeccionService {
                    return InspeccionMapper.toInspeccionDto(inspeccionRepository.save(nuevoInspeccion));
                }
                else {
-                   throw new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid());
+                   throw new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid());
                }
             }
             else {

@@ -12,7 +12,10 @@ public class ConductorMapper {
         return new ConductorDto()
                 .setUuid(conductor.getUuid())
                 .setExpedido(conductor.getExpedido())
-                .setNombreCompleto(conductor.getNombreCompleto())
+                .setNombre(conductor.getNombre())
+                .setPrimerApellido(conductor.getPrimerApellido())
+                .setSegundoApellido(conductor.getSegundoApellido())
+                .setApellidoEsposo(conductor.getApellidoEsposo())
                 .setNumeroDocumento(conductor.getNumeroDocumento())
                 .setTipoDocumento(conductor.getTipoDocumento())
                 .setEmail(conductor.getEmail())
@@ -27,17 +30,16 @@ public class ConductorMapper {
                 .setInspeccionDtoList(conductor.getInspeccionList().stream().map(inspeccion -> {
                     return InspeccionMapper.toInspeccionDto(inspeccion);
                 }).collect(Collectors.toList()));
-               /* .setVehiculoDtoList(conductor.getVehiculoList().stream().map( vehiculo -> {
-                    return VehiculoMapper.toVehiculoDto(vehiculo);
-                }).collect(Collectors.toList()))
-                ;*/
     }
 
     public static Conductor toConductor(ConductorDto conductorDto){
         return new Conductor()
                 .setUuid(conductorDto.getUuid())
                 .setExpedido(conductorDto.getExpedido())
-                .setNombreCompleto(conductorDto.getNombreCompleto())
+                .setNombre(conductorDto.getNombre())
+                .setPrimerApellido(conductorDto.getPrimerApellido())
+                .setSegundoApellido(conductorDto.getSegundoApellido())
+                .setApellidoEsposo(conductorDto.getApellidoEsposo())
                 .setNumeroDocumento(conductorDto.getNumeroDocumento())
                 .setTipoDocumento(conductorDto.getTipoDocumento())
                 .setEmail(conductorDto.getEmail())

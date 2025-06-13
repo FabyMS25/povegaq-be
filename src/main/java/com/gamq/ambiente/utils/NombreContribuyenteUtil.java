@@ -35,7 +35,18 @@ public class NombreContribuyenteUtil {
             Conductor conductor = inspeccion.getConductor();
             StringBuilder nombreCompleto = new StringBuilder();
 
-            nombreCompleto.append(conductor.getNombreCompleto());
+            nombreCompleto.append(conductor.getNombre());
+            nombreCompleto.append(" ");
+            nombreCompleto.append(conductor.getPrimerApellido());
+
+            if (conductor.getSegundoApellido() != null && !conductor.getSegundoApellido().isBlank()) {
+                nombreCompleto.append(" ").append(conductor.getSegundoApellido());
+            }
+
+            if (conductor.getApellidoEsposo() != null && !conductor.getApellidoEsposo().isBlank()) {
+                nombreCompleto.append(" ").append(conductor.getApellidoEsposo());
+            }
+
             return nombreCompleto.toString();
         }
 

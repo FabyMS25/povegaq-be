@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto.mapper;
 
 import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Certificado;
+import com.gamq.ambiente.model.Equipo;
 import com.gamq.ambiente.model.Inspeccion;
 
 public class CertificadoMapper {
@@ -23,11 +24,17 @@ public class CertificadoMapper {
                         .setNombreInspector(certificado.getInspeccion().getNombreInspector())
                         .setUuidUsuario(certificado.getInspeccion().getUuidUsuario())
                         .setAltitud(certificado.getInspeccion().getAltitud())
-                        .setEquipo(certificado.getInspeccion().getEquipo())
+                        //.setEquipo(certificado.getInspeccion().getEquipo())
                         .setExamenVisualConforme(certificado.getInspeccion().isExamenVisualConforme())
                         .setGasesEscapeConforme(certificado.getInspeccion().isGasesEscapeConforme())
                         .setFechaProximaInspeccion(certificado.getInspeccion().getFechaProximaInspeccion())
                         .setEstado(certificado.getInspeccion().isEstado())
+                        .setEquipoDto(certificado.getInspeccion().getEquipo() == null? null: new EquipoDto()
+                                .setUuid(certificado.getInspeccion().getEquipo().getUuid())
+                                .setNombre(certificado.getInspeccion().getEquipo().getNombre())
+                                .setVersion(certificado.getInspeccion().getEquipo().getVersion())
+                                .setEstado(certificado.getInspeccion().getEquipo().isEstado())
+                        )
                         .setActividadDto(certificado.getInspeccion().getActividad() == null? null: new ActividadDto()
                                 .setUuid(certificado.getInspeccion().getActividad().getUuid())
                                 .setActivo(certificado.getInspeccion().getActividad().isActivo())
@@ -82,7 +89,10 @@ public class CertificadoMapper {
                         )
                         .setConductorDto( certificado.getInspeccion().getConductor() == null? null: new ConductorDto()
                         .setUuid(certificado.getInspeccion().getConductor().getUuid())
-                        .setNombreCompleto(certificado.getInspeccion().getConductor().getNombreCompleto())
+                        .setNombre(certificado.getInspeccion().getConductor().getNombre())
+                        .setPrimerApellido(certificado.getInspeccion().getConductor().getPrimerApellido())
+                        .setSegundoApellido(certificado.getInspeccion().getConductor().getSegundoApellido())
+                        .setApellidoEsposo(certificado.getInspeccion().getConductor().getApellidoEsposo())
                         .setTipoDocumento(certificado.getInspeccion().getConductor().getTipoDocumento())
                         .setNumeroDocumento(certificado.getInspeccion().getConductor().getNumeroDocumento())
                         .setExpedido(certificado.getInspeccion().getConductor().getExpedido())
@@ -116,8 +126,14 @@ public class CertificadoMapper {
                         .setNombreInspector(certificadoDto.getInspeccionDto().getNombreInspector())
                         .setUuidUsuario(certificadoDto.getInspeccionDto().getUuidUsuario())
                         .setAltitud(certificadoDto.getInspeccionDto().getAltitud())
-                        .setEquipo(certificadoDto.getInspeccionDto().getEquipo())
+                       // .setEquipo(certificadoDto.getInspeccionDto().getEquipo())
                         .setEstado(certificadoDto.getInspeccionDto().isEstado())
+                        .setEquipo(certificadoDto.getInspeccionDto().getEquipoDto() == null? null: new Equipo()
+                                .setUuid(certificadoDto.getInspeccionDto().getEquipoDto().getUuid())
+                                .setNombre(certificadoDto.getInspeccionDto().getEquipoDto().getNombre())
+                                .setVersion(certificadoDto.getInspeccionDto().getEquipoDto().getVersion())
+                                .setEstado(certificadoDto.getInspeccionDto().getEquipoDto().isEstado())
+                        )
                 );
     }
 }

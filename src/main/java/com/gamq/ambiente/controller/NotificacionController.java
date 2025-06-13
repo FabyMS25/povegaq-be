@@ -32,7 +32,12 @@ public class NotificacionController {
     @GetMapping("por-tipoNotificacion/{tipoNotificacion}")
     @Operation(summary = "Listar notificaciones por su tipo", description = "Obtiene la lista de Notificaciones por tipo de notificacion")
     public Response getNotificacionesByTipoNotificacion(@PathVariable("tipoNotificacion")TipoNotificacion tipoNotificacion){
-        return Response.ok().setPayload(notificacionService.obtenerPorTipoNotificacion(tipoNotificacion));
+        try {
+            return Response.ok().setPayload(notificacionService.obtenerPorTipoNotificacion(tipoNotificacion));
+        }
+        catch (IllegalArgumentException e) {
+            return Response.badRequest().setPayload("Tipo de notificación inválido: " + tipoNotificacion);//("Tipo de notificación inválido: " + tipo);
+        }
     }
 
     @PostMapping()
@@ -94,7 +99,7 @@ public class NotificacionController {
     @GetMapping("/vencidas")
     @Operation(
             summary = "Listar las Notificaciones Vencidas",
-            description = "Obtien una lista de notificaciones vencidas"
+            description = "Obtiene una lista de notificaciones vencidas"
     )
     public Response getNotificacionesVendidas() {
         return Response.ok().setPayload(notificacionService.obtenerNotificacionesPorFechaAsistenciaVencida());

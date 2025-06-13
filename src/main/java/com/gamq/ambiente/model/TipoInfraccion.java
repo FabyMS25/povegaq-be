@@ -49,6 +49,7 @@ public class TipoInfraccion {
     @JoinColumn(name = "id_reglamento", nullable = false)
     private Reglamento reglamento;
 
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "tipoInfraccion", fetch = FetchType.LAZY)
     private List<Infraccion> infraccionList = new ArrayList<Infraccion>();
 
