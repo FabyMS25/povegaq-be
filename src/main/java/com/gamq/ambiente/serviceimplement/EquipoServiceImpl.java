@@ -8,12 +8,10 @@ import com.gamq.ambiente.model.Equipo;
 import com.gamq.ambiente.repository.EquipoRepository;
 import com.gamq.ambiente.service.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,20 +20,15 @@ public class EquipoServiceImpl implements EquipoService {
     EquipoRepository equipoRepository;
     @Override
     public EquipoDto obtenerEquipoPorUuid(String uuid) {
-        Optional<Equipo> equipoOptional = equipoRepository.findByUuid(uuid);
-        if(equipoOptional.isPresent()){
-            return EquipoMapper.toEquipoDto(equipoOptional.get());
-        }
-        throw new ResourceNotFoundException("Equipo", "uuid", uuid);
+        Equipo equipo = obtenerEquipoPorUuidOThrow(uuid);
+        return EquipoMapper.toEquipoDto(equipo);
     }
 
     @Override
     public EquipoDto obtenerEquipoPorNombre(String nombre) {
-        Optional<Equipo> equipoOptional = equipoRepository.findByNombre(nombre);
-        if(equipoOptional.isPresent()){
-            return EquipoMapper.toEquipoDto(equipoOptional.get());
-        }
-        throw new ResourceNotFoundException("Equipo", "descripcion", nombre);
+        Equipo equipo = equipoRepository.findByNombre(nombre)
+                .orElseThrow(()-> new ResourceNotFoundException("equipo", "nombre", nombre));
+        return EquipoMapper.toEquipoDto(equipo);
     }
 
     @Override
@@ -48,44 +41,42 @@ public class EquipoServiceImpl implements EquipoService {
 
     @Override
     public EquipoDto crearEquipo(EquipoDto equipoDto) {
-        String nombre = equipoDto.getNombre();
-        if(nombre==null){ throw new ResourceNotFoundException("Equipo","nombre", nombre);}
-        Optional<Equipo> equipoOptional = equipoRepository.findByNombre(nombre);
-        if(equipoOptional.isEmpty()){
-            Equipo nuevoEquipo = EquipoMapper.toEquipo(equipoDto);
-            return EquipoMapper.toEquipoDto(equipoRepository.save(nuevoEquipo));
-        }
-        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Equipo ya existe");
+        validarNombreNoNulo(equipoDto.getNombre());
+        equipoRepository.findByNombre(equipoDto.getNombre())
+                .ifPresent(e -> {throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El equipo ya existe");});
+        Equipo nuevoEquipo = EquipoMapper.toEquipo(equipoDto);
+        return EquipoMapper.toEquipoDto(equipoRepository.save(nuevoEquipo));
     }
 
     @Override
     public EquipoDto actualizarEquipo(EquipoDto equipoDto) {
-        Optional<Equipo> equipoOptional = equipoRepository.findByUuid(equipoDto.getUuid());
-        if(equipoOptional.isPresent()) {
-            if (!equipoRepository.exitsEquipoLikeNombre(equipoDto.getNombre().toLowerCase(), equipoDto.getUuid())) {
-                Equipo updateEquipo = EquipoMapper.toEquipo(equipoDto);
-                updateEquipo.setIdEquipo(equipoOptional.get().getIdEquipo());
-                return EquipoMapper.toEquipoDto(equipoRepository.save(updateEquipo));
-            } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Equipo ya existe");
-            }
+        Equipo equipo = obtenerEquipoPorUuidOThrow(equipoDto.getUuid());
+        if (equipoRepository.exitsEquipoLikeNombre(equipoDto.getNombre().toLowerCase(), equipoDto.getUuid())) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Equipo ya existe");
         }
-        throw new ResourceNotFoundException("Equipo", "uuid",equipoDto.getUuid());
+        Equipo updateEquipo = EquipoMapper.toEquipo(equipoDto);
+        updateEquipo.setIdEquipo(equipo.getIdEquipo());
+        return EquipoMapper.toEquipoDto(equipoRepository.save(updateEquipo));
     }
 
     @Override
     public EquipoDto eliminarEquipo(String uuid) {
-        Equipo equipoQBE = new Equipo(uuid);
-        Optional<Equipo> optionalEquipo = equipoRepository.findOne(Example.of(equipoQBE));
-        if(optionalEquipo.isPresent()){
-            Equipo equipo = optionalEquipo.get();
-           // if(!equipo.getEquipoInspeccionList().isEmpty()){
-           //     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el equipo ya esta siendo usado por las inspecciones");
-           // }
-            equipoRepository.delete(equipo);
-            return EquipoMapper.toEquipoDto(equipo);
-        }
-        throw new ResourceNotFoundException("Equipo","uuid", uuid);
+        Equipo equipo = obtenerEquipoPorUuidOThrow(uuid);
+        // if(!equipo.getEquipoInspeccionList().isEmpty()){
+        //     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el equipo ya esta siendo usado por las inspecciones");
+        // }
+        equipoRepository.delete(equipo);
+        return EquipoMapper.toEquipoDto(equipo);
     }
 
+    private Equipo obtenerEquipoPorUuidOThrow(String uuid){
+        return equipoRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Equipo", "uuid", uuid));
+    }
+
+    private void validarNombreNoNulo(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new ResourceNotFoundException("Equipo", "nombre", "null");
+        }
+    }
 }

@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
@@ -40,19 +41,25 @@ public class FechaUtil {
     }
 
     public static Date sumarDias(Date fecha, int dias) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(fecha);
-        cal.add(Calendar.DAY_OF_YEAR, dias); // suma X días
-        return cal.getTime();
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fecha);
+        calendario.add(Calendar.DAY_OF_YEAR, dias); // suma X días
+        return calendario.getTime();
     }
 
     private static final Set<LocalDate> FERIADOS = Set.of(
             LocalDate.of(GESTION_ACTUAL, 1, 1),   // Año Nuevo
+            LocalDate.of(GESTION_ACTUAL, 1, 22),   // dia del estado plurinacional
+            LocalDate.of(GESTION_ACTUAL, 3, 3),   // carnaval
+            LocalDate.of(GESTION_ACTUAL, 3, 4),   // carnaval
+            LocalDate.of(GESTION_ACTUAL, 4, 18),  // viernes santos
             LocalDate.of(GESTION_ACTUAL, 5, 1),   // Día del Trabajo
+            LocalDate.of(GESTION_ACTUAL, 6, 19),  // Corpus Christi
             LocalDate.of(GESTION_ACTUAL, 6, 21),  // Año Nuevo Andino
-            LocalDate.of(GESTION_ACTUAL, 8, 6),   // Día de la Independencia
+            LocalDate.of(GESTION_ACTUAL, 9, 12),  // feriado aniversario Quillacollo
+            LocalDate.of(GESTION_ACTUAL, 9, 14),  // feriado aniversario de Cochabamba
+            LocalDate.of(GESTION_ACTUAL, 11, 2),  // Día de todos santos
             LocalDate.of(GESTION_ACTUAL, 12, 25)  // Navidad
-            // Agrega más feriados nacionales y regionales aquí
     );
 
     public long contarDiasHabiles(LocalDate fechaInicio, LocalDate fechaFin) {
@@ -69,7 +76,7 @@ public class FechaUtil {
         return diasHabiles;
     }
 
-    public boolean esDiaHabil(LocalDate fecha) {
+    public static boolean esDiaHabil(LocalDate fecha) {
         DayOfWeek dia = fecha.getDayOfWeek();
         return dia != DayOfWeek.SATURDAY &&
                 dia != DayOfWeek.SUNDAY &&
@@ -108,4 +115,67 @@ public class FechaUtil {
         );
     }
 
+    public static Date obtenerDiaHabilMasCercano(Date fechaVencimiento, ZoneId zona) {
+        LocalDate fecha = convertirADia(fechaVencimiento, zona);
+        //fechaVencimiento.toInstant()
+        //        .atZone(zona)
+        //        .toLocalDate();
+
+        if (esDiaHabil(fecha)) {
+            return  convertirADate(fecha,zona);
+         //   return Date.from(fecha.atStartOfDay(zona).toInstant());
+        }
+        LocalDate diaHabilAnterior = buscarDiaHabilAnterior(fecha);
+        LocalDate diaHabilSiguiente = buscarDiaHabilSiguiente(fecha);
+
+        //LocalDate anterior = fecha.minusDays(1);
+        //while (!esDiaHabil(anterior)) {
+        //    anterior = anterior.minusDays(1);
+        //}
+
+        //LocalDate siguiente = fecha.plusDays(1);
+        //while (!esDiaHabil(siguiente)) {
+        //    siguiente = siguiente.plusDays(1);
+        //}
+
+       // long diasAntes = Math.abs(ChronoUnit.DAYS.between(fecha, anterior));
+       // long diasDespues = Math.abs(ChronoUnit.DAYS.between(fecha, siguiente));
+
+       // LocalDate resultado = diasAntes <= diasDespues ? anterior : siguiente;
+
+        LocalDate diaMasCercano = elegirDiaMasCercano(fecha, diaHabilAnterior, diaHabilSiguiente);
+
+        return convertirADate(diaMasCercano, zona);
+       // return Date.from(resultado.atStartOfDay(zona).toInstant());
+    }
+
+    private static LocalDate convertirADia(Date fecha, ZoneId zona) {
+        return fecha.toInstant().atZone(zona).toLocalDate();
+    }
+
+    private static Date convertirADate(LocalDate fecha, ZoneId zona) {
+        return Date.from(fecha.atStartOfDay(zona).toInstant());
+    }
+
+    private static LocalDate buscarDiaHabilAnterior(LocalDate desde) {
+        LocalDate actual = desde.minusDays(1);
+        while (!esDiaHabil(actual)) {
+            actual = actual.minusDays(1);
+        }
+        return actual;
+    }
+
+    private static LocalDate buscarDiaHabilSiguiente(LocalDate desde) {
+        LocalDate actual = desde.plusDays(1);
+        while (!esDiaHabil(actual)) {
+            actual = actual.plusDays(1);
+        }
+        return actual;
+    }
+
+    private static LocalDate elegirDiaMasCercano(LocalDate original, LocalDate anterior, LocalDate siguiente) {
+        long distanciaAnterior = Math.abs(ChronoUnit.DAYS.between(original, anterior));
+        long distanciaSiguiente = Math.abs(ChronoUnit.DAYS.between(original, siguiente));
+        return distanciaAnterior <= distanciaSiguiente ? anterior : siguiente;
+    }
 }

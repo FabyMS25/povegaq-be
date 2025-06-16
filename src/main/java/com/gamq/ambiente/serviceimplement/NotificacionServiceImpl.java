@@ -124,7 +124,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365));
+            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365), ZoneId.of(zonaHorario)));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.ENTREGADA);
             notificacionDto.setObservacion("Se detectó exceso en emisión. Plazo 1 año para adecuación técnica.");
             notificacionDto.setNumeroIntento(1);
@@ -132,7 +132,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(FechaUtil.sumarDias(new Date(),90));
+            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(),90), ZoneId.of(zonaHorario)));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
             notificacionDto.setObservacion("No realizó adecuación técnica tras primera notificación. Multa 3er grado.");
             notificacionDto.setNumeroIntento(2);

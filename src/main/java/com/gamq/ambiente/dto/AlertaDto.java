@@ -8,6 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Getter
@@ -19,8 +22,12 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AlertaDto {
     private String uuid;
+    @NotBlank(message = "El tipo de alerta es obligatorio")
     private String tipo;
+    @NotBlank(message = "El mensaje no puede estar vacío")
+    @Size(max = 250, message = "El mensaje no puede exceder 250 caracteres")
     private String mensaje;
+    @NotNull(message = "La fecha de alerta es obligatoria")
     private Date fechaAlerta;
     private String uuidDestinatario;
     private String rolDestinatario;
@@ -28,9 +35,6 @@ public class AlertaDto {
     private boolean estado;
 
     private NotificacionDto notificacionDto;
-
     private InfraccionDto infraccionDto;
-
     private VehiculoDto vehiculoDto;
-
 }

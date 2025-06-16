@@ -25,11 +25,8 @@ public class AlertaServiceImpl implements AlertaService {
 
     @Override
     public AlertaDto obtenerAlertaPorUuid(String uuid) {
-        Optional<Alerta> alertaOptional = alertaRepository.findByUuid(uuid);
-        if(alertaOptional.isPresent()){
-            return AlertaMapper.toAlertaDto(alertaOptional.get());
-        }
-        throw  new ResourceNotFoundException("alerta", "uuid", uuid);
+        Alerta alerta = obtenerAlertaPorUuidOThrow(uuid);
+        return AlertaMapper.toAlertaDto(alerta);
     }
 
     @Override
@@ -41,46 +38,28 @@ public class AlertaServiceImpl implements AlertaService {
     }
 
     @Override
-    public AlertaDto crearAlerta(AlertaDto alertaDto) {
+    public AlertaDto crearAlerta(AlertaDto alertaDto){
         Vehiculo vehiculo = obtenerVehiculo(alertaDto.getVehiculoDto().getUuid());
         Alerta nuevoAlerta = AlertaMapper.toAlerta(alertaDto);
-        nuevoAlerta.setVehiculo( vehiculo);
+        nuevoAlerta.setVehiculo(vehiculo);
         return AlertaMapper.toAlertaDto(alertaRepository.save(nuevoAlerta));
-    }
-
-    private Vehiculo obtenerVehiculo(String uuidVehiculo){
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuidVehiculo);
-        if(vehiculoOptional.isEmpty()){
-            throw  new ResourceNotFoundException("vehiculo", "uuid", uuidVehiculo);
-        }
-        return vehiculoOptional.get();
     }
 
     @Override
     public AlertaDto actualizarAlerta(AlertaDto alertaDto) {
-        Alerta alertaQBE = new Alerta(alertaDto.getUuid());
-        Optional<Alerta> alertaOptional = alertaRepository.findByUuid(alertaQBE.getUuid());
-        if(alertaOptional.isPresent())
-        {
-            Vehiculo vehiculo = obtenerVehiculo(alertaDto.getVehiculoDto().getUuid());
-            Alerta updateAlerta = AlertaMapper.toAlerta(alertaDto);
-            updateAlerta.setIdAlerta(alertaOptional.get().getIdAlerta());
-            updateAlerta.setVehiculo(vehiculo);
-            return AlertaMapper.toAlertaDto(alertaRepository.save(updateAlerta));
-        }
-        throw  new ResourceNotFoundException("alerta", "uuid", alertaDto.getUuid());
+        Alerta alerta = obtenerAlertaPorUuidOThrow(alertaDto.getUuid());
+        Vehiculo vehiculo = obtenerVehiculo(alertaDto.getVehiculoDto().getUuid());
+        Alerta updateAlerta = AlertaMapper.toAlerta(alertaDto);
+        updateAlerta.setIdAlerta(alerta.getIdAlerta());
+        updateAlerta.setVehiculo(vehiculo);
+        return AlertaMapper.toAlertaDto(alertaRepository.save(updateAlerta));
     }
 
     @Override
     public AlertaDto eliminarAlerta(String uuid) {
-        Alerta alertaQBE = new Alerta(uuid);
-        Optional<Alerta> alertaOptional = alertaRepository.findByUuid(alertaQBE.getUuid());
-        if(alertaOptional.isPresent()) {
-            Alerta alerta = alertaOptional.get();
-            alertaRepository.delete(alerta);
-            return  AlertaMapper.toAlertaDto(alerta);
-        }
-        throw  new ResourceNotFoundException("alerta", "uuid", uuid);
+        Alerta alerta = obtenerAlertaPorUuidOThrow(uuid);
+        alertaRepository.delete(alerta);
+        return  AlertaMapper.toAlertaDto(alerta);
     }
 
     @Override
@@ -97,5 +76,15 @@ public class AlertaServiceImpl implements AlertaService {
         return alertaList.stream().map( alerta -> {
             return AlertaMapper.toAlertaDto(alerta);
         }).collect(Collectors.toList());
+    }
+
+    private Alerta obtenerAlertaPorUuidOThrow(String uuid){
+        return alertaRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Alerta", "uuid", uuid));
+    }
+
+    private Vehiculo obtenerVehiculo(String uuidVehiculo){
+        return vehiculoRepository.findByUuid(uuidVehiculo)
+                .orElseThrow(()->new ResourceNotFoundException("Vehiculo", "uuid", uuidVehiculo));
     }
 }
