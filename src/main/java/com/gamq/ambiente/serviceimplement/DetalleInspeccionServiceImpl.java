@@ -37,11 +37,8 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
 
     @Override
     public DetalleInspeccionDto obtenerDetalleInspeccionPorUuid(String uuid) {
-        Optional<DetalleInspeccion> detalleInspeccionOptional = detalleInspeccionRepository.findByUuid(uuid);
-        if(detalleInspeccionOptional.isPresent()){
-            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionOptional.get());
-        }
-        throw new ResourceNotFoundException("Detalle Inspeccion", "uuid", uuid);
+        DetalleInspeccion detalleInspeccion = obtenerDetalleInspeccionPorUuidOThrow(uuid);
+        return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
     }
 
     @Override
@@ -54,66 +51,50 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
 
     @Override
     public DetalleInspeccionDto crearDetalleInspeccion(DetalleInspeccionDto detalleInspeccionDto) {
-           Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(detalleInspeccionDto.getInspeccionDto().getUuid());
-           if(inspeccionOptional.isEmpty()){
-               throw new ResourceNotFoundException("inspeccion", "uuid", detalleInspeccionDto.getInspeccionDto().getUuid());
-           }
-           Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid());
-           if (tipoParametroOptional.isEmpty()){
-               throw new ResourceNotFoundException("tipo parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid());
-           }
+           Inspeccion inspeccion = inspeccionRepository.findByUuid(detalleInspeccionDto.getInspeccionDto().getUuid())
+                   .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", detalleInspeccionDto.getInspeccionDto().getUuid()));
+           TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
+                   .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid()));
 
-           if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametroOptional.get().getUuid(),inspeccionOptional.get().getUuid(), detalleInspeccionDto.getNroEjecucion())) {
+           if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion())) {
                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
            }
 
            DetalleInspeccion nuevoDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
-           nuevoDetalleInspeccion.setTipoParametro(tipoParametroOptional.get());
-           nuevoDetalleInspeccion.setInspeccion( inspeccionOptional.get());
+           nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
+           nuevoDetalleInspeccion.setInspeccion( inspeccion);
            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionRepository.save(nuevoDetalleInspeccion));
     }
 
     @Override
     public DetalleInspeccionDto actualizarDetalleInspeccion(DetalleInspeccionDto detalleInspeccionDto) {
-        Optional<DetalleInspeccion> detalleInspeccionOptional = detalleInspeccionRepository.findByUuid(detalleInspeccionDto.getUuid());
-        if(detalleInspeccionOptional.isPresent()) {
+        DetalleInspeccion detalleInspeccion = obtenerDetalleInspeccionPorUuidOThrow(detalleInspeccionDto.getUuid());
 
-            Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(detalleInspeccionDto.getInspeccionDto().getUuid());
-            if(inspeccionOptional.isEmpty()){
-                throw new ResourceNotFoundException("inspeccion", "uuid", detalleInspeccionDto.getInspeccionDto().getUuid());
-            }
-            Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid());
-            if (tipoParametroOptional.isEmpty()){
-                throw new ResourceNotFoundException("tipo parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid());
-            }
+        Inspeccion inspeccion = inspeccionRepository.findByUuid(detalleInspeccionDto.getInspeccionDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", detalleInspeccionDto.getInspeccionDto().getUuid()));
 
-            if (detalleInspeccionRepository.exitsDetalleInspeccionLike(detalleInspeccionDto.getTipoParametroDto().getUuid(),
+        TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid()));
+
+         if (detalleInspeccionRepository.exitsDetalleInspeccionLike(detalleInspeccionDto.getTipoParametroDto().getUuid(),
                                                                        detalleInspeccionDto.getNroEjecucion(),
                                                                        detalleInspeccionDto.getInspeccionDto().getUuid(),
                                                                        detalleInspeccionDto.getUuid())) {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Detalle Inspeccion ya existe");
-            }
-
-            DetalleInspeccion updateDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
-            updateDetalleInspeccion.setIdDetalleInspeccion(detalleInspeccionOptional.get().getIdDetalleInspeccion());
-            updateDetalleInspeccion.setTipoParametro(tipoParametroOptional.get());
-            updateDetalleInspeccion.setInspeccion(inspeccionOptional.get());
-            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionRepository.save(updateDetalleInspeccion));
-
+             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Detalle Inspeccion ya existe");
         }
-        throw new ResourceNotFoundException("Detalle Inspeccion", "uuid", detalleInspeccionDto.getUuid());
+
+        DetalleInspeccion updateDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
+        updateDetalleInspeccion.setIdDetalleInspeccion(detalleInspeccion.getIdDetalleInspeccion());
+        updateDetalleInspeccion.setTipoParametro(tipoParametro);
+        updateDetalleInspeccion.setInspeccion(inspeccion);
+        return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionRepository.save(updateDetalleInspeccion));
     }
 
     @Override
     public DetalleInspeccionDto eliminarDetalleInspeccion(String uuid) {
-        DetalleInspeccion detalleInspeccionQBE = new DetalleInspeccion(uuid);
-        Optional<DetalleInspeccion> optionalDetalleInspeccion = detalleInspeccionRepository.findOne(Example.of(detalleInspeccionQBE));
-        if(optionalDetalleInspeccion.isPresent()){
-            DetalleInspeccion detalleInspeccion = optionalDetalleInspeccion.get();
+        DetalleInspeccion detalleInspeccion = obtenerDetalleInspeccionPorUuidOThrow(uuid);
             detalleInspeccionRepository.delete(detalleInspeccion);
-            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
-        }
-        throw new ResourceNotFoundException("Detalle Inspeccion","uuid", uuid);
+        return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
     }
 
     public void agregarEjecucion(String uuidInspeccion, List<DetalleInspeccion> nuevosDetalles) {
@@ -186,5 +167,10 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         nuevoDetalleInspeccion.setInspeccion( inspeccion);
         nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
         return nuevoDetalleInspeccion;
+    }
+
+    private DetalleInspeccion obtenerDetalleInspeccionPorUuidOThrow(String uuid){
+        return detalleInspeccionRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Detalle Inspeccion", "uuid", uuid));
     }
 }

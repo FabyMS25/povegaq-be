@@ -31,12 +31,10 @@ public class NotificacionMapper {
                         .setNombreInspector(notificacion.getInspeccion().getNombreInspector())
                         .setUuidUsuario(notificacion.getInspeccion().getUuidUsuario())
                         .setAltitud(notificacion.getInspeccion().getAltitud())
-                        //.setEquipo(notificacion.getInspeccion().getEquipo())
                         .setExamenVisualConforme(notificacion.getInspeccion().isExamenVisualConforme())
                         .setGasesEscapeConforme(notificacion.getInspeccion().isGasesEscapeConforme())
                         .setFechaProximaInspeccion(notificacion.getInspeccion().getFechaProximaInspeccion())
                         .setEstado(notificacion.getInspeccion().isEstado())
-                        //2025
                         .setEquipoDto(notificacion.getInspeccion().getEquipo() == null? null: new EquipoDto()
                                 .setUuid(notificacion.getInspeccion().getEquipo().getUuid())
                                 .setNombre(notificacion.getInspeccion().getEquipo().getNombre())

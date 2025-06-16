@@ -43,7 +43,6 @@ public class InfraccionMapper {
                         .setNombreInspector(infraccion.getInspeccion().getNombreInspector())
                         .setUuidUsuario(infraccion.getInspeccion().getUuidUsuario())
                         .setAltitud(infraccion.getInspeccion().getAltitud())
-                        //.setEquipo(infraccion.getInspeccion().getEquipo())
                         .setExamenVisualConforme(infraccion.getInspeccion().isExamenVisualConforme())
                         .setGasesEscapeConforme(infraccion.getInspeccion().isGasesEscapeConforme())
                         .setFechaProximaInspeccion(infraccion.getInspeccion().getFechaProximaInspeccion())
