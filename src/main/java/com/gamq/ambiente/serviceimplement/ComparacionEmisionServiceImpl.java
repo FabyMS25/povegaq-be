@@ -1,6 +1,7 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
+import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
@@ -33,33 +34,32 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
 
     @Override
     public void validarInspeccion(String inspeccionUuid) {
+        Inspeccion inspeccion = obtenerInspeccionPorUuid(inspeccionUuid);
         Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(inspeccionUuid);
-        if(inspeccionOptional.isEmpty()){
-            throw new ResourceNotFoundException("Inspeccion", "uuid", inspeccionUuid);
-        }
-        if(inspeccionOptional.get().getDetalleInspeccionList().size() <=0){
+        if(inspeccion.getDetalleInspeccionList().size() <=0){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"No existe Datos en el Detalle inspeccion");
         }
 
         boolean resultadoGeneral = true;
-        for (DetalleInspeccion detalle : inspeccionOptional.get().getDetalleInspeccionList()) {
-            Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(detalle.getTipoParametro().getUuid());
-            DatoTecnico datoTecnico = inspeccionOptional.get().getVehiculo().getDatoTecnico();
+        for (DetalleInspeccion detalle : inspeccion.getDetalleInspeccionList()) {
+            TipoParametro tipoParametro = obtenerTipoParametro(detalle.getTipoParametro().getUuid());
 
-            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametroOptional.get(), datoTecnico, inspeccionOptional.get().getAltitud());
+            DatoTecnico datoTecnico = inspeccion.getVehiculo().getDatoTecnico();
+
+            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametro, datoTecnico, inspeccion.getAltitud(),datoTecnico.getTipoCombustion() == TipoCombustible.DUAL_GNV_GASOLINA? detalle.getModoCombustion():datoTecnico.getTipoCombustion());
 
             if (limites.isEmpty()) {
-                throw new RuntimeException("No se encontró límite de emisión para el parámetro: " + tipoParametroOptional.get().getNombre());
+                throw new RuntimeException("No se encontró límite de emisión para el parámetro: " + tipoParametro.getNombre());
             }
 
             if (limites.size() > 1) {
-                throw new RuntimeException("Existen múltiples límites de emisión para el parámetro: " + tipoParametroOptional.get().getNombre() +
+                throw new RuntimeException("Existen múltiples límites de emisión para el parámetro: " + tipoParametro.getNombre() +
                         ". Revise los datos técnicos o la configuración de límites.");
             }
 
             LimiteEmisionDto limite = limites.get(0);
             BigDecimal valorMedido = detalle.getValor();
-            if (valorMedido.compareTo(limite.getLimite()) > 0) {
+            if (valorMedido.compareTo(limite.getLimite()) > 0 ) {
                 detalle.setResultadoParcial(false);
                 detalle.setLimitePermisible(limite.getLimite());
                 resultadoGeneral = false;
@@ -69,6 +69,16 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
             }
             detalleInspeccionRepository.save(detalle);
         }
-        inspeccionRepository.save(inspeccionOptional.get().setResultado(resultadoGeneral));
+        inspeccionRepository.save(inspeccion.setResultado(resultadoGeneral));
+    }
+
+    private Inspeccion obtenerInspeccionPorUuid(String uuid) {
+        return inspeccionRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuid", uuid));
+    }
+
+    private TipoParametro obtenerTipoParametro(String uuid) {
+        return tipoParametroRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("TipoParametro", "uuid", uuid));
     }
 }

@@ -56,7 +56,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
            TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
                    .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid()));
 
-           if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion())) {
+           if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion(), detalleInspeccionDto.getModoCombustion())) {
                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
            }
 
@@ -137,17 +137,16 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         Integer ultimaEjecucion = detalleInspeccionRepository.findUltimaEjecucionByUuidInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
         int nuevaEjecucion = (ultimaEjecucion == null) ? 1 : ultimaEjecucion + 1;
         List<DetalleInspeccion>  detalleInspeccionList = inspeccionDetalleInspeccionDto.getDetalleInspeccionDtoList().stream().map(detalleInspeccionDto ->  {
-                    TipoParametro tipoParametro = entidadHelper.obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
+        TipoParametro tipoParametro = entidadHelper.obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
 
-                    if(!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(tipoParametro.getUuid(),inspeccion.getUuid(),nuevaEjecucion)) {
-                        detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
-                        DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro);
-                        return nuevoDetalleInspeccion;
-                    }
-                    else {return null;}
-
-                }).filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        if(!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(),nuevaEjecucion, detalleInspeccionDto.getModoCombustion())) {
+            detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
+            DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro);
+            return nuevoDetalleInspeccion;
+        }
+        else {return null;}
+        }).filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
         inspeccion.setDetalleInspeccionList(detalleInspeccionList);
 

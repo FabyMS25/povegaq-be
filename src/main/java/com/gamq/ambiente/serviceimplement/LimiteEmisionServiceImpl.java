@@ -2,6 +2,7 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
 import com.gamq.ambiente.dto.mapper.LimiteEmisionMapper;
+import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.DatoTecnico;
@@ -11,6 +12,7 @@ import com.gamq.ambiente.model.TipoParametro;
 import com.gamq.ambiente.repository.LimiteEmisionRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.LimiteEmisionService;
+import com.gamq.ambiente.utils.TipoCombustionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -31,11 +33,8 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
 
     @Override
     public LimiteEmisionDto obtenerLimiteEmisionPorUuid(String uuid) {
-        Optional<LimiteEmision> limiteEmisionOptional = limiteEmisionRepository.findByUuid(uuid);
-        if(limiteEmisionOptional.isPresent()){
-            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionOptional.get());
-        }
-        throw new ResourceNotFoundException("Limite Emision", "uuid", uuid);
+        LimiteEmision limiteEmision = obtenerLimiteEmisionPorUuidOThrow(uuid);
+        return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
     }
 
     @Override
@@ -65,14 +64,9 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             if (nombre == null) {
                 throw new ResourceNotFoundException("Limite Emision", "nombre", nombre);
             }
-          //  if(!limiteEmisionRepository.exitsLimiteEmisionLikeTipoConbustibleAndNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), tipoParametroOptional.get().getNombre()))
-           // {
             LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
             nuevoLimiteEmision.setTipoParametro(tipoParametroOptional.get());
             return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
-          //  } else {
-          //      throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "ya existe el limite de emision para el tipo de combustible  " + limiteEmisionDto.getTipoCombustible() + " y el parametro " + tipoParametroOptional.get().getNombre());
-          //  }
         }
         else {
             throw new ResourceNotFoundException("tipo parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid());
@@ -81,41 +75,23 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
 
     @Override
     public LimiteEmisionDto actualizarLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
-        Optional<LimiteEmision> limiteEmisionOptional = limiteEmisionRepository.findByUuid(limiteEmisionDto.getUuid());
-        if(limiteEmisionOptional.isPresent()) {
-            Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(limiteEmisionDto.getTipoParametroDto().getUuid());
-            if (tipoParametroOptional.isPresent()) {
-                //  if (!limiteEmisionRepository.exitsLimiteEmisionLikeNombreTipoParametro(limiteEmisionDto.getTipoCombustible(), limiteEmisionDto.getTipoParametroDto().getNombre().toLowerCase(), limiteEmisionDto.getUuid())) {
-                LimiteEmision updateLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
-                updateLimiteEmision.setIdLimiteEmision(limiteEmisionOptional.get().getIdLimiteEmision());
-                updateLimiteEmision.setTipoParametro(tipoParametroOptional.get());
-                return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(updateLimiteEmision));
-                // } else {
-                //     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Limite Emision ya existe");
-                // }
-            }
-            else {
-                throw new ResourceNotFoundException("tipo parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid());
-            }
-        }
-        throw new ResourceNotFoundException("Limite Emision", "uuid",limiteEmisionDto.getUuid());
+        LimiteEmision limiteEmision = obtenerLimiteEmisionPorUuidOThrow(limiteEmisionDto.getUuid());
+        TipoParametro tipoParametro = tipoParametroRepository.findByUuid(limiteEmisionDto.getTipoParametroDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid()));
+        LimiteEmision updateLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
+        updateLimiteEmision.setIdLimiteEmision(limiteEmision.getIdLimiteEmision());
+        updateLimiteEmision.setTipoParametro(tipoParametro);
+        return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(updateLimiteEmision));
     }
 
     @Override
     public LimiteEmisionDto eliminarLimiteEmision(String uuid) {
-        LimiteEmision limiteEmisionQBE = new LimiteEmision(uuid);
-        Optional<LimiteEmision> optionalLimiteEmision = limiteEmisionRepository.findByUuid(uuid);
-        if(optionalLimiteEmision.isPresent()){
-            if (optionalLimiteEmision.get().getTipoParametro().getDetalleInspeccionList().size()>0) {
-                LimiteEmision limiteEmision = optionalLimiteEmision.get();
-                limiteEmisionRepository.delete(limiteEmision);
-                return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
-            }
-            else {
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "ya tiene detalles de inspeccion");
-            }
+        LimiteEmision limiteEmision = obtenerLimiteEmisionPorUuidOThrow(uuid);
+        if (limiteEmision.getTipoParametro().getDetalleInspeccionList().size()> 0){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "ya tiene detalles de inspeccion");
         }
-        throw new ResourceNotFoundException("Limite Emision","uuid", uuid);
+        limiteEmisionRepository.delete(limiteEmision);
+        return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmision);
     }
 
     @Override
@@ -135,12 +111,12 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     @Override
-    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud) {
+    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud, TipoCombustible tipoCombustible) {
         try {
         List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
 
             //prueba paso a paso
-           /* List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
+        /*    List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
             System.out.println("Total inicial: " + resultado.size());
 
             resultado = resultado.stream()
@@ -154,9 +130,8 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
                     .collect(Collectors.toList());
 
             System.out.println("Después de tipoMotor: " + resultado.size());
-
             resultado = resultado.stream()
-                    .filter(l -> l.getTipoCombustible() == null || l.getTipoCombustible().equalsIgnoreCase(datoTecnico.getTipoCombustion()))
+                    .filter(l -> l.getTipoCombustible() == null || l.getTipoCombustible().equalsIgnoreCase(TipoCombustionUtil.clasificarTipoCombustion(tipoCombustible)))
                     .collect(Collectors.toList());
             System.out.println("Después de tipoCombustible: " + resultado.size());
 
@@ -198,19 +173,17 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             resultado = resultado.stream()
                     .filter(LimiteEmision::isActivo)
                     .collect(Collectors.toList());
-            System.out.println("Después de isActivo: " + resultado.size()); */
-
+            System.out.println("Después de isActivo: " + resultado.size());
+        */
 
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
                 .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
                 .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
-                .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(datoTecnico.getTipoCombustion()))
+                .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(TipoCombustionUtil.clasificarTipoCombustion(tipoCombustible)))
                 .filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
-                // si es null deja pasar
                 .filter(l -> l.getCategoriaVehiculo() == null
                         || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
-
-                .filter(l -> matchBetweenInteger(l.getYearFabricacionInicio(), l.getYearFabricacionFin(), datoTecnico.getYearFabricacion()))
+               .filter(l -> matchBetweenInteger(l.getYearFabricacionInicio(), l.getYearFabricacionFin(), datoTecnico.getYearFabricacion()))
                 .filter(l -> matchBetweenInteger(l.getAltitudMinima(), l.getAltitudMaxima(), altitud) )
                 .filter(l -> matchBetweenBigDecimal(l.getCilindradaMinimo(), l.getCilindradaMaximo(), datoTecnico.getCilindrada()))
                 .filter(l -> matchBetweenBigDecimal(l.getPesoBrutoMinimo(), l.getPesoBrutoMaximo(), datoTecnico.getCapacidadCarga()))
@@ -227,7 +200,6 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     private boolean matchBetweenBigDecimal(Integer min, Integer max, BigDecimal value) {
-
         // Si el valor medido es nulo, se considera válido solo si también no hay rangos definidos
         if (value == null) {
             return min == null && max == null;
@@ -247,8 +219,12 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     private boolean matchEqualsIgnoreCase(String dataLimiteEmision, String dataDatoTecnico) {
-        if (dataLimiteEmision == null || dataDatoTecnico == null) return true; // Si alguno es nulo, se considera que no filtra
+        if (dataLimiteEmision == null || dataDatoTecnico == null) return true; // Si alguno es nulo,  no filtra
         return dataLimiteEmision.trim().equalsIgnoreCase(dataDatoTecnico.trim());
     }
 
+    private LimiteEmision obtenerLimiteEmisionPorUuidOThrow(String uuid){
+        return limiteEmisionRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Limite Emision", "uuid", uuid));
+    }
 }

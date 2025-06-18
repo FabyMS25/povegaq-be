@@ -17,8 +17,6 @@ public class InfraccionMapper {
                 .setNombreRegistrador(infraccion.getNombreRegistrador())
                 .setUuidUsuario(infraccion.getUuidUsuario())
                 .setEstado(infraccion.isEstado())
-             //2025
-
                 .setTipoInfraccionDto(infraccion.getTipoInfraccion()==null? null: new TipoInfraccionDto()
                         .setUuid(infraccion.getTipoInfraccion().getUuid())
                         .setGrado(infraccion.getTipoInfraccion().getGrado())
