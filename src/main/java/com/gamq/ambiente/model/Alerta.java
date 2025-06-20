@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,11 +30,11 @@ public class Alerta {
     private Long idAlerta;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name ="tipo_evento", nullable = false, length = 50)
+    @Column(name ="tipo_alerta", nullable = false, length = 50)
     private String tipo; //VENCIMIENTO, ALERTA NOTIFICACION de notificacion, ALERTA INFRACION de pago de multa infraccion,
     @Column(name = "mensaje", nullable = false, length = 250)
     private String mensaje;
-    @Column(name = "fecha_evento",nullable = false)
+    @Column(name = "fecha_alerta",nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlerta;
     @Column(name="uuid_destinatario", nullable = true, length = 64)

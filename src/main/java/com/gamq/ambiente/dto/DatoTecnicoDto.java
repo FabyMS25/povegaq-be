@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.validators.ValidYearFabricacion;
 import lombok.Getter;
@@ -51,7 +52,7 @@ public class DatoTecnicoDto {
     private Integer yearFabricacion;
     private Integer numeroPuertas;
     @NotBlank(message = "El tipo de combustion no puede ser nula ni vacía")
-    private String tipoCombustion; //si gasolina , diesel, gas, electrico, hibrido
+    private TipoCombustible tipoCombustion; //si gasolina , diesel, gas, electrico, hibrido
     private Integer tamanoMotor; //2500
     @NotBlank(message = "El tipo de motor no puede ser nula ni vacía")
     private String tipoMotor; // si es gasolina chispa 4 cilindros,v6

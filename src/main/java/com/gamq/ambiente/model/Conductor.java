@@ -29,8 +29,14 @@ public class Conductor {
     private Long idConductor;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "nombre_completo", nullable = false, length = 250)
-    private String nombreCompleto;
+    @Column(name = "nombre",  nullable = false, length = 100)
+    private String nombre;
+    @Column(name = "primerApellido",  nullable = false, length = 80)
+    private String primerApellido;
+    @Column(name = "segundoApellido", length = 80)
+    private String segundoApellido;
+    @Column(name = "apellidoEsposo", length = 80)
+    private String apellidoEsposo;
     @Column(name = "tipo_documento", nullable = false, length = 3)
     private String tipoDocumento;
     @Column(name = "numero_documento", nullable = false, length = 15)
@@ -51,9 +57,6 @@ public class Conductor {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
     private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
-
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "conductor", fetch = FetchType.LAZY)
-//    private List<Vehiculo> vehiculoList = new ArrayList<Vehiculo>();
 
     public Conductor(String uuid) {this.uuid = uuid;}
 

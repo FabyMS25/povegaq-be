@@ -1,6 +1,7 @@
 package com.gamq.ambiente.repository;
 
 import com.gamq.ambiente.dto.DetalleInspeccionDto;
+import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.model.DetalleInspeccion;
 import com.gamq.ambiente.model.TipoParametro;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,10 +21,11 @@ public interface DetalleInspeccionRepository extends JpaRepository<DetalleInspec
     List<DetalleInspeccion> findByUuidInspeccionAndNroEjecucion(@Param("uuidInspeccion") String uuidInspeccion,
                                                                 @Param("nroEjecucion") Integer nroEjecucion);
 
-    @Query("SELECT case when count(d) > 0 then true else false end FROM DetalleInspeccion d WHERE d.tipoParametro.uuid = :uuidTipoParametro AND d.inspeccion.uuid = :uuidInspeccion  AND d.nroEjecucion = :nroEjecucion")
-    boolean exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucion(@Param("uuidTipoParametro") String uuidTipoParametro,
+    @Query("SELECT case when count(d) > 0 then true else false end FROM DetalleInspeccion d WHERE d.tipoParametro.uuid = :uuidTipoParametro AND d.inspeccion.uuid = :uuidInspeccion  AND d.nroEjecucion = :nroEjecucion AND d.modoCombustion = :modoCombustion")
+    boolean exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(@Param("uuidTipoParametro") String uuidTipoParametro,
                                                                                       @Param("uuidInspeccion") String uuidInspeccion,
-                                                                                      @Param("nroEjecucion") Integer nroEjecucion);
+                                                                                      @Param("nroEjecucion") Integer nroEjecucion,
+                                                                                      @Param("modoCombustion") TipoCombustible modoCombustion);
 
 
     @Query("SELECT case when count(d) > 0 then true else false end FROM DetalleInspeccion d WHERE d.tipoParametro.uuid = :uuidTipoParametro AND d.nroEjecucion = :nroEjecucion AND  d.inspeccion.uuid = :uuidInspeccion AND d.uuid <> :uuidDetalleInspeccion ")

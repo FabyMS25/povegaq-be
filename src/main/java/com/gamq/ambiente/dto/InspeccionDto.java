@@ -33,7 +33,7 @@ public class InspeccionDto {
     private String nombreInspector;
     private String uuidUsuario;
     private Integer altitud;
-    private String equipo;
+   //private String equipo;
     private boolean examenVisualConforme;
     private boolean gasesEscapeConforme;
     private Date fechaProximaInspeccion;
@@ -42,6 +42,7 @@ public class InspeccionDto {
 
     private VehiculoDto vehiculoDto;
     private ActividadDto actividadDto;
+    private EquipoDto equipoDto;
    // private PropietarioDto propietarioDto;
     private ConductorDto conductorDto;
     private EventoDto eventoDto;

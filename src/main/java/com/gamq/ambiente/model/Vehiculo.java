@@ -75,6 +75,11 @@ public class Vehiculo {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
     private List<FotoVehiculo> fotoVehiculoList = new ArrayList<FotoVehiculo>();
 
+    //2025
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "vehiculo", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Infraccion> infraccionList = new ArrayList<Infraccion>();
+
    
     public Vehiculo(String uuid) {this.uuid = uuid;}
 

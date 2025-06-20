@@ -82,17 +82,18 @@ public class InfraccionServiceImpl implements InfraccionService {
 
     @Override
     public InfraccionDto crearInfraccion(InfraccionDto infraccionDto) {
-        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
-        if (inspeccionOptional.isEmpty()) {
-            throw new ResourceNotFoundException("Inspeccion","uuid", infraccionDto.getInspeccionDto().getUuid());
-        }
         Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByUuid(infraccionDto.getTipoInfraccionDto().getUuid());
         if (tipoInfraccionOptional.isEmpty()) {
             throw new ResourceNotFoundException("Tipo Infraccion","uuid", infraccionDto.getTipoInfraccionDto().getUuid());
         }
+        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(infraccionDto.getVehiculoDto().getUuid());
+        if (vehiculoOptional.isEmpty()) {
+            throw new ResourceNotFoundException("Vehiculo","uuid", infraccionDto.getVehiculoDto().getUuid());
+        }
+
         Infraccion nuevoInfraccion = InfraccionMapper.toInfraccion(infraccionDto);
-        nuevoInfraccion.setInspeccion(inspeccionOptional.get());
         nuevoInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
+        nuevoInfraccion.setVehiculo(vehiculoOptional.get());
         Infraccion nuevoInfraccionGrabada = infraccionRepository.save(nuevoInfraccion);
         generarAlertaParaInfraccion(nuevoInfraccionGrabada);
         return InfraccionMapper.toInfraccionDto(nuevoInfraccionGrabada);
@@ -102,9 +103,9 @@ public class InfraccionServiceImpl implements InfraccionService {
     public InfraccionDto actualizarInfraccion(InfraccionDto infraccionDto) {
         Optional<Infraccion> infraccionOptional = infraccionRepository.findByUuid(infraccionDto.getUuid());
         if(infraccionOptional.isPresent()) {
-            Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
-            if (inspeccionOptional.isEmpty()) {
-                throw new ResourceNotFoundException("Inspeccion","uuid", infraccionDto.getInspeccionDto().getUuid());
+            Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(infraccionDto.getVehiculoDto().getUuid());
+            if (vehiculoOptional.isEmpty()) {
+                throw new ResourceNotFoundException("Vehiculo","uuid", infraccionDto.getVehiculoDto().getUuid());
             }
             Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByUuid(infraccionDto.getTipoInfraccionDto().getUuid());
             if (tipoInfraccionOptional.isEmpty()) {
@@ -113,7 +114,7 @@ public class InfraccionServiceImpl implements InfraccionService {
             Infraccion updateInfraccion = InfraccionMapper.toInfraccion(infraccionDto);
             updateInfraccion.setIdInfraccion(infraccionOptional.get().getIdInfraccion());
             updateInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
-            updateInfraccion.setInspeccion(inspeccionOptional.get());
+            updateInfraccion.setVehiculo(vehiculoOptional.get());
             return InfraccionMapper.toInfraccionDto(infraccionRepository.save(updateInfraccion));
         }
         throw new ResourceNotFoundException("Infraccion", "uuid",infraccionDto.getUuid());
@@ -208,17 +209,15 @@ public class InfraccionServiceImpl implements InfraccionService {
 
     @Transactional
     public void generarAlertaParaInfraccion(Infraccion infraccion){
-        if(infraccion.getInspeccion().isResultado() && infraccion.getInspeccion().getVehiculo() != null){
-            Alerta alerta = new Alerta();
-            alerta.setInfraccion(infraccion);
-            alerta.setEstado(false);
-            alerta.setFechaAlerta(infraccion.getFechaInfraccion());
-            alerta.setMensaje("El vehiculo con placa " + infraccion.getInspeccion().getVehiculo().getPlaca() + " tiene una notificacion");
-            alerta.setTipo("INFRACCION");
-            alerta.setRolDestinatario(infraccion.getInspeccion().getVehiculo() != null?"PROPIETARIO":"CONDUCTOR");
-            alerta.setUuidDestinatario( infraccion.getInspeccion().getVehiculo() != null? infraccion.getInspeccion().getVehiculo().getPropietario().getUuid(): infraccion.getInspeccion().getConductor().getUuid());
-            alertaRepository.save(alerta);
-        }
+        Alerta alerta = new Alerta();
+        alerta.setInfraccion(infraccion);
+        alerta.setEstado(false);
+        alerta.setFechaAlerta(infraccion.getFechaInfraccion());
+        alerta.setMensaje("El vehiculo con placa " + infraccion.getVehiculo().getPlaca() + " tiene una infraccion");
+        alerta.setTipo("INFRACCION");
+        alerta.setRolDestinatario(infraccion.getVehiculo().getPropietario() != null?"PROPIETARIO":"VEHICULO");
+        alerta.setUuidDestinatario(infraccion.getVehiculo().getPropietario() != null? infraccion.getVehiculo().getPropietario().getUuid(): infraccion.getVehiculo().getUuid());
+        alertaRepository.save(alerta);
     }
 
 }

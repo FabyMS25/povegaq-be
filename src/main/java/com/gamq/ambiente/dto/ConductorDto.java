@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -26,7 +27,14 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConductorDto {
     private String uuid;
-    private String nombreCompleto;
+    @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
+    private String nombre;
+    @NotBlank(message = "El apellido paterno es obligatorio")
+    @Size(min= 1, max = 80)
+    @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
+    private String primerApellido;
+    private String segundoApellido;
+    private String apellidoEsposo;
     @NotBlank(message = "El tipo de documento es obligatorio")
     private String tipoDocumento;
     @NotBlank(message = "El número de documento es obligatorio")
