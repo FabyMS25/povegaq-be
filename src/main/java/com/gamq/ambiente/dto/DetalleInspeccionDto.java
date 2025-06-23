@@ -4,7 +4,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gamq.ambiente.enumeration.TipoCombustible;
+//import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.model.TipoParametro;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class DetalleInspeccionDto {
     private Integer tipoPrueba;
     private Integer nroEjecucion;
     private BigDecimal limitePermisible;
-    private TipoCombustible modoCombustion;
+   // private TipoCombustible modoCombustion;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

@@ -45,7 +45,7 @@ public class VehiculoMapper {
                         .setServicio(vehiculo.getDatoTecnico().getServicio())
                         .setTamanoMotor(vehiculo.getDatoTecnico().getTamanoMotor())
                         .setTipoCarroceria(vehiculo.getDatoTecnico().getTipoCarroceria())
-                        .setTipoCombustion(vehiculo.getDatoTecnico().getTipoCombustion())
+                        //.setTipoCombustion(vehiculo.getDatoTecnico().getTipoCombustion())
                         .setTraccion(vehiculo.getDatoTecnico().getTraccion())
                         .setTipoMotor(vehiculo.getDatoTecnico().getTipoMotor())
                         .setYearFabricacion(vehiculo.getDatoTecnico().getYearFabricacion())
@@ -94,8 +94,10 @@ public class VehiculoMapper {
                 .setFotoVehiculoDtoList(vehiculo.getFotoVehiculoList().stream().map(fotoVehiculo -> {
                     return FotoVehiculoMapper.toFotoVehiculoDto(fotoVehiculo);
                 }).collect(Collectors.toList()))
+                .setVehiculoTipoCombustibleDtoList(vehiculo.getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
+                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                }).collect(Collectors.toList()))
                 ;
-
     }
 
     public static Vehiculo toVehiculo(VehiculoDto vehiculoDto){

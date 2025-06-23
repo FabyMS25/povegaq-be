@@ -70,7 +70,7 @@ public class InspeccionMapper {
                                 .setServicio(inspeccion.getVehiculo().getDatoTecnico().getServicio())
                                 .setTamanoMotor(inspeccion.getVehiculo().getDatoTecnico().getTamanoMotor())
                                 .setTipoCarroceria(inspeccion.getVehiculo().getDatoTecnico().getTipoCarroceria())
-                                .setTipoCombustion(inspeccion.getVehiculo().getDatoTecnico().getTipoCombustion())
+                                //.setTipoCombustion(inspeccion.getVehiculo().getDatoTecnico().getTipoCombustion())
                                 .setTraccion(inspeccion.getVehiculo().getDatoTecnico().getTraccion())
                                 .setTipoMotor(inspeccion.getVehiculo().getDatoTecnico().getTipoMotor())
                                 .setYearFabricacion(inspeccion.getVehiculo().getDatoTecnico().getYearFabricacion())
@@ -103,6 +103,10 @@ public class InspeccionMapper {
                                         .setCodigo(inspeccion.getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
                                 )
                         )
+                        //tabla 2025
+                        .setVehiculoTipoCombustibleDtoList(inspeccion.getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
+                            return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                        }).collect(Collectors.toList()))
                )
                 .setEventoDto( inspeccion.getEvento() == null ? null: new EventoDto()
                         .setUuid(inspeccion.getVehiculo().getUuid())

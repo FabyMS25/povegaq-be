@@ -2,15 +2,15 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.DatoTecnicoDto;
 import com.gamq.ambiente.dto.VehiculoDto;
+import com.gamq.ambiente.dto.VehiculoTipoCombustibleDto;
 import com.gamq.ambiente.dto.mapper.DatoTecnicoMapper;
 import com.gamq.ambiente.dto.mapper.VehiculoMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
-import com.gamq.ambiente.model.DatoTecnico;
-import com.gamq.ambiente.model.Propietario;
-import com.gamq.ambiente.model.Vehiculo;
+import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.DatoTecnicoRepository;
 import com.gamq.ambiente.repository.PropietarioRepository;
+import com.gamq.ambiente.repository.TipoCombustibleRepository;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.VehiculoService;
 import com.gamq.ambiente.validators.VehiculoValidator;
@@ -19,12 +19,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.CascadeType;
+import javax.persistence.OneToMany;
 import javax.validation.ConstraintViolation;
 import javax.xml.validation.Validator;
 import java.time.Year;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -37,69 +37,56 @@ public class VehiculoServiceImpl implements VehiculoService {
     VehiculoValidator vehiculoValidator;
     @Autowired
     PropietarioRepository propietarioRepository;
+    @Autowired
+    TipoCombustibleRepository tipoCombustibleRepository;
 
 
     @Override
     public VehiculoDto obtenerVehiculoPorUuid(String uuid) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(uuid);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "uuid", uuid);
+        Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(uuid);
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorPlaca(String placa) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlaca(placa);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "placa", placa.toString());
+        Vehiculo vehiculo = vehiculoRepository.findByPlaca(placa)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo","placa", placa));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorPoliza(String poliza) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPoliza(poliza);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "poliza", poliza.toString());
+        Vehiculo vehiculo = vehiculoRepository.findByPoliza(poliza)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "poliza", poliza));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorVinNumeroIdentificacion(String vinNumeroIdentificacion) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByVinNumeroIdentificacion(vinNumeroIdentificacion);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "vin numero de identificacion", vinNumeroIdentificacion);
+        Vehiculo vehiculo = vehiculoRepository.findByVinNumeroIdentificacion(vinNumeroIdentificacion)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "vin numero de identificacion", vinNumeroIdentificacion));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorPinNumeroIdentificacion(String pinNumeroIdentificacion) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPinNumeroIdentificacion(pinNumeroIdentificacion);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "pin numero de identificacion", pinNumeroIdentificacion);
+        Vehiculo vehiculo = vehiculoRepository.findByPinNumeroIdentificacion(pinNumeroIdentificacion)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "pin numero de identificacion", pinNumeroIdentificacion));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorChasis(String chasis) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByChasis(chasis);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "chasis", chasis);
+        Vehiculo vehiculo = vehiculoRepository.findByChasis(chasis)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "chasis", chasis));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
     public VehiculoDto obtenerVehiculoPorPlacaAnterior(String placaAnterior) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByPlacaAnterior(placaAnterior);
-        if(vehiculoOptional.isPresent()){
-            return VehiculoMapper.toVehiculoDto(vehiculoOptional.get());
-        }
-        throw new ResourceNotFoundException("Vehiculo", "placa anterior", placaAnterior);
+        Vehiculo vehiculo =vehiculoRepository.findByPlacaAnterior(placaAnterior)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "placa anterior", placaAnterior));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     @Override
@@ -116,7 +103,12 @@ public class VehiculoServiceImpl implements VehiculoService {
             if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
                 throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
             }
+
+            validarCombustibles(vehiculoDto.getVehiculoTipoCombustibleDtoList());
+
             Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+
+
 
             if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null){
                 Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
@@ -127,6 +119,28 @@ public class VehiculoServiceImpl implements VehiculoService {
                     throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
                 }
             }
+
+            //nuevo tipo combustible
+            List<VehiculoTipoCombustible> vehiculoTipoCombustibleList = new ArrayList<>();
+            for (VehiculoTipoCombustibleDto combustibleDTO : vehiculoDto.getVehiculoTipoCombustibleDtoList()) {
+                TipoCombustible tipoCombustible = tipoCombustibleRepository
+                        .findByUuid(combustibleDTO.getTipoCombustibleDto().getUuid())
+                        .orElseThrow(() -> new RuntimeException("Tipo de combustible no encontrado"));
+
+               // VehiculoTipoCombustible vehiculoTipoCombustible = new VehiculoTipoCombustible(UUID.randomUUID().toString());  // esta generando un uuis
+                VehiculoTipoCombustible vehiculoTipoCombustible = new VehiculoTipoCombustible();
+                vehiculoTipoCombustible.setVehiculo(nuevoVehiculo);
+                vehiculoTipoCombustible.setTipoCombustible(tipoCombustible);
+                vehiculoTipoCombustible.setEsPrimario(combustibleDTO.getEsPrimario());
+                vehiculoTipoCombustible.setEstado(false);
+                vehiculoTipoCombustibleList.add(vehiculoTipoCombustible);
+            }
+
+            List<VehiculoTipoCombustible> original = nuevoVehiculo.getVehiculoTipoCombustibleList();
+            original.clear();
+            original.addAll(vehiculoTipoCombustibleList); // aún puedes usar .addAll
+            //nuevo tipo combustible
+
             Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
             vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
             return VehiculoMapper.toVehiculoDto(vehiculo);
@@ -138,10 +152,10 @@ public class VehiculoServiceImpl implements VehiculoService {
     private boolean validarDatoTecnico(DatoTecnicoDto datoTecnicoDto) {
         return datoTecnicoDto != null && datoTecnicoDto.getClase() != null && datoTecnicoDto.getMarca() != null
         && datoTecnicoDto.getPais() != null && datoTecnicoDto.getModelo() != null && datoTecnicoDto.getColor() != null
-                && (datoTecnicoDto.getYearFabricacion() != null && datoTecnicoDto.getYearFabricacion() > 1900 && datoTecnicoDto.getYearFabricacion() <= Year.now().getValue()) && datoTecnicoDto.getTipoCombustion() != null && datoTecnicoDto.getTipoMotor() != null
+                && (datoTecnicoDto.getYearFabricacion() != null && datoTecnicoDto.getYearFabricacion() > 1900 && datoTecnicoDto.getYearFabricacion() <= Year.now().getValue()) && datoTecnicoDto.getTipoMotor() != null
                 && datoTecnicoDto.getTiempoMotor() != null;
     }
-
+//&& datoTecnicoDto.getTipoCombustion() != null  tabla 2025
     @Override
     public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
         Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(vehiculoDto.getUuid());
@@ -197,5 +211,33 @@ public class VehiculoServiceImpl implements VehiculoService {
             return VehiculoMapper.toVehiculoDto(vehiculo);
         }
         throw new ResourceNotFoundException("Vehiculo","uuid", uuid);
+    }
+
+    private Vehiculo obtenerVehiculoPorUuidOThrow(String uuid){
+        return  vehiculoRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "uuid", uuid));
+    }
+
+    private void validarCombustibles(List<VehiculoTipoCombustibleDto> combustibleList) {
+        if (combustibleList == null || combustibleList.isEmpty()) {
+            throw new IllegalArgumentException("Debe ingresar al menos un tipo de combustible.");
+        }
+
+        long primarios = combustibleList.stream()
+                .filter(VehiculoTipoCombustibleDto::getEsPrimario)
+                .count();
+
+        if (primarios > 1) {
+            throw new IllegalArgumentException("Solo es permitido un tipo de combustible primario por vehículo.");
+        }
+
+        for (VehiculoTipoCombustibleDto vehiculoTipoCombustibleDto : combustibleList) {
+            if (vehiculoTipoCombustibleDto.getTipoCombustibleDto() == null || vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid() == null) {
+                throw new IllegalArgumentException("Cada tipo de combustible debe estar vinculado a un tipo válido.");
+            }
+
+            tipoCombustibleRepository.findByUuid(vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid())
+                    .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid",vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid() ) );
+        }
     }
 }

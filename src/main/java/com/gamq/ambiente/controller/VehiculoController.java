@@ -72,5 +72,4 @@ public class VehiculoController {
     public Response deleteVehiculo(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(vehiculoService.eliminarVehiculo(uuid));
     }
-
 }

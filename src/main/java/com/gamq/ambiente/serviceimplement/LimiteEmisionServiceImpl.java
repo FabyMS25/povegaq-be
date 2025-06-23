@@ -2,7 +2,7 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
 import com.gamq.ambiente.dto.mapper.LimiteEmisionMapper;
-import com.gamq.ambiente.enumeration.TipoCombustible;
+//import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.DatoTecnico;
@@ -12,7 +12,7 @@ import com.gamq.ambiente.model.TipoParametro;
 import com.gamq.ambiente.repository.LimiteEmisionRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.LimiteEmisionService;
-import com.gamq.ambiente.utils.TipoCombustionUtil;
+//import com.gamq.ambiente.utils.TipoCombustionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -111,7 +111,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     @Override
-    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud, TipoCombustible tipoCombustible) {
+    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud) {
         try {
         List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
 
@@ -179,7 +179,8 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
                 .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
                 .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
-                .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(TipoCombustionUtil.clasificarTipoCombustion(tipoCombustible)))
+                //tabla 2025
+                //.filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(tipoCombustible))
                 .filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
                 .filter(l -> l.getCategoriaVehiculo() == null
                         || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))

@@ -20,22 +20,18 @@ import java.util.stream.Collectors;
 public class RequisitoServiceImpl implements RequisitoService {
     @Autowired
     RequisitoRepository requisitoRepository;
+
     @Override
     public RequisitoDto obtenerRequisitoPorUuid(String uuid) {
-        Optional<Requisito> requisitoOptional = requisitoRepository.findByUuid(uuid);
-        if(requisitoOptional.isPresent()){
-            return RequisitoMapper.toRequisitoDto(requisitoOptional.get());
-        }
-        throw new ResourceNotFoundException("Requisito", "uuid", uuid);
+        Requisito requisito = obtenerRequisitoPorUuidOThrow(uuid);
+        return RequisitoMapper.toRequisitoDto(requisito);
     }
 
     @Override
     public RequisitoDto obtenerRequisitoPorDescripcion(String descripcion) {
-        Optional<Requisito> requisitoOptional = requisitoRepository.findByDescripcion(descripcion);
-        if(requisitoOptional.isPresent()){
-            return RequisitoMapper.toRequisitoDto(requisitoOptional.get());
-        }
-        throw new ResourceNotFoundException("Requisito", "descripcion", descripcion.toString());
+        Requisito requisito = requisitoRepository.findByDescripcion(descripcion)
+                .orElseThrow(()-> new ResourceNotFoundException("Requisito","descripcion", descripcion));
+            return RequisitoMapper.toRequisitoDto(requisito);
     }
 
     @Override
@@ -49,42 +45,37 @@ public class RequisitoServiceImpl implements RequisitoService {
     @Override
     public RequisitoDto crearRequisito(RequisitoDto requisitoDto) {
         String descripcion = requisitoDto.getDescripcion();
-        if(descripcion==null){ throw new ResourceNotFoundException("Requisito","descripcion", descripcion);}
-        Optional<Requisito> requisitoOptional = requisitoRepository.findByDescripcion(descripcion);
-        if(requisitoOptional.isEmpty()){
-            Requisito nuevoRequisito = RequisitoMapper.toRequisito(requisitoDto);
-            return RequisitoMapper.toRequisitoDto(requisitoRepository.save(nuevoRequisito));
+        if(descripcion==null || descripcion.isBlank()){ throw new ResourceNotFoundException("Requisito","descripcion", descripcion);}
+        if (requisitoRepository.findByDescripcion(descripcion).isPresent()) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El requisito ya existe");
         }
-        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Requisito ya existe");
+        Requisito nuevoRequisito = RequisitoMapper.toRequisito(requisitoDto);
+        return RequisitoMapper.toRequisitoDto(requisitoRepository.save(nuevoRequisito));
     }
 
     @Override
     public RequisitoDto actualizarRequisito(RequisitoDto requisitoDto) {
-        Optional<Requisito> requisitoOptional = requisitoRepository.findByUuid(requisitoDto.getUuid());
-        if(requisitoOptional.isPresent()) {
-            if (!requisitoRepository.exitsRequisitoLikeDescripcion(requisitoDto.getDescripcion().toLowerCase(), requisitoDto.getUuid())) {
-                Requisito updateRequisito = RequisitoMapper.toRequisito(requisitoDto);
-                updateRequisito.setIdRequisito(requisitoOptional.get().getIdRequisito());
-                return RequisitoMapper.toRequisitoDto(requisitoRepository.save(updateRequisito));
-            } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Requisito ya existe");
-            }
+        Requisito requisito = obtenerRequisitoPorUuidOThrow(requisitoDto.getUuid());
+        if (requisitoRepository.exitsRequisitoLikeDescripcion(requisitoDto.getDescripcion().toLowerCase(), requisitoDto.getUuid())) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Requisito ya existe");
         }
-        throw new ResourceNotFoundException("Requisito", "uuid",requisitoDto.getUuid());
+        Requisito updateRequisito = RequisitoMapper.toRequisito(requisitoDto);
+        updateRequisito.setIdRequisito(requisito.getIdRequisito());
+        return RequisitoMapper.toRequisitoDto(requisitoRepository.save(updateRequisito));
     }
 
     @Override
     public RequisitoDto eliminarRequisito(String uuid) {
-        Requisito requisitoQBE = new Requisito(uuid);
-        Optional<Requisito> optionalRequisito = requisitoRepository.findOne(Example.of(requisitoQBE));
-        if(optionalRequisito.isPresent()){
-            Requisito requisito = optionalRequisito.get();
-            if(!requisito.getRequisitoInspeccionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el requisito ya esta siendo usado por las inspecciones");
-            }
-            requisitoRepository.delete(requisito);
-            return RequisitoMapper.toRequisitoDto(requisito);
+        Requisito requisito = obtenerRequisitoPorUuidOThrow(uuid);
+        if(!requisito.getRequisitoInspeccionList().isEmpty()){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el requisito ya esta siendo usado por las inspecciones");
         }
-        throw new ResourceNotFoundException("Requisito","uuid", uuid);
+        requisitoRepository.delete(requisito);
+        return RequisitoMapper.toRequisitoDto(requisito);
+    }
+
+    private Requisito obtenerRequisitoPorUuidOThrow(String uuid){
+        return requisitoRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Requisito", "uuid",uuid));
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gamq.ambiente.model.Conductor;
 import com.gamq.ambiente.model.DatoTecnico;
 import com.gamq.ambiente.model.FotoVehiculo;
+import com.gamq.ambiente.model.VehiculoTipoCombustible;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,5 +50,7 @@ public class VehiculoDto {
     private PropietarioDto propietarioDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
     private List<FotoVehiculoDto> fotoVehiculoDtoList = new ArrayList<FotoVehiculoDto>();
+
+    private List<VehiculoTipoCombustibleDto> vehiculoTipoCombustibleDtoList = new ArrayList<>();
   
 }
