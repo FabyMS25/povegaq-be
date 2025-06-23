@@ -158,44 +158,59 @@ public class VehiculoServiceImpl implements VehiculoService {
 //&& datoTecnicoDto.getTipoCombustion() != null  tabla 2025
     @Override
     public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
-        Optional<Vehiculo> vehiculoOptional = vehiculoRepository.findByUuid(vehiculoDto.getUuid());
-        if(vehiculoOptional.isPresent()) {
-            if (!vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
-                if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
-                }
-                Vehiculo updateVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
-                updateVehiculo.setIdVehiculo(vehiculoOptional.get().getIdVehiculo());
-
-                Optional<DatoTecnico> datoTecnicoOptional = datoTecnicoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getUuid());
-                if(datoTecnicoOptional.isEmpty()){
-                    throw new ResourceNotFoundException("dato tecnico del vehiculo", "uuid", vehiculoDto.getDatoTecnicoDto().getUuid());
-                }
-
-                DatoTecnico datoTecnico = DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto());
-                updateVehiculo.setDatoTecnico(datoTecnico);
-
-                updateVehiculo.getDatoTecnico().setIdDatoTecnico(datoTecnicoOptional.get().getIdDatoTecnico());
-                updateVehiculo.getDatoTecnico().setVehiculo(updateVehiculo);
-
-                if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null) {
-                    Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
-                    if (propietarioOptional.isPresent()) {
-                        updateVehiculo.setPropietario(propietarioOptional.get());
-                    }
-                    else {
-                        throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
-                    }
-                }
-
-                datoTecnicoRepository.save(updateVehiculo.getDatoTecnico());
-
-                return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(updateVehiculo));
-            } else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
+    Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(vehiculoDto.getUuid());
+        if (!vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
+            if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
             }
+            Vehiculo updateVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+            updateVehiculo.setIdVehiculo(vehiculo.getIdVehiculo());
+
+            Optional<DatoTecnico> datoTecnicoOptional = datoTecnicoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getUuid());
+            if(datoTecnicoOptional.isEmpty()){
+                throw new ResourceNotFoundException("dato tecnico del vehiculo", "uuid", vehiculoDto.getDatoTecnicoDto().getUuid());
+            }
+
+            DatoTecnico datoTecnico = DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto());
+            updateVehiculo.setDatoTecnico(datoTecnico);
+
+            updateVehiculo.getDatoTecnico().setIdDatoTecnico(datoTecnicoOptional.get().getIdDatoTecnico());
+            updateVehiculo.getDatoTecnico().setVehiculo(updateVehiculo);
+
+            if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null) {
+                Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
+                if (propietarioOptional.isPresent()) {
+                    updateVehiculo.setPropietario(propietarioOptional.get());
+                }
+                else {
+                    throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
+                }
+            }
+
+            // Actualizar lista de tipo de combustible
+            List<VehiculoTipoCombustible> nuevaLista = new ArrayList<>();
+            for (VehiculoTipoCombustibleDto combustibleDTO : vehiculoDto.getVehiculoTipoCombustibleDtoList()) {
+                TipoCombustible tipoCombustible = tipoCombustibleRepository
+                        .findByUuid(combustibleDTO.getTipoCombustibleDto().getUuid())
+                        .orElseThrow(() -> new RuntimeException("Tipo de combustible no encontrado"));
+
+                VehiculoTipoCombustible vehiculoTipoCombustible = new VehiculoTipoCombustible();
+                vehiculoTipoCombustible.setVehiculo(vehiculo);
+                vehiculoTipoCombustible.setTipoCombustible(tipoCombustible);
+                vehiculoTipoCombustible.setEsPrimario(combustibleDTO.getEsPrimario());
+                vehiculoTipoCombustible.setEstado(false);
+                nuevaLista.add(vehiculoTipoCombustible);
+            }
+
+            vehiculo.getVehiculoTipoCombustibleList().clear();
+            vehiculo.getVehiculoTipoCombustibleList().addAll(nuevaLista);
+
+            datoTecnicoRepository.save(updateVehiculo.getDatoTecnico());
+
+            return VehiculoMapper.toVehiculoDto(vehiculoRepository.save(updateVehiculo));
+        } else {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
         }
-        throw new ResourceNotFoundException("Vehiculo", "uuid",vehiculoDto.getUuid());
     }
 
     @Override
