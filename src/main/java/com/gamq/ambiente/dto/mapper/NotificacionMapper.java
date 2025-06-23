@@ -3,6 +3,8 @@ package com.gamq.ambiente.dto.mapper;
 import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Notificacion;
 
+import java.util.stream.Collectors;
+
 public class NotificacionMapper {
     public static NotificacionDto toNotificacionDto(Notificacion notificacion){
         return new NotificacionDto()
@@ -87,6 +89,10 @@ public class NotificacionMapper {
                                                 .setCodigo(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
                                         )
                                 )
+                                //tabla 2025
+                                .setVehiculoTipoCombustibleDtoList(notificacion.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
+                                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                                }).collect(Collectors.toList()))
                         )
                         .setConductorDto( notificacion.getInspeccion().getConductor() == null? null: new ConductorDto()
                                 .setUuid(notificacion.getInspeccion().getConductor().getUuid())

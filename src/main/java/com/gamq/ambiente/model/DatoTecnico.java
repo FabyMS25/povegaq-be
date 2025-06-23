@@ -1,6 +1,6 @@
 package com.gamq.ambiente.model;
 
-import com.gamq.ambiente.enumeration.TipoCombustible;
+//import com.gamq.ambiente.enumeration.TipoCombustible;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,9 +57,10 @@ public class DatoTecnico {
     private Integer yearFabricacion;
     @Column(name = "numero_puertas", nullable = true)
     private Integer numeroPuertas;
-    @Column(name = "tipo_combustion", nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private TipoCombustible tipoCombustion; //gasolina , diesel, gas, electrico, hibrido
+    //tabla 2025
+   // @Column(name = "tipo_combustion", nullable = false, length = 50)
+   // @Enumerated(EnumType.STRING)
+   // private TipoCombustible tipoCombustion; //gasolina , diesel, gas, electrico, hibrido
     @Column(name = "tamano_motor", nullable = true)
     private Integer tamanoMotor; //2500
     @Column(name = "tipo_motor", nullable = false, length = 50)

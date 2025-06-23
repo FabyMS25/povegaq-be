@@ -5,6 +5,8 @@ import com.gamq.ambiente.model.Certificado;
 import com.gamq.ambiente.model.Equipo;
 import com.gamq.ambiente.model.Inspeccion;
 
+import java.util.stream.Collectors;
+
 public class CertificadoMapper {
     public static CertificadoDto toCertificadoDto(Certificado certificado){
         return new CertificadoDto()
@@ -75,7 +77,7 @@ public class CertificadoMapper {
                                         .setServicio(certificado.getInspeccion().getVehiculo().getDatoTecnico().getServicio())
                                         .setTamanoMotor(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTamanoMotor())
                                         .setTipoCarroceria(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoCarroceria())
-                                        .setTipoCombustion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoCombustion())
+                                        //.setTipoCombustion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoCombustion())
                                         .setTraccion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTraccion())
                                         .setTipoMotor(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoMotor())
                                         .setYearFabricacion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getYearFabricacion())
@@ -85,6 +87,10 @@ public class CertificadoMapper {
                                         .setCategoriaVehiculo(certificado.getInspeccion().getVehiculo().getDatoTecnico().getCategoriaVehiculo())
                                         .setEstado(certificado.getInspeccion().getVehiculo().getDatoTecnico().isEstado())
                                 )
+                                //tabla 2025
+                                .setVehiculoTipoCombustibleDtoList(certificado.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
+                                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                                }).collect(Collectors.toList()))
                         )
                         .setConductorDto( certificado.getInspeccion().getConductor() == null? null: new ConductorDto()
                         .setUuid(certificado.getInspeccion().getConductor().getUuid())

@@ -3,6 +3,8 @@ package com.gamq.ambiente.dto.mapper;
 import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.Infraccion;
 
+import java.util.stream.Collectors;
+
 public class InfraccionMapper {
     public static InfraccionDto toInfraccionDto(Infraccion infraccion){
         return new InfraccionDto()
@@ -30,6 +32,10 @@ public class InfraccionMapper {
                         .setPoliza(infraccion.getVehiculo().getPoliza())
                         .setVinNumeroIdentificacion(infraccion.getVehiculo().getVinNumeroIdentificacion())
                         .setPinNumeroIdentificacion(infraccion.getVehiculo().getPinNumeroIdentificacion())
+                        //tabla 2025
+                        .setVehiculoTipoCombustibleDtoList(infraccion.getVehiculo().getVehiculoTipoCombustibleList().stream().map( vehiculoTipoCombustible -> {
+                                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                        }).collect(Collectors.toList()))
                 )
 
                 .setInspeccionDto(infraccion.getInspeccion()==null? null: new InspeccionDto()

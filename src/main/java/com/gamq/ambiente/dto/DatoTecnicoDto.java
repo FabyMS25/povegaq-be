@@ -2,18 +2,13 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gamq.ambiente.enumeration.TipoCombustible;
-import com.gamq.ambiente.model.Vehiculo;
-import com.gamq.ambiente.validators.ValidYearFabricacion;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -51,8 +46,8 @@ public class DatoTecnicoDto {
     //@Max(value = YearNowValidator.CURRENT_YEAR, message = "El año de fabricación no puede ser mayor al año actual")
     private Integer yearFabricacion;
     private Integer numeroPuertas;
-    @NotBlank(message = "El tipo de combustion no puede ser nula ni vacía")
-    private TipoCombustible tipoCombustion; //si gasolina , diesel, gas, electrico, hibrido
+    //@NotBlank(message = "El tipo de combustion no puede ser nula ni vacía")
+    //private TipoCombustible tipoCombustion; //si gasolina , diesel, gas, electrico, hibrido
     private Integer tamanoMotor; //2500
     @NotBlank(message = "El tipo de motor no puede ser nula ni vacía")
     private String tipoMotor; // si es gasolina chispa 4 cilindros,v6

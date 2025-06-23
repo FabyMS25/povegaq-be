@@ -1,6 +1,6 @@
 package com.gamq.ambiente.model;
 
-import com.gamq.ambiente.enumeration.TipoCombustible;
+//import com.gamq.ambiente.enumeration.TipoCombustible;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,9 +43,10 @@ public class DetalleInspeccion {
     @Column(name = "limite_permisible",  nullable = false, precision = 20, scale = 4)
     private BigDecimal limitePermisible;
 
-    @Column(name = "modo_combustion", nullable = false, length = 50)
+   // tabla 2025
+   /* @Column(name = "modo_combustion", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
-    private TipoCombustible modoCombustion;
+    private TipoCombustible modoCombustion;*/
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

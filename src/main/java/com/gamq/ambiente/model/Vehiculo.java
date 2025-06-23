@@ -80,6 +80,8 @@ public class Vehiculo {
     @JsonManagedReference
     private List<Infraccion> infraccionList = new ArrayList<Infraccion>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "vehiculo"  )  // true elimina el hijo
+    private List<VehiculoTipoCombustible> vehiculoTipoCombustibleList = new ArrayList<>();
    
     public Vehiculo(String uuid) {this.uuid = uuid;}
 

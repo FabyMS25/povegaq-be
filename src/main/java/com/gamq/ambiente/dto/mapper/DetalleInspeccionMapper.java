@@ -13,7 +13,7 @@ public class DetalleInspeccionMapper {
                 .setResultadoParcial(detalleInspeccion.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccion.getNroEjecucion())
                 .setLimitePermisible(detalleInspeccion.getLimitePermisible())
-                .setModoCombustion(detalleInspeccion.getModoCombustion())
+                //.setModoCombustion(detalleInspeccion.getModoCombustion())
                 .setEstado(detalleInspeccion.isEstado())
                 .setTipoParametroDto(detalleInspeccion.getTipoParametro() == null? null: new TipoParametroDto()
                         .setUuid(detalleInspeccion.getTipoParametro().getUuid())
@@ -61,7 +61,7 @@ public class DetalleInspeccionMapper {
                 .setResultadoParcial(detalleInspeccionDto.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccionDto.getNroEjecucion())
                 .setLimitePermisible(detalleInspeccionDto.getLimitePermisible())
-                .setModoCombustion(detalleInspeccionDto.getModoCombustion())
+            //    .setModoCombustion(detalleInspeccionDto.getModoCombustion())
                 .setEstado(detalleInspeccionDto.isEstado());
     }
 }

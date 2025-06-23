@@ -1,7 +1,7 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
-import com.gamq.ambiente.enumeration.TipoCombustible;
+//import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
@@ -46,7 +46,7 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
 
             DatoTecnico datoTecnico = inspeccion.getVehiculo().getDatoTecnico();
 
-            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametro, datoTecnico, inspeccion.getAltitud(),datoTecnico.getTipoCombustion() == TipoCombustible.DUAL_GNV_GASOLINA? detalle.getModoCombustion():datoTecnico.getTipoCombustion());
+            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametro, datoTecnico, inspeccion.getAltitud());
 
             if (limites.isEmpty()) {
                 throw new RuntimeException("No se encontró límite de emisión para el parámetro: " + tipoParametro.getNombre());
