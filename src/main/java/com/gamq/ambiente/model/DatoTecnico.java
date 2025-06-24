@@ -89,6 +89,8 @@ public class DatoTecnico {
 
     @PrePersist
     public void initializeUuid() {
-        this.setUuid(UUID.randomUUID().toString());
+        if (this.uuid == null || this.uuid.isEmpty()) {
+            this.setUuid(UUID.randomUUID().toString());
+        }
     }
 }

@@ -42,10 +42,6 @@ public class FotoVehiculo {
     @Transient
     private MultipartFile archivoFile;
 
-    //@OneToOne()
-    //@JoinColumn(name = "id_vehiculo", nullable = false)
-    //private Vehiculo vehiculo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vehiculo", nullable = false)
     private Vehiculo vehiculo;
@@ -53,5 +49,9 @@ public class FotoVehiculo {
     public FotoVehiculo(String uuid) {this.uuid = uuid;}
 
     @PrePersist
-    public void initializaUuid() {this.setUuid(UUID.randomUUID().toString());}
+    public void initializaUuid() {
+        if (this.uuid == null || this.uuid.isEmpty()){
+            this.setUuid(UUID.randomUUID().toString());
+        }
+    }
 }

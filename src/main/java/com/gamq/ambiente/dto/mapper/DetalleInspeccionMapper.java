@@ -3,6 +3,8 @@ package com.gamq.ambiente.dto.mapper;
 import com.gamq.ambiente.dto.*;
 import com.gamq.ambiente.model.DetalleInspeccion;
 
+import java.util.stream.Collectors;
+
 
 public class DetalleInspeccionMapper {
     public static DetalleInspeccionDto toDetalleInspeccionDto(DetalleInspeccion detalleInspeccion){
@@ -13,7 +15,6 @@ public class DetalleInspeccionMapper {
                 .setResultadoParcial(detalleInspeccion.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccion.getNroEjecucion())
                 .setLimitePermisible(detalleInspeccion.getLimitePermisible())
-                //.setModoCombustion(detalleInspeccion.getModoCombustion())
                 .setEstado(detalleInspeccion.isEstado())
                 .setTipoParametroDto(detalleInspeccion.getTipoParametro() == null? null: new TipoParametroDto()
                         .setUuid(detalleInspeccion.getTipoParametro().getUuid())
@@ -22,6 +23,13 @@ public class DetalleInspeccionMapper {
                         .setUnidad(detalleInspeccion.getTipoParametro().getUnidad())
                         .setActivo(detalleInspeccion.getTipoParametro().isActivo())
                         .setEstado(detalleInspeccion.getTipoParametro().isEstado())
+                )
+                .setTipoCombustibleDto(detalleInspeccion.getTipoCombustible()== null? null: new TipoCombustibleDto()
+                        .setUuid(detalleInspeccion.getTipoCombustible().getUuid())
+                        .setNombre(detalleInspeccion.getTipoCombustible().getNombre())
+                        .setDescripcion(detalleInspeccion.getTipoCombustible().getDescripcion())
+                        .setTipoMotor(detalleInspeccion.getTipoCombustible().getTipoMotor())
+                        .setEstado(detalleInspeccion.getTipoCombustible().isEstado())
                 )
                 .setInspeccionDto(detalleInspeccion.getInspeccion() == null? null: new InspeccionDto()
                         .setUuid(detalleInspeccion.getInspeccion().getUuid())
@@ -50,6 +58,13 @@ public class DetalleInspeccionMapper {
                                         .setCodigo(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().getCodigo())
                                 )
                         )
+                     /*   .setVehiculoDto(detalleInspeccion.getInspeccion().getVehiculo() == null ? null: new VehiculoDto()
+                                .setUuid(detalleInspeccion.getInspeccion().getVehiculo().getUuid())
+                                .setPlaca(detalleInspeccion.getInspeccion().getVehiculo().getPlaca())
+                                .setVehiculoTipoCombustibleDtoList(detalleInspeccion.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
+                                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
+                                }).collect(Collectors.toList()))
+                        )*/
                 );
     }
 
@@ -61,7 +76,6 @@ public class DetalleInspeccionMapper {
                 .setResultadoParcial(detalleInspeccionDto.isResultadoParcial())
                 .setNroEjecucion(detalleInspeccionDto.getNroEjecucion())
                 .setLimitePermisible(detalleInspeccionDto.getLimitePermisible())
-            //    .setModoCombustion(detalleInspeccionDto.getModoCombustion())
                 .setEstado(detalleInspeccionDto.isEstado());
     }
 }

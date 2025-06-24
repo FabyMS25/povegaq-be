@@ -43,11 +43,6 @@ public class DetalleInspeccion {
     @Column(name = "limite_permisible",  nullable = false, precision = 20, scale = 4)
     private BigDecimal limitePermisible;
 
-   // tabla 2025
-   /* @Column(name = "modo_combustion", nullable = false, length = 50)
-    @Enumerated(EnumType.STRING)
-    private TipoCombustible modoCombustion;*/
-
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
@@ -58,6 +53,10 @@ public class DetalleInspeccion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_parametro", nullable = false)
     private TipoParametro tipoParametro;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_combustible", nullable = false)
+    private TipoCombustible tipoCombustible;  // el tipo de combustible usado en la medicion
 
     public DetalleInspeccion(String uuid) {this.uuid = uuid;}
 

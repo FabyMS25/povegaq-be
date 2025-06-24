@@ -2,11 +2,13 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.DetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionDetalleInspeccionDto;
+import com.gamq.ambiente.dto.InspeccionRequestDto;
 import com.gamq.ambiente.dto.response.Response;
 import com.gamq.ambiente.service.DetalleInspeccionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -73,5 +75,20 @@ public class DetalleInspeccionController {
     )
     public Response getDetalleInspeccionByUuidInspeccion(@PathVariable("uuidInspeccion") String uuidInspeccion){
         return Response.ok().setPayload(detalleInspeccionService.obtenerDetalleInspeccionPorUuidInspeccion(uuidInspeccion));
+    }
+
+    @PostMapping("/gases")
+    @Operation(
+            summary = "Registrar medición de gases con tipo de combustible",
+            description = "Registra múltiples detalles de gases con el tipo de combustible utilizado para una inspección"
+    )
+    public Response registrarDetalleGases(@RequestBody InspeccionRequestDto inspeccionRequestDto) {
+        detalleInspeccionService.registrarDetalleInspeccionGases( inspeccionRequestDto);
+        return Response.ok().setPayload("Gases registrados correctamente");
+    }
+
+    @PostMapping("/masivo")
+    public Response registrarDetalleInspeccionMasivo(@RequestBody InspeccionRequestDto inspeccionRequestDto){
+        return Response.ok().setPayload(detalleInspeccionService.registrarDetalleInspeccionMasivo(inspeccionRequestDto));
     }
 }

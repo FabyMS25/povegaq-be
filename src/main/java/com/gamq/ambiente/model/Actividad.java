@@ -45,18 +45,18 @@ public class Actividad {
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "actividad", fetch = FetchType.LAZY)
     private List<Inspeccion> inspeccionList = new ArrayList<Inspeccion>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = false, mappedBy = "actividad", fetch = FetchType.LAZY)
     private List<Evento> eventoList = new ArrayList<Evento>();
 
-
     public Actividad(String uuid) {this.uuid = uuid;}
 
     @PrePersist
     public void initializeUuid() {
-        this.setUuid(UUID.randomUUID().toString());
+        if (this.uuid == null || this.uuid.isEmpty()) {
+            this.setUuid(UUID.randomUUID().toString());
+        }
     }
 }

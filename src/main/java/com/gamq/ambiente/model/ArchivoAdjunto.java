@@ -56,5 +56,9 @@ public class ArchivoAdjunto {
     public ArchivoAdjunto(String uuid) {this.uuid = uuid;}
 
     @PrePersist
-    public void initializeUuid() { this.setUuid(UUID.randomUUID().toString());}
+    public void initializeUuid() {
+        if (this.uuid == null || this.uuid.isEmpty()) {
+            this.setUuid(UUID.randomUUID().toString());
+        }
+    }
 }

@@ -30,9 +30,9 @@ public class DetalleInspeccionDto {
     private Integer tipoPrueba;
     private Integer nroEjecucion;
     private BigDecimal limitePermisible;
-   // private TipoCombustible modoCombustion;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;
     private TipoParametroDto tipoParametroDto;
+    private TipoCombustibleDto tipoCombustibleDto;
 }

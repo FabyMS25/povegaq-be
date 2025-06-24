@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.model.TipoCombustible;
 import com.gamq.ambiente.model.VehiculoTipoCombustible;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,4 @@ public class TipoCombustibleDto {
     @Size(max = 50, message = "El tipo de motor no puede exceder 50 caracteres")
     private String tipoMotor;
     private boolean estado;
-
-    // elimar recursion infinita
-   /// private List<VehiculoTipoCombustibleDto> vehiculoTipoCombustibleDtoList = new ArrayList<>();
 }

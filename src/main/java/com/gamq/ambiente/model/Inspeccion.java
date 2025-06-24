@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-//@ToString(exclude = {"vehiculo"}) //  Esto evita recursión infinita
 @Entity
 @Table(name = "inspecciones", indexes = @Index(name = "idx_insp", columnList = "uuid", unique = true))
 @SQLDelete(sql = "UPDATE inspecciones SET estado=true WHERE id_inspeccion=?")
@@ -43,9 +42,6 @@ public class Inspeccion {
     private String nombreInspector;
     @Column(name = "uuid_usuario")
     private String uuidUsuario;
-
-  //  @Column(name = "equipo", nullable = false, length = 100)
-  //  private String equipo;
 
     @Column(name = "altitud", nullable = true)
     private Integer altitud;

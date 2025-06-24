@@ -1,22 +1,27 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.DetalleInspeccionDto;
+import com.gamq.ambiente.dto.DetalleInspeccionRequestDto;
 import com.gamq.ambiente.dto.InspeccionDetalleInspeccionDto;
+import com.gamq.ambiente.dto.InspeccionRequestDto;
 import com.gamq.ambiente.dto.mapper.DetalleInspeccionMapper;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.DetalleInspeccion;
 import com.gamq.ambiente.model.Inspeccion;
+import com.gamq.ambiente.model.TipoCombustible;
 import com.gamq.ambiente.model.TipoParametro;
 import com.gamq.ambiente.repository.DetalleInspeccionRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
+import com.gamq.ambiente.repository.TipoCombustibleRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.DetalleInspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +37,8 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
     InspeccionRepository inspeccionRepository;
     @Autowired
     TipoParametroRepository tipoParametroRepository;
+    @Autowired
+    TipoCombustibleRepository tipoCombustibleRepository;
     @Autowired
     private EntidadHelperServiceImpl entidadHelper;
 
@@ -55,13 +62,15 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
                    .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", detalleInspeccionDto.getInspeccionDto().getUuid()));
            TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
                    .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid()));
-//tabla 2025
-           //if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion(), detalleInspeccionDto.getTipoCombustion().getUuid())) {
-           //    throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
-           //}
+        TipoCombustible tipoCombustible = tipoCombustibleRepository.findByUuid(detalleInspeccionDto.getTipoCombustibleDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", detalleInspeccionDto.getTipoCombustibleDto().getUuid()));
 
+        if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion(), detalleInspeccionDto.getTipoCombustibleDto().getUuid())) {
+               throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+           }
            DetalleInspeccion nuevoDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
            nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
+           nuevoDetalleInspeccion.setTipoCombustible(tipoCombustible);
            nuevoDetalleInspeccion.setInspeccion( inspeccion);
            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionRepository.save(nuevoDetalleInspeccion));
     }
@@ -75,8 +84,10 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
 
         TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleInspeccionDto.getTipoParametroDto().getUuid())
                 .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", detalleInspeccionDto.getTipoParametroDto().getUuid()));
+        TipoCombustible tipoCombustible = tipoCombustibleRepository.findByUuid(detalleInspeccionDto.getTipoCombustibleDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", detalleInspeccionDto.getTipoCombustibleDto().getUuid()));
 
-         if (detalleInspeccionRepository.exitsDetalleInspeccionLike(detalleInspeccionDto.getTipoParametroDto().getUuid(),
+        if (detalleInspeccionRepository.exitsDetalleInspeccionLike(detalleInspeccionDto.getTipoParametroDto().getUuid(),
                                                                        detalleInspeccionDto.getNroEjecucion(),
                                                                        detalleInspeccionDto.getInspeccionDto().getUuid(),
                                                                        detalleInspeccionDto.getUuid())) {
@@ -86,8 +97,93 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         DetalleInspeccion updateDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
         updateDetalleInspeccion.setIdDetalleInspeccion(detalleInspeccion.getIdDetalleInspeccion());
         updateDetalleInspeccion.setTipoParametro(tipoParametro);
+        updateDetalleInspeccion.setTipoCombustible(tipoCombustible);
         updateDetalleInspeccion.setInspeccion(inspeccion);
         return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccionRepository.save(updateDetalleInspeccion));
+    }
+
+    @Transactional
+    public void registrarDetalleInspeccionGases(InspeccionRequestDto inspeccionRequestDto) {
+        Inspeccion inspeccion = inspeccionRepository.findByUuid(inspeccionRequestDto.getUuidInspeccion())
+                .orElseThrow(() -> new ResourceNotFoundException("Inspección", "uuid", inspeccionRequestDto.getUuidInspeccion()));
+
+        for (DetalleInspeccionRequestDto detalleDto : inspeccionRequestDto.getDetalleInspeccionRequestDtoList()) {
+            TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleDto.getUuidTipoParametro())
+                    .orElseThrow(() -> new ResourceNotFoundException("TipoParametro", "uuid", detalleDto.getUuidTipoParametro()));
+
+            TipoCombustible tipoCombustible = tipoCombustibleRepository.findByUuid(detalleDto.getUuidTipoCombustible())
+                    .orElseThrow(() -> new ResourceNotFoundException("TipoCombustible", "uuid", detalleDto.getUuidTipoCombustible()));
+
+            boolean combustibleValido = inspeccion.getVehiculo().getVehiculoTipoCombustibleList().stream()
+                    .anyMatch(c -> c.getTipoCombustible().getUuid().equals(tipoCombustible.getUuid()));
+            if (!combustibleValido) {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,
+                        "El tipo de combustible usado no pertenece al vehículo");
+            }
+
+            if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleDto.getNroEjecucion(), detalleDto.getUuidTipoCombustible())) {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+            }
+
+            //DetalleInspeccion detalle = new DetalleInspeccion(UUID.randomUUID().toString());
+            DetalleInspeccion detalle = new DetalleInspeccion();
+            detalle.setInspeccion(inspeccion);
+            detalle.setTipoParametro(tipoParametro);
+            detalle.setTipoCombustible(tipoCombustible);
+            detalle.setValor(detalleDto.getValor());
+            detalle.setResultadoParcial(detalleDto.isResultadoParcial());
+            detalle.setTipoPrueba(detalleDto.getTipoPrueba());
+            detalle.setNroEjecucion(detalleDto.getNroEjecucion());
+            detalle.setLimitePermisible(detalleDto.getLimitePermisible());
+
+            detalleInspeccionRepository.save(detalle);
+        }
+
+        inspeccion.getDetalleInspeccionList().stream().map(detalleInspeccion -> {
+            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
+        }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<DetalleInspeccionDto> registrarDetalleInspeccionMasivo(InspeccionRequestDto inspeccionRequestDto) {
+        Inspeccion inspeccion = inspeccionRepository.findByUuid(inspeccionRequestDto.getUuidInspeccion())
+                .orElseThrow(() -> new ResourceNotFoundException("Inspección", "uuid", inspeccionRequestDto.getUuidInspeccion()));
+
+        for (DetalleInspeccionRequestDto detalleDto : inspeccionRequestDto.getDetalleInspeccionRequestDtoList()) {
+            TipoParametro tipoParametro = tipoParametroRepository.findByUuid(detalleDto.getUuidTipoParametro())
+                    .orElseThrow(() -> new ResourceNotFoundException("TipoParametro", "uuid", detalleDto.getUuidTipoParametro()));
+
+            TipoCombustible tipoCombustible = tipoCombustibleRepository.findByUuid(detalleDto.getUuidTipoCombustible())
+                    .orElseThrow(() -> new ResourceNotFoundException("TipoCombustible", "uuid", detalleDto.getUuidTipoCombustible()));
+
+            boolean combustibleValido = inspeccion.getVehiculo().getVehiculoTipoCombustibleList().stream()
+                    .anyMatch(c -> c.getTipoCombustible().getUuid().equals(tipoCombustible.getUuid()));
+            if (!combustibleValido) {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST,
+                        "El tipo de combustible usado no pertenece al vehículo");
+            }
+
+            if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleDto.getNroEjecucion(), detalleDto.getUuidTipoCombustible())) {
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+            }
+
+            //DetalleInspeccion detalle = new DetalleInspeccion(UUID.randomUUID().toString());
+            DetalleInspeccion detalle = new DetalleInspeccion();
+            detalle.setInspeccion(inspeccion);
+            detalle.setTipoParametro(tipoParametro);
+            detalle.setTipoCombustible(tipoCombustible);
+            detalle.setValor(detalleDto.getValor());
+            detalle.setResultadoParcial(detalleDto.isResultadoParcial());
+            detalle.setTipoPrueba(detalleDto.getTipoPrueba());
+            detalle.setNroEjecucion(detalleDto.getNroEjecucion());
+            detalle.setLimitePermisible(detalleDto.getLimitePermisible());
+
+            detalleInspeccionRepository.save(detalle);
+        }
+
+        return  inspeccion.getDetalleInspeccionList().stream().map(detalleInspeccion -> {
+            return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
+        }).collect(Collectors.toList());
     }
 
     @Override
