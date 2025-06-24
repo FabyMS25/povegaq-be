@@ -1,8 +1,10 @@
 package com.gamq.ambiente.dto.mapper;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
+import com.gamq.ambiente.dto.TipoCombustibleDto;
 import com.gamq.ambiente.dto.TipoParametroDto;
 import com.gamq.ambiente.model.LimiteEmision;
+import com.gamq.ambiente.model.TipoCombustible;
 import com.gamq.ambiente.model.TipoParametro;
 
 public class LimiteEmisionMapper {
@@ -10,7 +12,6 @@ public class LimiteEmisionMapper {
         return new LimiteEmisionDto()
                 .setUuid(limiteEmision.getUuid())
                 .setTipoMotor(limiteEmision.getTipoMotor())
-                .setTipoCombustible(limiteEmision.getTipoCombustible())
                 .setCilindradaMinimo(limiteEmision.getCilindradaMinimo())
                 .setCilindradaMaximo(limiteEmision.getCilindradaMaximo())
                 .setCategoriaVehiculo(limiteEmision.getCategoriaVehiculo())
@@ -40,6 +41,13 @@ public class LimiteEmisionMapper {
                         .setActivo(limiteEmision.getTipoParametro().isActivo())
                         .setEstado(limiteEmision.getTipoParametro().isEstado())
                         .setUuid(limiteEmision.getTipoParametro().getUuid())
+                )
+                .setTipoCombustibleDto(limiteEmision.getTipoCombustible()==null? null: new TipoCombustibleDto()
+                        .setUuid(limiteEmision.getTipoCombustible().getUuid())
+                        .setNombre(limiteEmision.getTipoCombustible().getNombre())
+                        .setDescripcion(limiteEmision.getTipoCombustible().getDescripcion())
+                        .setTipoMotor(limiteEmision.getTipoCombustible().getTipoMotor())
+                        .setEstado(limiteEmision.getTipoCombustible().isEstado())
                 );
     }
 
@@ -47,7 +55,6 @@ public class LimiteEmisionMapper {
         return  new LimiteEmision()
                 .setUuid(limiteEmisionDto.getUuid())
                 .setTipoMotor(limiteEmisionDto.getTipoMotor())
-                .setTipoCombustible(limiteEmisionDto.getTipoCombustible())
                 .setCilindradaMinimo(limiteEmisionDto.getCilindradaMinimo())
                 .setCilindradaMaximo(limiteEmisionDto.getCilindradaMaximo())
                 .setCategoriaVehiculo(limiteEmisionDto.getCategoriaVehiculo())
@@ -76,6 +83,13 @@ public class LimiteEmisionMapper {
                         .setUnidad(limiteEmisionDto.getTipoParametroDto().getUnidad())
                         .setActivo(limiteEmisionDto.getTipoParametroDto().isActivo())
                         .setEstado(limiteEmisionDto.getTipoParametroDto().isEstado())
+                )
+                .setTipoCombustible(limiteEmisionDto.getTipoCombustibleDto() == null? null: new TipoCombustible()
+                        .setUuid(limiteEmisionDto.getTipoCombustibleDto().getUuid())
+                        .setNombre(limiteEmisionDto.getTipoCombustibleDto().getNombre())
+                        .setDescripcion(limiteEmisionDto.getTipoCombustibleDto().getDescripcion())
+                        .setTipoMotor(limiteEmisionDto.getTipoCombustibleDto().getTipoMotor())
+                        .setEstado(limiteEmisionDto.getTipoCombustibleDto().isEstado())
                 );
     }
 
