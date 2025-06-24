@@ -65,10 +65,9 @@ public class TipoCombustibleServiceImpl implements TipoCombustibleService {
     @Override
     public TipoCombustibleDto eliminarTipoCombustible(String uuid) {
         TipoCombustible tipoCombustible = obtenerTipoCombustiblePorUuidOThrow(uuid);
-       //tabla 2025
-       /* if(!tipoCombustible.getTipoCombustibleVehiculoList().isEmpty()){
+        if(!tipoCombustible.getVehiculoTipoCombustibleList().isEmpty()){
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipoCombustible ya esta siendo usado por los vehiculos");
-        }*/
+        }
         tipoCombustibleRepository.delete(tipoCombustible);
         return TipoCombustibleMapper.toTipoCombustibleDto(tipoCombustible);
     }

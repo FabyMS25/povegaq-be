@@ -7,6 +7,7 @@ import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.DetalleInspeccionRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
+import com.gamq.ambiente.repository.TipoCombustibleRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.ComparacionEmisionService;
 import com.gamq.ambiente.service.InspeccionService;
@@ -24,18 +25,19 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
     @Autowired
     LimiteEmisionService limiteEmisionService;
     @Autowired
-    InspeccionService inspeccionService;
-    @Autowired
     InspeccionRepository inspeccionRepository;
     @Autowired
     TipoParametroRepository tipoParametroRepository;
     @Autowired
     DetalleInspeccionRepository detalleInspeccionRepository;
+    @Autowired
+    TipoCombustibleRepository tipoCombustibleRepository;
+
 
     @Override
     public void validarInspeccion(String inspeccionUuid) {
         Inspeccion inspeccion = obtenerInspeccionPorUuid(inspeccionUuid);
-        Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(inspeccionUuid);
+      //  Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(inspeccionUuid);
         if(inspeccion.getDetalleInspeccionList().size() <=0){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"No existe Datos en el Detalle inspeccion");
         }
@@ -43,10 +45,11 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
         boolean resultadoGeneral = true;
         for (DetalleInspeccion detalle : inspeccion.getDetalleInspeccionList()) {
             TipoParametro tipoParametro = obtenerTipoParametro(detalle.getTipoParametro().getUuid());
+            TipoCombustible tipoCombustible = obtenerTipoCombustible(detalle.getTipoCombustible().getUuid());
 
             DatoTecnico datoTecnico = inspeccion.getVehiculo().getDatoTecnico();
 
-            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametro, datoTecnico, inspeccion.getAltitud());
+            List<LimiteEmisionDto> limites =  limiteEmisionService.buscarLimitesPorFiltro(tipoParametro, tipoCombustible, datoTecnico, inspeccion.getAltitud());
 
             if (limites.isEmpty()) {
                 throw new RuntimeException("No se encontró límite de emisión para el parámetro: " + tipoParametro.getNombre());
@@ -79,6 +82,11 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
 
     private TipoParametro obtenerTipoParametro(String uuid) {
         return tipoParametroRepository.findByUuid(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("TipoParametro", "uuid", uuid));
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo Parametro", "uuid", uuid));
+    }
+
+    private TipoCombustible obtenerTipoCombustible(String uuid){
+        return tipoCombustibleRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible","uuid", uuid));
     }
 }

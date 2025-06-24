@@ -106,12 +106,12 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     }
 
     @Override
-    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, DatoTecnico datoTecnico, Integer altitud) {
+    public List<LimiteEmisionDto> buscarLimitesPorFiltro(TipoParametro tipoParametro, TipoCombustible tipoCombustible, DatoTecnico datoTecnico, Integer altitud) {
         try {
-        List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
+            List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
 
             //prueba paso a paso
-        /*    List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
+            List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
             System.out.println("Total inicial: " + resultado.size());
 
             resultado = resultado.stream()
@@ -120,15 +120,16 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             System.out.println("Después de tipoParametro: " + resultado.size());
 
             resultado = resultado.stream()
-                    .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
-
-                    .collect(Collectors.toList());
-
-            System.out.println("Después de tipoMotor: " + resultado.size());
-            resultado = resultado.stream()
-                    .filter(l -> l.getTipoCombustible() == null || l.getTipoCombustible().equalsIgnoreCase(TipoCombustionUtil.clasificarTipoCombustion(tipoCombustible)))
+                    .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().getUuid().equals(tipoCombustible.getUuid()))
                     .collect(Collectors.toList());
             System.out.println("Después de tipoCombustible: " + resultado.size());
+
+            resultado = resultado.stream()
+                    .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
+                    .collect(Collectors.toList());
+            System.out.println("Después de tipoMotor: " + resultado.size());
+
+
 
             resultado = resultado.stream()
                     .filter(l -> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
@@ -169,13 +170,13 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
                     .filter(LimiteEmision::isActivo)
                     .collect(Collectors.toList());
             System.out.println("Después de isActivo: " + resultado.size());
-        */
+
 
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
                 .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
                 .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
                 //tabla 2025
-                //.filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().equalsIgnoreCase(tipoCombustible))
+                .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().getUuid().equals(tipoCombustible.getUuid()))
                 .filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
                 .filter(l -> l.getCategoriaVehiculo() == null
                         || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))

@@ -232,16 +232,17 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         Inspeccion inspeccion = entidadHelper.obtenerInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
         Integer ultimaEjecucion = detalleInspeccionRepository.findUltimaEjecucionByUuidInspeccion(inspeccionDetalleInspeccionDto.getUuidInspeccion());
         int nuevaEjecucion = (ultimaEjecucion == null) ? 1 : ultimaEjecucion + 1;
-        List<DetalleInspeccion>  detalleInspeccionList = inspeccionDetalleInspeccionDto.getDetalleInspeccionDtoList().stream().map(detalleInspeccionDto ->  {
+        List<DetalleInspeccion>  detalleInspeccionList = inspeccionDetalleInspeccionDto.getDetalleInspeccionDtoList().stream().map(detalleInspeccionDto -> {
         TipoParametro tipoParametro = entidadHelper.obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
-
+        TipoCombustible tipoCombustible = entidadHelper.obtenerTipoCombustible(detalleInspeccionDto.getTipoCombustibleDto().getUuid());
         //2025
-       // if(!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(),nuevaEjecucion, detalleInspeccionDto.getModoCombustion())) {
-            detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
-            DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro);
-            return nuevoDetalleInspeccion;
-        //}
-        ///else {return null;}
+            if (!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(), inspeccion.getUuid(), nuevaEjecucion, detalleInspeccionDto.getTipoCombustibleDto().getUuid())) {
+                detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
+                DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro, tipoCombustible);
+                return nuevoDetalleInspeccion;
+            } else {
+                return null;
+            }
         }).filter(Objects::nonNull)
         .collect(Collectors.toList());
 
@@ -258,10 +259,11 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         }).collect(Collectors.toList());
     }
 
-    private DetalleInspeccion crearNuevoDetalleInspeccion(DetalleInspeccionDto  detalleInspeccionDto, Inspeccion inspeccion, TipoParametro tipoParametro) {
+    private DetalleInspeccion crearNuevoDetalleInspeccion(DetalleInspeccionDto  detalleInspeccionDto, Inspeccion inspeccion, TipoParametro tipoParametro, TipoCombustible tipoCombustible) {
         DetalleInspeccion nuevoDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
         nuevoDetalleInspeccion.setInspeccion( inspeccion);
         nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
+        nuevoDetalleInspeccion.setTipoCombustible(tipoCombustible);
         return nuevoDetalleInspeccion;
     }
 
