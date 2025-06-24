@@ -5,11 +5,9 @@ import com.gamq.ambiente.dto.mapper.LimiteEmisionMapper;
 //import com.gamq.ambiente.enumeration.TipoCombustible;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
-import com.gamq.ambiente.model.DatoTecnico;
-import com.gamq.ambiente.model.Inspeccion;
-import com.gamq.ambiente.model.LimiteEmision;
-import com.gamq.ambiente.model.TipoParametro;
+import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.LimiteEmisionRepository;
+import com.gamq.ambiente.repository.TipoCombustibleRepository;
 import com.gamq.ambiente.repository.TipoParametroRepository;
 import com.gamq.ambiente.service.LimiteEmisionService;
 //import com.gamq.ambiente.utils.TipoCombustionUtil;
@@ -30,6 +28,8 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     LimiteEmisionRepository limiteEmisionRepository;
     @Autowired
     TipoParametroRepository tipoParametroRepository;
+    @Autowired
+    TipoCombustibleRepository tipoCombustibleRepository;
 
     @Override
     public LimiteEmisionDto obtenerLimiteEmisionPorUuid(String uuid) {
@@ -55,31 +55,26 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
 
     @Override
     public LimiteEmisionDto crearLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
-        String tipoCombustible = limiteEmisionDto.getTipoCombustible();
-        if (tipoCombustible == null) { throw new ResourceNotFoundException("Tipo Combustible", "tipoCombustible", tipoCombustible);}
-
-        Optional<TipoParametro> tipoParametroOptional = tipoParametroRepository.findByUuid(limiteEmisionDto.getTipoParametroDto().getUuid());
-        if (tipoParametroOptional.isPresent()) {
-            String nombre = tipoParametroOptional.get().getNombre();
-            if (nombre == null) {
-                throw new ResourceNotFoundException("Limite Emision", "nombre", nombre);
-            }
-            LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
-            nuevoLimiteEmision.setTipoParametro(tipoParametroOptional.get());
-            return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
+        TipoCombustible tipoCombustible = obtenerTipoCombustiblePorUuidOThrow( limiteEmisionDto.getTipoCombustibleDto().getUuid());
+        TipoParametro tipoParametro = obtenerTipoParametroPorUuidOThrow( limiteEmisionDto.getTipoParametroDto().getUuid());
+        String nombre = tipoParametro.getNombre();
+        if (nombre == null) {
+            throw new ResourceNotFoundException("Limite Emision", "nombre", nombre);
         }
-        else {
-            throw new ResourceNotFoundException("tipo parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid());
-        }
+        LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
+        nuevoLimiteEmision.setTipoParametro(tipoParametro);
+        nuevoLimiteEmision.setTipoCombustible(tipoCombustible);
+        return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
     }
 
     @Override
     public LimiteEmisionDto actualizarLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
         LimiteEmision limiteEmision = obtenerLimiteEmisionPorUuidOThrow(limiteEmisionDto.getUuid());
-        TipoParametro tipoParametro = tipoParametroRepository.findByUuid(limiteEmisionDto.getTipoParametroDto().getUuid())
-                .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", limiteEmisionDto.getTipoParametroDto().getUuid()));
+        TipoCombustible tipoCombustible = obtenerTipoCombustiblePorUuidOThrow( limiteEmisionDto.getTipoCombustibleDto().getUuid());
+        TipoParametro tipoParametro = obtenerTipoParametroPorUuidOThrow(limiteEmisionDto.getTipoParametroDto().getUuid());
         LimiteEmision updateLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
         updateLimiteEmision.setIdLimiteEmision(limiteEmision.getIdLimiteEmision());
+        updateLimiteEmision.setTipoCombustible(tipoCombustible);
         updateLimiteEmision.setTipoParametro(tipoParametro);
         return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(updateLimiteEmision));
     }
@@ -228,4 +223,15 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         return limiteEmisionRepository.findByUuid(uuid)
                 .orElseThrow(()-> new ResourceNotFoundException("Limite Emision", "uuid", uuid));
     }
+
+    private TipoCombustible obtenerTipoCombustiblePorUuidOThrow(String uuid){
+           return tipoCombustibleRepository.findByUuid(uuid)
+            .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", uuid));
+    }
+
+    private TipoParametro obtenerTipoParametroPorUuidOThrow(String uuid){
+        return tipoParametroRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Tipo Parametro", "uuid", uuid));
+    }
+
 }

@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.model.TipoCombustible;
 import com.gamq.ambiente.model.TipoParametro;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,8 @@ public class LimiteEmisionDto {
 
     @NotBlank(message = "El tipo de motor es requerido")
     private String tipoMotor;
-    @NotBlank(message = "El tipo de motor es requerido")
-    private String tipoCombustible;
+   // @NotBlank(message = "El tipo de motor es requerido")
+   // private String tipoCombustible;
     private Integer cilindradaMinimo;
     private Integer cilindradaMaximo;
     private String categoriaVehiculo; //liviano, mediano y pesado
@@ -60,5 +61,6 @@ public class LimiteEmisionDto {
 
     @NotNull(message = "El tipo de parámetro es requerido")
     private TipoParametroDto tipoParametroDto;
-
+    @NotNull(message = "El tipo de combustible es requerido")
+    private TipoCombustibleDto tipoCombustibleDto;
 }
