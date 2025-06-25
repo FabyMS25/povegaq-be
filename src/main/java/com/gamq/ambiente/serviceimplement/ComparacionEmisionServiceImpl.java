@@ -37,7 +37,6 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
     @Override
     public void validarInspeccion(String inspeccionUuid) {
         Inspeccion inspeccion = obtenerInspeccionPorUuid(inspeccionUuid);
-      //  Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(inspeccionUuid);
         if(inspeccion.getDetalleInspeccionList().size() <=0){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"No existe Datos en el Detalle inspeccion");
         }
