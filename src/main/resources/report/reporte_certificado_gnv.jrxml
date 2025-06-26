@@ -63,7 +63,7 @@ and tc.estado = false
 GROUP BY
  t.nombre, t.descripcion, t.unidad, eq.nombre, v.placa,  dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion,tc.nombre, d.limite_permisible
 ORDER BY
-t.nombre]]>
+tc.nombre,t.nombre]]>
 	</queryString>
 	<field name="equipo" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>

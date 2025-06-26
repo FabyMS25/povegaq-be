@@ -9,7 +9,7 @@ import java.util.List;
 public interface NotificacionService {
     NotificacionDto obtenerNotificacionPorUuid(String uuid);
     boolean esPosibleNotificar(Vehiculo vehiculo);
-   // int numeroIntentoNotificacion(Vehiculo vehiculo);
+
     List<NotificacionDto> obtenerNotificaciones();
     List<NotificacionDto> obtenerPorTipoNotificacion(TipoNotificacion typeNotificacion);
     NotificacionDto crearNotificacion(NotificacionDto notificacionDto);
@@ -20,6 +20,10 @@ public interface NotificacionService {
     NotificacionDto eliminarNotificacion(String uuid);
     List<NotificacionDto> obtenerNotificacionesPorFechaAsistenciaVencida();
 
+    void generarNotificacionesFallidas(String usuarioUuid, String usuarioNombreCompleto);
+
+    //clean code
    // NotificacionIntentoDto ObtenerNotificacionIntentoPorInspeccion(String uuidInspeccion);
     // TipoNotificacion determinarTipoNotificacion(Inspeccion inspeccion);
+    // int numeroIntentoNotificacion(Vehiculo vehiculo);
 }

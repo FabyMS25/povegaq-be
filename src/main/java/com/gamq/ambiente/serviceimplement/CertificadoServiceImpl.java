@@ -77,7 +77,7 @@ public class CertificadoServiceImpl implements CertificadoService {
                 Certificado nuevoCertificado = CertificadoMapper.toCertificado(certificadoDto);
                 nuevoCertificado.setCodigo(codigo);
                 nuevoCertificado.setQrContent(codigo);
-                nuevoCertificado.setFechaVencimiento(FechaUtil.calcularFechaVencimiento(nuevoCertificado.getFechaVencimiento()));
+                nuevoCertificado.setFechaVencimiento(FechaUtil.calcularFechaVencimiento(nuevoCertificado.getFechaEmision()));
                 nuevoCertificado.setInspeccion(inspeccionOptional.get());
                 return CertificadoMapper.toCertificadoDto(certificadoRepository.save(nuevoCertificado));
             } else {

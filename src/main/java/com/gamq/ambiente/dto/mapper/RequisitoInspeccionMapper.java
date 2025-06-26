@@ -44,21 +44,6 @@ public class RequisitoInspeccionMapper {
                 .setCumple(requisitoInspeccionDto.isCumple())
                 .setFechaPresentacion(requisitoInspeccionDto.getFechaPresentacion())
                 .setEstado(requisitoInspeccionDto.isEstado())
-                /*.setInspeccion(requisitoInspeccionDto.getInspeccionDto()==null? null: new Inspeccion()
-                        .setUuid(requisitoInspeccionDto.getInspeccionDto().getUuid())
-                        .setFechaInspeccion(requisitoInspeccionDto.getInspeccionDto().getFechaInspeccion())
-                        .setLugarInspeccion(requisitoInspeccionDto.getInspeccionDto().getLugarInspeccion())
-                        .setNombreInspector(requisitoInspeccionDto.getInspeccionDto().getNombreInspector())
-                        .setObservacion(requisitoInspeccionDto.getInspeccionDto().getObservacion())
-                        .setResultado(requisitoInspeccionDto.getInspeccionDto().isResultado())
-                        .setUuidUsuario(requisitoInspeccionDto.getInspeccionDto().getUuidUsuario())
-                        .setEstado(requisitoInspeccionDto.getInspeccionDto().isEstado())
-                )
-                .setRequisito(requisitoInspeccionDto.getRequisitoDto()==null? null: new Requisito()
-                        .setUuid(requisitoInspeccionDto.getRequisitoDto().getUuid())
-                        .setDescripcion(requisitoInspeccionDto.getRequisitoDto().getDescripcion())
-                        .setEstado(requisitoInspeccionDto.getRequisitoDto().isEstado())
-                )*/
                 ;
 
     }

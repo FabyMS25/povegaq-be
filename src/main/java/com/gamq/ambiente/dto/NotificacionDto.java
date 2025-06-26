@@ -54,7 +54,9 @@ public class NotificacionDto {
     private String sancion;
     @NotNull(message = "Si es Denuncia es true caso contrario es una Observacion")
     private boolean esDenuncia;
-
+    private String nombrePersonaNotificada;
+    private String placa;
+    private boolean generadoSistema;
     private boolean estado;
 
     private InspeccionDto inspeccionDto;

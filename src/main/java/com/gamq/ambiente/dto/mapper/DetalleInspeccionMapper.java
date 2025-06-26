@@ -58,13 +58,6 @@ public class DetalleInspeccionMapper {
                                         .setCodigo(detalleInspeccion.getInspeccion().getConductor().getTipoContribuyente().getCodigo())
                                 )
                         )
-                     /*   .setVehiculoDto(detalleInspeccion.getInspeccion().getVehiculo() == null ? null: new VehiculoDto()
-                                .setUuid(detalleInspeccion.getInspeccion().getVehiculo().getUuid())
-                                .setPlaca(detalleInspeccion.getInspeccion().getVehiculo().getPlaca())
-                                .setVehiculoTipoCombustibleDtoList(detalleInspeccion.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
-                                    return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
-                                }).collect(Collectors.toList()))
-                        )*/
                 );
     }
 

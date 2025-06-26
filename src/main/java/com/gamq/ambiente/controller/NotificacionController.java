@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notificacion")
@@ -101,7 +102,22 @@ public class NotificacionController {
             summary = "Listar las Notificaciones Vencidas",
             description = "Obtiene una lista de notificaciones vencidas"
     )
-    public Response getNotificacionesVendidas() {
+    public Response getNotificacionesVencidas() {
         return Response.ok().setPayload(notificacionService.obtenerNotificacionesPorFechaAsistenciaVencida());
+    }
+
+    @PostMapping("/generar-notificaciones")
+    public Response generarNotificacionesMasivas(@RequestHeader Map<String, String> headers){
+        if (!headers.containsKey("usuariouuid") || headers.get("usuariouuid") == null || headers.get("usuariouuid").trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo 'usuariouuid' es obligatorio.");
+        }
+
+        if (!headers.containsKey("usuarionombrecompleto") || headers.get("usuarionombrecompleto") == null || headers.get("usuarionombrecompleto").trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo 'usuarionombrecompleto' es obligatorio.");
+        }
+        String usuarioUuid = headers.get("usuariouuid").isEmpty()?"":headers.get("usuariouuid");
+        String usuarioNombreCompleto = headers.get("usuarionombrecompleto").isEmpty()?"":headers.get("usuarionombrecompleto");
+        notificacionService.generarNotificacionesFallidas(usuarioUuid, usuarioNombreCompleto);
+        return Response.ok().setPayload("Notificaciones generadas para inspecciones fallidas");
     }
 }

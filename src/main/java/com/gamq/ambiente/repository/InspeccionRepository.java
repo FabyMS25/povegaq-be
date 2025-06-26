@@ -23,4 +23,6 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     List<Inspeccion> findByFechaInspeccion(@Param("fechaInspeccion") Date fechaInspeccion);
 
     List<Inspeccion> findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(Vehiculo vehiculo);
+
+    List<Inspeccion> findByResultadoFalse();
 }

@@ -65,6 +65,12 @@ public class Notificacion {
     private String sancion;
     @Column(name = "es_denuncia", nullable = true,columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esDenuncia;
+    @Column(name = "nombre_persona_notificada", length = 100, nullable = false)
+    private String nombrePersonaNotificada;
+    @Column(name = "placa", nullable = false)
+    private String placa;
+    @Column(name = "generado_sistema", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean generadoSistema;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

@@ -23,6 +23,9 @@ public class NotificacionMapper {
                 .setNumeroIntento(notificacion.getNumeroIntento())
                 .setSancion(notificacion.getSancion())
                 .setEsDenuncia(notificacion.isEsDenuncia())
+                .setNombrePersonaNotificada(notificacion.getNombrePersonaNotificada())
+                .setPlaca(notificacion.getPlaca())
+                .setGeneradoSistema(notificacion.isGeneradoSistema())
                 .setEstado(notificacion.isEstado())
                 .setInspeccionDto(notificacion.getInspeccion()== null? null : new InspeccionDto()
                         .setUuid(notificacion.getInspeccion().getUuid())
@@ -113,8 +116,7 @@ public class NotificacionMapper {
                                         .setCodigo(notificacion.getInspeccion().getConductor().getTipoContribuyente().getCodigo())
                                 )
                         )
-                )
-                ;
+                );
     }
 
     public static Notificacion toNotificacion( NotificacionDto notificacionDto){
@@ -134,7 +136,9 @@ public class NotificacionMapper {
                 .setNumeroIntento(notificacionDto.getNumeroIntento())
                 .setSancion(notificacionDto.getSancion())
                 .setEsDenuncia(notificacionDto.isEsDenuncia())
-                .setEstado(notificacionDto.isEstado())
-                ;
+                .setNombrePersonaNotificada(notificacionDto.getNombrePersonaNotificada())
+                .setPlaca(notificacionDto.getPlaca())
+                .setGeneradoSistema(notificacionDto.isGeneradoSistema())
+                .setEstado(notificacionDto.isEstado());
     }
 }

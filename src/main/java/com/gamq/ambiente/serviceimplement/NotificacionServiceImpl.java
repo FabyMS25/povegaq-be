@@ -18,7 +18,9 @@ import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
 import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.NotificacionService;
+import com.gamq.ambiente.utils.EmailUtil;
 import com.gamq.ambiente.utils.FechaUtil;
+import com.gamq.ambiente.utils.NombreContribuyenteUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,6 +49,12 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Autowired
     AlertaRepository alertaRepository;
+
+    @Autowired
+    private EmailUtil  emailUtil;
+
+    @Value("${files.path}/notificaciones")
+    private String filePath;
 
     @Override
     public NotificacionDto obtenerNotificacionPorUuid(String uuid) {
@@ -121,6 +130,10 @@ public class NotificacionServiceImpl implements NotificacionService {
 
         NotificacionDto notificacionDto = new NotificacionDto();
         notificacionDto.setActividad( inspeccionOptional.get().getActividad().getTipoActividad());
+
+        notificacionDto.setNombrePersonaNotificada(NombreContribuyenteUtil.resolverNombreContribuyente(inspeccionOptional.get()));
+        notificacionDto.setPlaca(inspeccionOptional.get().getVehiculo().getPlaca());
+
         if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
@@ -262,5 +275,73 @@ public class NotificacionServiceImpl implements NotificacionService {
             alerta.setUuidDestinatario( notificacion.getInspeccion().getVehiculo() != null? notificacion.getInspeccion().getVehiculo().getPropietario().getUuid(): notificacion.getInspeccion().getConductor().getUuid());
             alertaRepository.save(alerta);
         }
+    }
+
+    private void generarNotificacionesMasivas(List<Inspeccion> inspeccionList, String usuarioUuid, String usuarioNombreCompleto) {
+        int contador = 0;
+        for (Inspeccion inspeccion : inspeccionList) {
+            if (!inspeccion.isResultado()) {
+               if (!notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(inspeccion.getVehiculo(), TipoNotificacion.REINSPECCION_PENDIENTE, new Date() )) {
+
+                   Optional<NotificacionIntentoDto> notificacionIntentoDto = notificacionRepository.getNumeroIntentoNotificacionByUuidVehiculo(inspeccion.getVehiculo().getUuid()).map(vi->
+                           new NotificacionIntentoDto(
+                                   vi.getUuidVehiculo(),
+                                   vi.getIntentosValidos(),
+                                   vi.getPuedeEmitirNuevaNotificacion(),
+                                   vi.getProximoTipoNotificacion())
+                   );
+
+                   Notificacion notificacion = new Notificacion();
+                   notificacion.setActividad(inspeccion.getActividad().getTipoActividad());
+
+
+                   if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
+                       notificacion.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
+                       notificacion.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(inspeccion.getFechaInspeccion(), 365), ZoneId.of(zonaHorario)));
+                       notificacion.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
+                       notificacion.setObservacion("La inspección detectó exceso en emisión de gases. Por favor realizar las correcciones y presentar para reinspeccion ya que tiene un plazo 1 año para adecuación técnica.");
+                       notificacion.setNumeroIntento(1);
+                   }
+                   if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
+                       notificacion.setTypeNotificacion(TipoNotificacion.INFRACCION);
+                       notificacion.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(),90), ZoneId.of(zonaHorario)));
+                       notificacion.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
+                       notificacion.setObservacion("No realizó adecuación técnica tras primera notificación. Multa 3er grado.");
+                       notificacion.setNumeroIntento(2);
+                       notificacion.setSancion("Multa 3er grado");
+                   }
+                   if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
+                       notificacion.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL);
+                       notificacion.setFechaAsistencia(new Date());
+                       notificacion.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
+                       notificacion.setObservacion("No adecuó el vehículo dentro de los 90 días posteriores a la segunda inspección.");
+                       notificacion.setSancion("Multa 3er grado por incumplimiento final");
+                       notificacion.setNumeroIntento(3);
+                   }
+                   notificacion.setInspeccion(inspeccion);
+
+                   contador = contador + 1;
+                   notificacion.setGeneradoSistema(true);
+                   notificacion.setNumeroNotificacion(String.valueOf(contador));
+                   notificacion.setFechaNotificacion(new Date());
+                   notificacion.setHoraAsistencia(LocalTime.NOON);
+                   notificacion.setNombrePersonaNotificada(NombreContribuyenteUtil.resolverNombreContribuyente(inspeccion));
+                   notificacion.setPlaca(inspeccion.getVehiculo().getPlaca());
+                   notificacion.setNombreNotificador(usuarioNombreCompleto);
+                   notificacion.setUuidUsuario(usuarioUuid);
+                   notificacion.setDireccion(inspeccion.getEvento()!= null? inspeccion.getEvento().getDistrito() + ' ' + inspeccion.getEvento().getDireccion(): inspeccion.getLugarInspeccion());
+
+                   inspeccion.getNotificacionList().add(notificacion);
+                 //  emailUtil.enviarPdfPorCorreo("edggmym@gmail.com","Notificacion", "Estimado usuario le enviamos una notificacion. Por Favor revizar ", filePath + "/2d6f2257-7c62-4de2-ab20-e82653555309.pdf");
+               }
+            }
+        }
+        // Guardar inspecciones actualizadas (y notificaciones en cascada)
+        inspeccionRepository.saveAll(inspeccionList);
+    }
+
+    public void generarNotificacionesFallidas(String usuarioUuid, String usuarioNombreCompleto) {
+        List<Inspeccion> inspeccionesFallidas = inspeccionRepository.findByResultadoFalse();
+        generarNotificacionesMasivas(inspeccionesFallidas, usuarioUuid, usuarioNombreCompleto);
     }
 }
