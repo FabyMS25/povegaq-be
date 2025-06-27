@@ -84,10 +84,10 @@ public class FechaUtil {
     }
 
     //fechaInicial -> fecha notificacion o fechainfraccion
-    public boolean plazoVencido(LocalDate fechaInicial) {
+    public boolean plazoVencido(LocalDate fechaInicial, Integer plazoEnDias) {
         LocalDate hoy = LocalDate.now();
         long diasHabiles = contarDiasHabiles(fechaInicial, hoy);
-        return diasHabiles > 15;
+        return diasHabiles > plazoEnDias;  //hardcode
     }
 
     // Ajusta la fecha al inicio del día (00:00:00.000)
@@ -117,36 +117,16 @@ public class FechaUtil {
 
     public static Date obtenerDiaHabilMasCercano(Date fechaVencimiento, ZoneId zona) {
         LocalDate fecha = convertirADia(fechaVencimiento, zona);
-        //fechaVencimiento.toInstant()
-        //        .atZone(zona)
-        //        .toLocalDate();
 
         if (esDiaHabil(fecha)) {
             return  convertirADate(fecha,zona);
-         //   return Date.from(fecha.atStartOfDay(zona).toInstant());
         }
         LocalDate diaHabilAnterior = buscarDiaHabilAnterior(fecha);
         LocalDate diaHabilSiguiente = buscarDiaHabilSiguiente(fecha);
 
-        //LocalDate anterior = fecha.minusDays(1);
-        //while (!esDiaHabil(anterior)) {
-        //    anterior = anterior.minusDays(1);
-        //}
-
-        //LocalDate siguiente = fecha.plusDays(1);
-        //while (!esDiaHabil(siguiente)) {
-        //    siguiente = siguiente.plusDays(1);
-        //}
-
-       // long diasAntes = Math.abs(ChronoUnit.DAYS.between(fecha, anterior));
-       // long diasDespues = Math.abs(ChronoUnit.DAYS.between(fecha, siguiente));
-
-       // LocalDate resultado = diasAntes <= diasDespues ? anterior : siguiente;
-
         LocalDate diaMasCercano = elegirDiaMasCercano(fecha, diaHabilAnterior, diaHabilSiguiente);
 
         return convertirADate(diaMasCercano, zona);
-       // return Date.from(resultado.atStartOfDay(zona).toInstant());
     }
 
     private static LocalDate convertirADia(Date fecha, ZoneId zona) {

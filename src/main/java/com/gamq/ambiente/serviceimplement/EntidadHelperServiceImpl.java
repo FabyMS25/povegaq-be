@@ -30,21 +30,11 @@ public class EntidadHelperServiceImpl {
     public Inspeccion obtenerInspeccion(String inspeccionUuid) {
         return inspeccionRepository.findByUuid(inspeccionUuid)
                 .orElseThrow(()-> new ResourceNotFoundException("Inspeccion","uuid", inspeccionUuid));
-        //Optional<Inspeccion> optionalInspeccion = inspeccionRepository.findByUuid(inspeccionUuid);
-        //if(optionalInspeccion.isEmpty()){
-        //    throw new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid de la inspeccion no existe");
-        //}
-        //return optionalInspeccion.get();
     }
 
     public Requisito obtenerRequisito(String requisitoUuid){
         return requisitoRepository.findByUuid(requisitoUuid)
                 .orElseThrow(()-> new ResourceNotFoundException("Requisito", "uuid", requisitoUuid));
-       // Optional<Requisito> optionalRequisito = requisitoRepository.findByUuid(requisitoUuid);
-        //if (optionalRequisito.isEmpty()){
-        //    throw  new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "el uuid del requisito no existe");
-        //}
-        //return optionalRequisito.get();
     }
 
     public TipoParametro obtenerTipoParametro(String tipoParametroUuid) {

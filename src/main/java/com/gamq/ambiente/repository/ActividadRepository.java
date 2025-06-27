@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ActividadRepository extends JpaRepository<Actividad, Long> {
     @Query("SELECT a FROM Actividad a WHERE a.uuid = :uuid AND a.estado = false")
     Optional<Actividad> findByUuid(String uuid);
-    @Query("SELECT a FROM Actividad a  WHERE LOWER(rtrim(ltrim(a.tipoActividad))) = LOWER(rtrim(ltrim(:tipoActividad)))")
+    @Query("SELECT a FROM Actividad a  WHERE a.activo = true AND LOWER(rtrim(ltrim(a.tipoActividad))) = LOWER(rtrim(ltrim(:tipoActividad)))")
     Optional<Actividad> findByTipoActividad(@Param("tipoActividad") String tipoActividad);
     @Query("SELECT case when count(a) > 0 then true else false end FROM Actividad a WHERE lower(rtrim(ltrim(a.tipoActividad))) = lower(rtrim(ltrim(:tipoActividad))) AND a.uuid <> :uuidActividad")
     boolean exitsActividadLikeTipoActividad(@Param("tipoActividad") String tipoActividad,

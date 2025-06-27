@@ -111,7 +111,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
 
             //prueba paso a paso
-            List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
+        /*    List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
             System.out.println("Total inicial: " + resultado.size());
 
             resultado = resultado.stream()
@@ -169,7 +169,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             resultado = resultado.stream()
                     .filter(LimiteEmision::isActivo)
                     .collect(Collectors.toList());
-            System.out.println("Después de isActivo: " + resultado.size());
+            System.out.println("Después de isActivo: " + resultado.size());*/
 
 
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()

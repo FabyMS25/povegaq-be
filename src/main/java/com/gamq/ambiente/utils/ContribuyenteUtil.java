@@ -5,7 +5,7 @@ import com.gamq.ambiente.model.TipoContribuyente;
 import com.gamq.ambiente.model.Vehiculo;
 
 public class ContribuyenteUtil {
-    private ContribuyenteUtil() {} // Evita instanciación
+    private ContribuyenteUtil() {}
 
     public static TipoContribuyente resolverTipoContribuyente(Inspeccion inspeccion) {
         if (inspeccion == null) {

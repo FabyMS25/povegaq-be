@@ -40,10 +40,10 @@ public class InfraccionDto {
     @Size(max = 250, message = "El motivo no puede exceder los 250 caracteres")
     @Column(name = "motivo", nullable = false, length = 250)
     private String motivo;
-    @NotBlank(message = "El el nombre notificador es requerido")
+    @NotBlank(message = "El nombre notificador es requerido")
     @Size(max = 100, message = "El nombre notificador no puede exceder los 100 caracteres")
     private String nombreRegistrador;
-    @NotBlank(message = "El motivo es requerido")
+    @NotBlank(message = "El uuid del usuario es requerido")
     @Size(max = 64, message = "El uuidUsuario no puede exceder los 64 caracteres")
     private String uuidUsuario;
     //2025

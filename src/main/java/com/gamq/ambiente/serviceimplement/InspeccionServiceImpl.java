@@ -40,11 +40,7 @@ public class InspeccionServiceImpl implements InspeccionService {
     @Override
     public InspeccionDto obtenerInspeccionPorUuid(String uuid) {
         Inspeccion inspeccion = obtenerInspeccionPorUuidOThrow(uuid);
-        // Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(uuid);
-        //if(inspeccionOptional.isPresent()){
         return InspeccionMapper.toInspeccionDto(inspeccion);
-        //}
-        //throw new ResourceNotFoundException("Inspeccion", "uuid", uuid);
     }
 
     @Override

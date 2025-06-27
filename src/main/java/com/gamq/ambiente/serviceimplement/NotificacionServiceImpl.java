@@ -134,6 +134,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         notificacionDto.setNombrePersonaNotificada(NombreContribuyenteUtil.resolverNombreContribuyente(inspeccionOptional.get()));
         notificacionDto.setPlaca(inspeccionOptional.get().getVehiculo().getPlaca());
 
+        //hardcode
         if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
@@ -294,7 +295,7 @@ public class NotificacionServiceImpl implements NotificacionService {
                    Notificacion notificacion = new Notificacion();
                    notificacion.setActividad(inspeccion.getActividad().getTipoActividad());
 
-
+                   //hardcode
                    if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
                        notificacion.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
                        notificacion.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(inspeccion.getFechaInspeccion(), 365), ZoneId.of(zonaHorario)));
@@ -318,6 +319,7 @@ public class NotificacionServiceImpl implements NotificacionService {
                        notificacion.setSancion("Multa 3er grado por incumplimiento final");
                        notificacion.setNumeroIntento(3);
                    }
+
                    notificacion.setInspeccion(inspeccion);
 
                    contador = contador + 1;
