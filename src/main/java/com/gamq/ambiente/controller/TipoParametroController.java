@@ -49,4 +49,8 @@ public class TipoParametroController {
                                               @RequestParam boolean activo) {
         return Response.ok().setPayload(tipoParametroService.actualizarTipoParametroActivo(uuid, activo));
     }
+    @GetMapping("/activos")
+    public Response obtenerTipoParametrosActivos(){
+        return  Response.ok().setPayload(tipoParametroService.obtenerTipoParametrosActivos());
+    }
 }

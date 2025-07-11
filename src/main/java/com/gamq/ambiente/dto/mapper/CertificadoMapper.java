@@ -64,7 +64,7 @@ public class CertificadoMapper {
                                         .setTipoVehiculo(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoVehiculo())
                                         .setCapacidadCarga(certificado.getInspeccion().getVehiculo().getDatoTecnico().getCapacidadCarga())
                                         .setCilindrada(certificado.getInspeccion().getVehiculo().getDatoTecnico().getCilindrada())
-                                        .setClase(certificado.getInspeccion().getVehiculo().getDatoTecnico().getClase())
+                                        //.setClase(certificado.getInspeccion().getVehiculo().getDatoTecnico().getClase())
                                         .setColor(certificado.getInspeccion().getVehiculo().getDatoTecnico().getColor())
                                         .setEmisionStandard(certificado.getInspeccion().getVehiculo().getDatoTecnico().getEmisionStandard())
                                         .setEstado(certificado.getInspeccion().getVehiculo().getDatoTecnico().isEstado())
@@ -86,6 +86,19 @@ public class CertificadoMapper {
                                         .setTiempoMotor(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTiempoMotor())
                                         .setCategoriaVehiculo(certificado.getInspeccion().getVehiculo().getDatoTecnico().getCategoriaVehiculo())
                                         .setEstado(certificado.getInspeccion().getVehiculo().getDatoTecnico().isEstado())
+                                        .setTipoClaseVehiculoDto(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo() == null? null: new TipoClaseVehiculoDto()
+                                                .setUuid(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getUuid())
+                                                .setNombre(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getNombre())
+                                                .setDescripcion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getDescripcion())
+                                                .setEstado(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().isEstado())
+                                                .setClaseVehiculoDto(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getClaseVehiculo() == null? null: new ClaseVehiculoDto()
+                                                        .setUuid(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getClaseVehiculo().getUuid())
+                                                        .setNombre(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getClaseVehiculo().getNombre())
+                                                        .setDescripcion(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getClaseVehiculo().getDescripcion())
+                                                        .setEstado(certificado.getInspeccion().getVehiculo().getDatoTecnico().getTipoClaseVehiculo().getClaseVehiculo().isEstado())
+                                                )
+                                        )
+
                                 )
                                 //tabla 2025
                                 .setVehiculoTipoCombustibleDtoList(certificado.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {

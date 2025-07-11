@@ -102,4 +102,12 @@ public class TipoParametroServiceImpl implements TipoParametroService {
         tipoParametroRepository.save(tipoParametro);
         return TipoParametroMapper.toTipoParametroDto(tipoParametro);
     }
+
+    @Override
+    public List<TipoParametroDto> obtenerTipoParametrosActivos() {
+        List<TipoParametro> tipoParametroList = tipoParametroRepository.findAllActivoTrue();
+        return  tipoParametroList.stream().map(tipoParametro -> {
+            return TipoParametroMapper.toTipoParametroDto(tipoParametro);
+        }).collect(Collectors.toList());
+    }
 }

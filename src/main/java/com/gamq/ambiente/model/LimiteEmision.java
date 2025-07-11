@@ -72,8 +72,8 @@ public class LimiteEmision {
     private Integer altitudMinima;
     @Column(name="altitud_maxima", nullable = true)
     private Integer altitudMaxima;
-    @Column(name="clase_vehiculo", nullable = true)
-    private String claseVehiculo;
+    //@Column(name="clase_vehiculo", nullable = true)
+    //private String claseVehiculo;
     @Column(name="tiempo_motor", nullable = true)
     private String tiempoMotor;
     @Column(name="ciclo_prueba", nullable = true, length =50)
@@ -95,6 +95,10 @@ public class LimiteEmision {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_combustible", nullable = false)
     private TipoCombustible tipoCombustible;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_clase_vehiculo", nullable = true)
+    private ClaseVehiculo claseVehiculo; // tipoCombustible;
 
     public LimiteEmision(String uuid) {this.uuid = uuid;}
 

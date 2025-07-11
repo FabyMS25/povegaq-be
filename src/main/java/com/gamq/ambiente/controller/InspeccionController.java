@@ -68,5 +68,4 @@ public class InspeccionController {
         comparacionEmisionService.validarInspeccion(uuidInspeccion);
         return Response.ok().setPayload("Operacion completada");
     }
-
 }
