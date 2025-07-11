@@ -1,13 +1,14 @@
 package com.gamq.ambiente.dto.mapper;
 
 import com.gamq.ambiente.dto.DatoTecnicoDto;
+import com.gamq.ambiente.dto.TipoClaseVehiculoDto;
 import com.gamq.ambiente.model.DatoTecnico;
 
 public class DatoTecnicoMapper {
     public static DatoTecnicoDto toDatoTecnicoDto(DatoTecnico datoTecnico){
         return new DatoTecnicoDto()
                 .setUuid(datoTecnico.getUuid())
-                .setClase(datoTecnico.getClase())
+               // .setClase(datoTecnico.getClase())
                 .setMarca(datoTecnico.getMarca())
                 .setPais(datoTecnico.getPais())
                 .setTraccion(datoTecnico.getTraccion())
@@ -28,7 +29,13 @@ public class DatoTecnicoMapper {
                 .setNumeroAsientos(datoTecnico.getNumeroAsientos())
                 .setTiempoMotor(datoTecnico.getTiempoMotor())
                 .setCategoriaVehiculo(datoTecnico.getCategoriaVehiculo())
-                .setEstado(datoTecnico.isEstado());
+                .setEstado(datoTecnico.isEstado())
+                .setTipoClaseVehiculoDto(datoTecnico.getTipoClaseVehiculo()==null? null: new TipoClaseVehiculoDto()
+                        .setUuid(datoTecnico.getTipoClaseVehiculo().getUuid())
+                        .setNombre(datoTecnico.getTipoClaseVehiculo().getNombre())
+                        .setDescripcion(datoTecnico.getTipoClaseVehiculo().getDescripcion())
+                        .setEstado(datoTecnico.getTipoClaseVehiculo().isEstado())
+                );
     }
 
     public static DatoTecnico toDatoTecnico(DatoTecnicoDto datoTecnicoDto){
@@ -37,7 +44,7 @@ public class DatoTecnicoMapper {
                 .setTipoVehiculo(datoTecnicoDto.getTipoVehiculo())
                 .setCapacidadCarga(datoTecnicoDto.getCapacidadCarga())
                 .setCilindrada(datoTecnicoDto.getCilindrada())
-                .setClase(datoTecnicoDto.getClase())
+               // .setClase(datoTecnicoDto.getClase())
                 .setColor(datoTecnicoDto.getColor())
                 .setEmisionStandard(datoTecnicoDto.getEmisionStandard())
                 .setEstado(datoTecnicoDto.isEstado())

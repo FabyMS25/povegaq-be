@@ -31,8 +31,8 @@ public class DatoTecnico {
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
 
-    @Column(name = "clase", nullable = false, length = 50)
-    private String clase;
+    //@Column(name = "clase", nullable = false, length = 50)
+    //private String clase;
     @Column(name = "marca", nullable = false, length = 50)
     private String marca;
     @Column(name = "pais", nullable = false, length = 50)
@@ -80,6 +80,10 @@ public class DatoTecnico {
     @OneToOne()
     @JoinColumn(name = "id_vehiculo", nullable = false)
     private Vehiculo vehiculo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_tipo_clase_vehiculo", nullable = false)
+    private TipoClaseVehiculo tipoClaseVehiculo;
 
     public DatoTecnico(String uuid) {this.uuid = uuid;}
 

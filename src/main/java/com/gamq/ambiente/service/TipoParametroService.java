@@ -12,4 +12,5 @@ public interface TipoParametroService {
     TipoParametroDto actualizarTipoParametro(TipoParametroDto tipoParametroDto);
     TipoParametroDto eliminarTipoParametro(String uuid);
     TipoParametroDto actualizarTipoParametroActivo(String uuid, boolean activo);
+    List<TipoParametroDto> obtenerTipoParametrosActivos();
 }

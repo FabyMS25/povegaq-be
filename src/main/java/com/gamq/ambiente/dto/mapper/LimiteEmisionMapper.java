@@ -1,8 +1,10 @@
 package com.gamq.ambiente.dto.mapper;
 
+import com.gamq.ambiente.dto.ClaseVehiculoDto;
 import com.gamq.ambiente.dto.LimiteEmisionDto;
 import com.gamq.ambiente.dto.TipoCombustibleDto;
 import com.gamq.ambiente.dto.TipoParametroDto;
+import com.gamq.ambiente.model.ClaseVehiculo;
 import com.gamq.ambiente.model.LimiteEmision;
 import com.gamq.ambiente.model.TipoCombustible;
 import com.gamq.ambiente.model.TipoParametro;
@@ -27,7 +29,7 @@ public class LimiteEmisionMapper {
                 .setFechaFin(limiteEmision.getFechaFin())
                 .setAltitudMinima(limiteEmision.getAltitudMinima())
                 .setAltitudMaxima(limiteEmision.getAltitudMaxima())
-                .setClaseVehiculo(limiteEmision.getClaseVehiculo())
+               // .setClaseVehiculo(limiteEmision.getClaseVehiculo())
                 .setTiempoMotor(limiteEmision.getTiempoMotor())
                 .setCicloPrueba(limiteEmision.getCicloPrueba())
                 .setNormativa(limiteEmision.getNormativa())
@@ -48,6 +50,12 @@ public class LimiteEmisionMapper {
                         .setDescripcion(limiteEmision.getTipoCombustible().getDescripcion())
                         .setTipoMotor(limiteEmision.getTipoCombustible().getTipoMotor())
                         .setEstado(limiteEmision.getTipoCombustible().isEstado())
+                )
+                .setClaseVehiculoDto(limiteEmision.getClaseVehiculo()==null? null: new ClaseVehiculoDto()
+                        .setUuid(limiteEmision.getClaseVehiculo().getUuid())
+                        .setNombre(limiteEmision.getClaseVehiculo().getNombre())
+                        .setDescripcion(limiteEmision.getClaseVehiculo().getDescripcion())
+                        .setEstado(limiteEmision.getClaseVehiculo().isEstado())
                 );
     }
 
@@ -70,7 +78,7 @@ public class LimiteEmisionMapper {
                 .setFechaFin(limiteEmisionDto.getFechaFin())
                 .setAltitudMinima(limiteEmisionDto.getAltitudMinima())
                 .setAltitudMaxima(limiteEmisionDto.getAltitudMaxima())
-                .setClaseVehiculo(limiteEmisionDto.getClaseVehiculo())
+               // .setClaseVehiculo(limiteEmisionDto.getClaseVehiculo())
                 .setTiempoMotor(limiteEmisionDto.getTiempoMotor())
                 .setCicloPrueba(limiteEmisionDto.getCicloPrueba())
                 .setNormativa(limiteEmisionDto.getNormativa())
@@ -90,7 +98,12 @@ public class LimiteEmisionMapper {
                         .setDescripcion(limiteEmisionDto.getTipoCombustibleDto().getDescripcion())
                         .setTipoMotor(limiteEmisionDto.getTipoCombustibleDto().getTipoMotor())
                         .setEstado(limiteEmisionDto.getTipoCombustibleDto().isEstado())
+                )
+                .setClaseVehiculo(limiteEmisionDto.getClaseVehiculoDto() == null? null: new ClaseVehiculo()
+                        .setUuid(limiteEmisionDto.getClaseVehiculoDto().getUuid())
+                        .setNombre(limiteEmisionDto.getClaseVehiculoDto().getNombre())
+                        .setDescripcion(limiteEmisionDto.getClaseVehiculoDto().getDescripcion())
+                        .setEstado(limiteEmisionDto.getClaseVehiculoDto().isEstado())
                 );
     }
-
 }

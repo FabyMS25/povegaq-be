@@ -38,6 +38,8 @@ public class VehiculoServiceImpl implements VehiculoService {
     TipoCombustibleRepository tipoCombustibleRepository;
     @Autowired
     VehiculoTipoCombustibleRepository vehiculoTipoCombustibleRepository;
+    @Autowired
+    TipoClaseVehiculoRepository tipoClaseVehiculoRepository;
 
 
     @Override
@@ -98,66 +100,77 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
-        if (vehiculoValidator.validateVehiculo(vehiculoDto) ) {
-            if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
-            }
-
-            validarCombustibles(vehiculoDto.getVehiculoTipoCombustibleDtoList());
-
-            Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
-
-
-
-            if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null){
-                Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
-                if (propietarioOptional.isPresent()){
-                    nuevoVehiculo.setPropietario(propietarioOptional.get());
-                }
-                else {
-                    throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
-                }
-            }
-
-            List<VehiculoTipoCombustible> vehiculoTipoCombustibleList = new ArrayList<>();
-            for (VehiculoTipoCombustibleDto combustibleDTO : vehiculoDto.getVehiculoTipoCombustibleDtoList()) {
-                boolean yaExisteMismoTipoCombustible = vehiculoTipoCombustibleList.stream()
-                        .anyMatch(v -> v.getTipoCombustible().getUuid().equals(combustibleDTO.getTipoCombustibleDto().getUuid()));
-
-                if (yaExisteMismoTipoCombustible) {
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
-                            "El tipo de combustible no puede ser duplicado: " + combustibleDTO.getTipoCombustibleDto().getUuid());
-                }
-                TipoCombustible tipoCombustible = tipoCombustibleRepository
-                        .findByUuid(combustibleDTO.getTipoCombustibleDto().getUuid())
-                        .orElseThrow(() -> new RuntimeException("Tipo de combustible no encontrado"));
-
-                VehiculoTipoCombustible vehiculoTipoCombustible = new VehiculoTipoCombustible();
-                vehiculoTipoCombustible.setVehiculo(nuevoVehiculo);
-                vehiculoTipoCombustible.setTipoCombustible(tipoCombustible);
-                vehiculoTipoCombustible.setEsPrimario(combustibleDTO.getEsPrimario());
-                vehiculoTipoCombustible.setEstado(false);
-                vehiculoTipoCombustibleList.add(vehiculoTipoCombustible);
-            }
-
-            List<VehiculoTipoCombustible> original = nuevoVehiculo.getVehiculoTipoCombustibleList();
-            original.clear();
-            original.addAll(vehiculoTipoCombustibleList);
-
-            Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
-            vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo)));
-            return VehiculoMapper.toVehiculoDto(vehiculo);
-
+        if (!vehiculoValidator.validateVehiculo(vehiculoDto) ) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
         }
-        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
+
+        if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
+        }
+
+        TipoClaseVehiculo tipoClaseVehiculo = tipoClaseVehiculoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid())
+                        .orElseThrow(()-> new ResourceNotFoundException("TipoClaseVehiculo","uuid",vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid()));
+
+        validarCombustibles(vehiculoDto.getVehiculoTipoCombustibleDtoList());
+
+        Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
+
+        if (vehiculoDto.getPropietarioDto() != null && vehiculoDto.getPropietarioDto().getUuid() != null){
+            Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
+            if (propietarioOptional.isPresent()){
+                nuevoVehiculo.setPropietario(propietarioOptional.get());
+            }
+            else {
+                throw new ResourceNotFoundException("propietario", "uuid", vehiculoDto.getPropietarioDto().getUuid());
+            }
+        }
+
+        List<VehiculoTipoCombustible> vehiculoTipoCombustibleList = new ArrayList<>();
+        for (VehiculoTipoCombustibleDto combustibleDTO : vehiculoDto.getVehiculoTipoCombustibleDtoList()) {
+            boolean yaExisteMismoTipoCombustible = vehiculoTipoCombustibleList.stream()
+                    .anyMatch(v -> v.getTipoCombustible().getUuid().equals(combustibleDTO.getTipoCombustibleDto().getUuid()));
+
+            if (yaExisteMismoTipoCombustible) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                        "El tipo de combustible no puede ser duplicado: " + combustibleDTO.getTipoCombustibleDto().getUuid());
+            }
+            TipoCombustible tipoCombustible = tipoCombustibleRepository
+                    .findByUuid(combustibleDTO.getTipoCombustibleDto().getUuid())
+                    .orElseThrow(() -> new RuntimeException("Tipo de combustible no encontrado"));
+
+            VehiculoTipoCombustible vehiculoTipoCombustible = new VehiculoTipoCombustible();
+            vehiculoTipoCombustible.setVehiculo(nuevoVehiculo);
+            vehiculoTipoCombustible.setTipoCombustible(tipoCombustible);
+            vehiculoTipoCombustible.setEsPrimario(combustibleDTO.getEsPrimario());
+            vehiculoTipoCombustible.setEstado(false);
+            vehiculoTipoCombustibleList.add(vehiculoTipoCombustible);
+        }
+
+        List<VehiculoTipoCombustible> original = nuevoVehiculo.getVehiculoTipoCombustibleList();
+        original.clear();
+        original.addAll(vehiculoTipoCombustibleList);
+
+        Vehiculo vehiculo = vehiculoRepository.save(nuevoVehiculo);
+
+        DatoTecnico datoTecnico = DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto());
+        datoTecnico.setVehiculo(vehiculo);
+        datoTecnico.setTipoClaseVehiculo(tipoClaseVehiculo);
+
+        datoTecnico = datoTecnicoRepository.save(datoTecnico);
+        vehiculo.setDatoTecnico(datoTecnico);
+
+       //vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo).setTipoClaseVehiculo(tipoClaseVehiculo)));
+        return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     private boolean validarDatoTecnico(DatoTecnicoDto datoTecnicoDto) {
-        return datoTecnicoDto != null && datoTecnicoDto.getClase() != null && datoTecnicoDto.getMarca() != null
+        //.getClase()
+        return datoTecnicoDto != null && datoTecnicoDto.getTipoClaseVehiculoDto().getUuid() != null && datoTecnicoDto.getMarca() != null
         && datoTecnicoDto.getPais() != null && datoTecnicoDto.getModelo() != null && datoTecnicoDto.getColor() != null
                 && (datoTecnicoDto.getYearFabricacion() != null && datoTecnicoDto.getYearFabricacion() > 1900 && datoTecnicoDto.getYearFabricacion() <= Year.now().getValue()) && datoTecnicoDto.getTipoMotor() != null
                 && datoTecnicoDto.getTiempoMotor() != null;
     }
+
     @Override
     public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
         Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(vehiculoDto.getUuid());
@@ -178,11 +191,15 @@ public class VehiculoServiceImpl implements VehiculoService {
             throw new ResourceNotFoundException("dato tecnico del vehiculo", "uuid", vehiculoDto.getDatoTecnicoDto().getUuid());
         }
 
+        TipoClaseVehiculo tipoClaseVehiculo = tipoClaseVehiculoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid())
+                .orElseThrow(()-> new ResourceNotFoundException("TipoClaseVehiculo","uuid",vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid()));
+
         DatoTecnico datoTecnico = DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto());
         updateVehiculo.setDatoTecnico(datoTecnico);
 
         updateVehiculo.getDatoTecnico().setIdDatoTecnico(datoTecnicoOptional.get().getIdDatoTecnico());
         updateVehiculo.getDatoTecnico().setVehiculo(updateVehiculo);
+        updateVehiculo.getDatoTecnico().setTipoClaseVehiculo(tipoClaseVehiculo);
 
         if (vehiculoDto.getPropietarioDto()!= null && vehiculoDto.getPropietarioDto().getUuid() != null) {
             Optional<Propietario> propietarioOptional = propietarioRepository.findByUuid(vehiculoDto.getPropietarioDto().getUuid());
