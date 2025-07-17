@@ -25,4 +25,6 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     List<Inspeccion> findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(Vehiculo vehiculo);
 
     List<Inspeccion> findByResultadoFalse();
+
+    Optional<Inspeccion> findFirstByVehiculoUuidOrderByFechaInspeccionDesc(String uuidVehiculo);
 }

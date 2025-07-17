@@ -68,4 +68,9 @@ public class InspeccionController {
         comparacionEmisionService.validarInspeccion(uuidInspeccion);
         return Response.ok().setPayload("Operacion completada");
     }
+
+    @GetMapping("/ultima-inspeccion/{uuidVehiculo}")
+    public Response lastInspeccionByUuidVehiculo(@PathVariable("uuidVehiculo") String uuidVehiculo){
+        return Response.ok().setPayload(inspeccionService.obtenerUltimaInspeccionPorUuidVehiculo(uuidVehiculo));
+    }
 }

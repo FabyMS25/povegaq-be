@@ -18,5 +18,6 @@ public interface InspeccionService {
     InspeccionDto eliminarInspeccion(String uuid);
     List<InspeccionDto> obtenerInspeccionPorUuidActividad(String uuidActividad);
     List<InspeccionDto> obtenerInspeccionPorFechaInspeccion(Date fechaInspeccion);
-    int obtenerNumeroIntentoActual(Vehiculo vehiculo);
-}
+    InspeccionDto obtenerUltimaInspeccionPorUuidVehiculo(String uuidVehiculo);
+    //int obtenerNumeroIntentoActual(Vehiculo vehiculo);
+    }

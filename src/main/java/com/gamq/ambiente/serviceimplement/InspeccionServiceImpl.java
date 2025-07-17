@@ -191,12 +191,22 @@ public class InspeccionServiceImpl implements InspeccionService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public InspeccionDto obtenerUltimaInspeccionPorUuidVehiculo(String uuidVehiculo) {
+        Inspeccion inspeccion =  obtenerInspeccionPoruuidVehiculoOThrow(uuidVehiculo);
+        return InspeccionMapper.toInspeccionDto(inspeccion);
+    }
+
     private Inspeccion obtenerInspeccionPorUuidOThrow(String uuid) {
         return inspeccionRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuid", uuid));
     }
 
-
+    private Inspeccion obtenerInspeccionPoruuidVehiculoOThrow(String uuidVehiculo){
+        return inspeccionRepository.findFirstByVehiculoUuidOrderByFechaInspeccionDesc(uuidVehiculo)
+                .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuidVehiculo", uuidVehiculo));
+    }
+/*
     public int obtenerNumeroIntentoActual(Vehiculo vehiculo) {
         List<Inspeccion> inspecciones = inspeccionRepository
                 .findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(vehiculo);
@@ -212,6 +222,6 @@ public class InspeccionServiceImpl implements InspeccionService {
             }
         }
         return 1; //primera
-    }
+    }*/
 
 }
