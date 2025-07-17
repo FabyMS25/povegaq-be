@@ -35,8 +35,12 @@ public class TipoInfraccion {
     @Enumerated(EnumType.STRING)
     @Column(name = "grado", nullable = false, length = 250)
     private GradoInfraccion grado;
+    @Column(name = "descripcion", nullable = false, length = 500)
+    private String descripcion;
     @Column(name = "valor_ufv", precision = 20, scale = 4)
     private BigDecimal valorUFV;
+    @Column(name = "es_automatico", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean esAutomatico;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

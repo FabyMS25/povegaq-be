@@ -16,6 +16,7 @@ import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.AlertaRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
+import com.gamq.ambiente.service.ConfiguracionService;
 import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.NotificacionService;
 import com.gamq.ambiente.utils.EmailUtil;
@@ -52,6 +53,9 @@ public class NotificacionServiceImpl implements NotificacionService {
 
     @Autowired
     private EmailUtil  emailUtil;
+
+    @Autowired
+    ConfiguracionService configuracionService;
 
     @Value("${files.path}/notificaciones")
     private String filePath;
@@ -138,7 +142,8 @@ public class NotificacionServiceImpl implements NotificacionService {
         if ( notificacionIntentoDto.get().getIntentosValidos() == 0 ) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.REINSPECCION_PENDIENTE);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), 365), ZoneId.of(zonaHorario)));
+            int plazoPrimeraReinspeccionEnDias = configuracionService.obtenerValorEntero("notificacion.reinspeccion.1.dias");
+            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(inspeccionOptional.get().getFechaInspeccion(), plazoPrimeraReinspeccionEnDias), ZoneId.of(zonaHorario)));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.ENTREGADA);
             notificacionDto.setObservacion("Se detectó exceso en emisión. Plazo 1 año para adecuación técnica.");
             notificacionDto.setNumeroIntento(1);
@@ -146,7 +151,8 @@ public class NotificacionServiceImpl implements NotificacionService {
         if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(),90), ZoneId.of(zonaHorario)));
+            int plazoSegundaReinspeccionEnDias = configuracionService.obtenerValorEntero("notificacion.reinspeccion.2.dias");
+            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(), plazoSegundaReinspeccionEnDias), ZoneId.of(zonaHorario)));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
             notificacionDto.setObservacion("No realizó adecuación técnica tras primera notificación. Multa 3er grado.");
             notificacionDto.setNumeroIntento(2);
@@ -155,7 +161,8 @@ public class NotificacionServiceImpl implements NotificacionService {
         if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
             notificacionDto.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL);
             notificacionDto.setFechaNotificacion(new Date());
-            notificacionDto.setFechaAsistencia(new Date());
+            int plazoTerceraReinpeccionEnDias = configuracionService.obtenerValorEntero("notificacion.reinspeccion.3.dias");
+            notificacionDto.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(), plazoTerceraReinpeccionEnDias), ZoneId.of(zonaHorario)));
             notificacionDto.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
             notificacionDto.setObservacion("No adecuó el vehículo dentro de los 90 días posteriores a la segunda inspección.");
             notificacionDto.setSancion("Multa 3er grado por incumplimiento final");

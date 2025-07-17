@@ -74,6 +74,6 @@ public class TipoCombustibleServiceImpl implements TipoCombustibleService {
 
     private TipoCombustible obtenerTipoCombustiblePorUuidOThrow(String uuid){
         return tipoCombustibleRepository.findByUuid(uuid)
-                .orElseThrow(()-> new ResourceNotFoundException("TipoCombustible", "uuid",uuid));
+                .orElseThrow(()-> new ResourceNotFoundException("TipoCombustible", "uuid", uuid));
     }
 }

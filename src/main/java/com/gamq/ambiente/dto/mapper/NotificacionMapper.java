@@ -92,7 +92,6 @@ public class NotificacionMapper {
                                                 .setCodigo(notificacion.getInspeccion().getVehiculo().getPropietario().getTipoContribuyente().getCodigo())
                                         )
                                 )
-                                //tabla 2025
                                 .setVehiculoTipoCombustibleDtoList(notificacion.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
                                     return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
                                 }).collect(Collectors.toList()))

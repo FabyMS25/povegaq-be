@@ -33,21 +33,37 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
 
     @Override
     public TipoInfraccionDto obtenerTipoInfraccionPorUuid(String uuid) {
-        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByUuid(uuid);
-        if(tipoInfraccionOptional.isPresent()){
-            return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionOptional.get());
-        }
-        throw new ResourceNotFoundException("Tipo Infraccion", "uuid", uuid);
+        TipoInfraccion tipoInfraccion = obtenerTipoInfraccionPorUuidOThrow(uuid);
+        return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
     }
 
     @Override
-    public TipoInfraccionDto obtenerTipoInfraccionPorGrado(GradoInfraccion grado) {
-        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByGrado(grado);
-        if(tipoInfraccionOptional.isPresent()){
-            return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccionOptional.get());
-        }
-        throw new ResourceNotFoundException("Tipo Infraccion", "grado", grado.name());
+    public List<TipoInfraccionDto> obtenerTipoInfraccionPorGrado(GradoInfraccion grado) {
+        List<TipoInfraccion> tipoInfraccionList = tipoInfraccionRepository.findByGrado(grado);
+        return tipoInfraccionList.stream().map(tipoInfraccion -> {
+            return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
+        }).collect(Collectors.toList());
     }
+
+    @Override
+    public TipoInfraccionDto obtenerTipoInfraccionPorDescripcionYGradoYTipoContribuyente(String descripcion, GradoInfraccion gradoInfraccion, TipoContribuyente tipoContribuyente) {
+        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(descripcion, gradoInfraccion, tipoContribuyente);
+        if (tipoInfraccionOptional.isEmpty()){
+            throw  new ResourceNotFoundException("Tipo infraccion", "descripcion", descripcion);
+        }
+        TipoInfraccion tipoInfraccion = tipoInfraccionOptional.get();
+        return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
+    }
+/*
+    @Override
+    public TipoInfraccionDto obtenerTipoInfraccionPorDescripcionYTipoContribuyente(String descripcion, TipoContribuyente tipoContribuyente) {
+        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByDescripcionAndTipoContribuyente(descripcion, tipoContribuyente);
+        if (tipoInfraccionOptional.isEmpty()){
+            throw  new ResourceNotFoundException("Tipo infraccion", "descripcion", descripcion);
+        }
+        TipoInfraccion tipoInfraccion = tipoInfraccionOptional.get();
+        return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
+    }*/
 
     @Override
     public List<TipoInfraccionDto> obtenerTipoInfracciones() {
@@ -67,7 +83,7 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
         }
 
         GradoInfraccion grado = tipoInfraccionDto.getGrado();
-        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findTipoInfraccionByUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getTipoContribuyenteDto().getUuid(), grado);
+        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findTipoInfraccionByUuidTipoContribuyenteAndGradoAndDescripcion(tipoInfraccionDto.getTipoContribuyenteDto().getUuid(), grado, tipoInfraccionDto.getDescripcion());
         if(tipoInfraccionOptional.isEmpty()){
             Optional<TipoContribuyente> tipoContribuyenteOptional = tipoContribuyenteRepository.findByUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());
             Optional<Reglamento> reglamentoOptional = reglamentoRepository.findByUuid(tipoInfraccionDto.getReglamentoDto().getUuid());
@@ -89,11 +105,6 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
         throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Tipo de Infraccion ya existe");
     }
 
-    private TipoContribuyente obtenerTipoContribuyente(String uuid) {
-        return tipoContribuyenteRepository.findByUuid(uuid)
-                .orElseThrow(() -> new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "El uuid de tipo de contribuyente no existe"));
-    }
-
     @Override
     public TipoInfraccionDto actualizarTipoInfraccion(TipoInfraccionDto tipoInfraccionDto) {
         if (tipoInfraccionDto.getTipoContribuyenteDto() == null || tipoInfraccionDto.getTipoContribuyenteDto().getUuid() == null) {
@@ -105,7 +116,7 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
 
         TipoContribuyente tipoContribuyente = obtenerTipoContribuyente(tipoInfraccionDto.getTipoContribuyenteDto().getUuid());
 
-        if (tipoInfraccionRepository.existsTipoInfraccionLikeUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getGrado(),tipoContribuyente.getUuid(),tipoInfraccionDto.getUuid())){
+        if (tipoInfraccionRepository.existsTipoInfraccionLikeUuidTipoContribuyenteAndGrado(tipoInfraccionDto.getGrado(), tipoContribuyente.getUuid(), tipoInfraccionDto.getDescripcion(), tipoInfraccionDto.getUuid())){
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Ya existe un tipo infraccion para la fecha de aplicación del tipo de infraccion");
         }
 
@@ -141,4 +152,21 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
         throw new ResourceNotFoundException("Tipo Infraccion","uuid", uuid);
     }
 
+    @Override
+    public List<TipoInfraccionDto> obtenerTipoInfraccionNoAutomativoPorUuidTipoContribuyente(String uuidTipoContribuyente) {
+        List<TipoInfraccion> tipoInfraccionList = tipoInfraccionRepository.findByEsAutomaticoFalseAndUuidTipoContribuyente(uuidTipoContribuyente);
+        return tipoInfraccionList.stream().map(tipoInfraccion -> {
+            return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
+        }).collect(Collectors.toList());
+    }
+
+    private TipoContribuyente obtenerTipoContribuyente(String uuid) {
+        return tipoContribuyenteRepository.findByUuid(uuid)
+                .orElseThrow(() -> new BlogAPIException("404-NOT_FOUND", HttpStatus.NOT_FOUND, "El uuid de tipo de contribuyente no existe"));
+    }
+
+    private TipoInfraccion obtenerTipoInfraccionPorUuidOThrow(String uuid){
+        return tipoInfraccionRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("TipoInfraccion", "uuid", uuid));
+    }
 }

@@ -57,7 +57,6 @@ public class InspeccionMapper {
                                 .setTipoVehiculo(inspeccion.getVehiculo().getDatoTecnico().getTipoVehiculo())
                                 .setCapacidadCarga(inspeccion.getVehiculo().getDatoTecnico().getCapacidadCarga())
                                 .setCilindrada(inspeccion.getVehiculo().getDatoTecnico().getCilindrada())
-                               // .setClase(inspeccion.getVehiculo().getDatoTecnico().getClase())
                                 .setColor(inspeccion.getVehiculo().getDatoTecnico().getColor())
                                 .setEmisionStandard(inspeccion.getVehiculo().getDatoTecnico().getEmisionStandard())
                                 .setEstado(inspeccion.getVehiculo().getDatoTecnico().isEstado())
@@ -156,7 +155,7 @@ public class InspeccionMapper {
                 )
 
                 .setDetalleInspeccionDtoList(inspeccion.getDetalleInspeccionList().stream().map( detalleInspeccion -> {
-                        return DetalleInspeccionMapper.toDetalleInspeccionDto(detalleInspeccion);
+                        return DetalleInspeccionMapper.toDetalleInspeccionDtoSinInspeccion(detalleInspeccion);
                 }).collect(Collectors.toList()))
                 .setRequisitoInspeccionDtoList(inspeccion.getRequisitoInspeccionList().stream().map(requisitoInspeccion -> {
                     return RequisitoInspeccionMapper.toRequisitoInspeccionDto(requisitoInspeccion);

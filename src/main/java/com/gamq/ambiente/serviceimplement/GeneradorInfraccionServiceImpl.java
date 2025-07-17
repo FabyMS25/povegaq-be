@@ -25,32 +25,11 @@ public class GeneradorInfraccionServiceImpl {
     public InfraccionDto generarDesdeInspeccion(Inspeccion inspeccion) {
         // Obtener historial de infracciones del vehículo
         List<Infraccion> historial = infraccionRepository.findByInspeccionVehiculo(inspeccion.getVehiculo());
-
-        // Clasificar grado de infraccion segun reglas de documento
-        GradoInfraccion grado = clasificarGrado(inspeccion, historial);
-        if (grado == null) return null;// No hay infraccion
-
-        // Obtener tipo de contribuyente
-        //TipoContribuyente tipoContribuyente = inspeccion.getVehiculo()
-        //        .getPropietario().getTipoContribuyente();
         TipoContribuyente tipoContribuyente = ContribuyenteUtil.resolverTipoContribuyente(inspeccion);
+        // Clasificar grado de infraccion segun reglas de documento
+        TipoInfraccion tipoInfraccion = clasificarGrado(inspeccion, tipoContribuyente, historial);
 
-       /* Vehiculo vehiculo = inspeccion.getVehiculo();
-        if (vehiculo != null && vehiculo.getPropietario() != null) {
-            tipoContribuyente = vehiculo.getPropietario().getTipoContribuyente();
-        } else if (inspeccion.getConductor() != null) {
-            tipoContribuyente = inspeccion.getConductor().getTipoContribuyente();
-        }
-        if (tipoContribuyente == null) {
-            throw new IllegalStateException("No se pudo determinar el tipo de contribuyente. Verifica si el vehículo tiene propietario o conductor.");
-        }*/
-
-        // Buscar el tipo de infracción correspondiente
-        TipoInfraccion tipoInfraccion = tipoInfraccionRepository
-                .findByGradoAndTipoContribuyente(grado, tipoContribuyente)
-                .orElseThrow(() -> new IllegalStateException("No se encontro tipo de infraccion para grado: "
-                        + grado.name() + " y contribuyente" ));
-
+        if (tipoInfraccion == null) return null;// No hay infraccion
         // Crear nueva infraccion
         InfraccionDto infraccionDto = new InfraccionDto();
 
@@ -58,17 +37,16 @@ public class GeneradorInfraccionServiceImpl {
         infraccionDto.setFechaInfraccion(new Date());
         infraccionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccion));
         infraccionDto.setTipoInfraccionDto(TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion));
-        //0infraccion.setTipoInfraccion(tipoInfraccion);
         infraccionDto.setMontoTotal(tipoInfraccion.getValorUFV());
         infraccionDto.setStatusInfraccion("PENDIENTE");
         infraccionDto.setEstadoPago(false);
-       // infraccion.setEsGeneradaAutomaticamente(true); // campo opcional no existe
+        infraccionDto.setGeneradoSistema(true);
 
         // Guardar y devolver
         return  infraccionDto; // infraccionRepository.save(infraccion);
     }
 
-    private GradoInfraccion clasificarGrado(Inspeccion inspeccion, List<Infraccion> historial) {
+    private TipoInfraccion clasificarGrado(Inspeccion inspeccion, TipoContribuyente tipoContribuyente, List<Infraccion> historial) {
         boolean resultadoFallo = !inspeccion.isResultado();
 
         // Verificar si accedió a una segunda inspección sin readecuar (Art. 19.1)
@@ -78,14 +56,23 @@ public class GeneradorInfraccionServiceImpl {
                         n.getStatusNotificacion() == EstadoNotificacion.VENCIDA);
 
         if (tieneNotificacionInfraccionVencidaSegundoIntento) {
-            return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO"; // Art. 19.1
+            return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
+             "Acceder a una segunda inspección sin haber procedido a la readecuación",
+                    GradoInfraccion.TERCER_GRADO,tipoContribuyente
+
+            ).get();
+            //return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO"; // Art. 19.1
         }
 
         // Reincidencia no paga → Segundo grado (Art. 18.2)
+        //No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente
         long infraccionesNoPagadas = historial.stream()
                 .filter(i -> !i.isEstadoPago())
                 .count();
-        if (infraccionesNoPagadas >= 2) return GradoInfraccion.SEGUNDO_GRADO; // "SEGUNDO_GRADO";
+        if (infraccionesNoPagadas >= 2) return
+                tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
+                "No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente",
+                GradoInfraccion.SEGUNDO_GRADO, tipoContribuyente).get(); // "SEGUNDO_GRADO";
 
         // Si no pasó inspección y ya falló antes → Tercer grado (Art. 19.2)
         if (resultadoFallo) {
@@ -97,88 +84,12 @@ public class GeneradorInfraccionServiceImpl {
 
             if (anteriorFallida.isPresent() &&
                     inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
-                return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO";
+                return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
+                        "Acceder a una segunda inspección sin haber procedido a la readecuación",
+                        GradoInfraccion.TERCER_GRADO, tipoContribuyente).get() ;// "TERCER_GRADO";
             }
-
-            return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
+            //return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
         }
-
         return null; // No hay infracción
     }
-
-
-
-
-        /*
-        // Reincidencia no paga → Segundo grado
-        long infraccionesNoPagadas = historial.stream()
-                .filter(i -> !i.isEstadoPago())
-                .count();
-        if (infraccionesNoPagadas >= 2) return "SEGUNDO_GRADO";
-
-        //  Si no paso inspeccion y ya fallado antes → Tercer grado
-        if (resultadoFallo) {
-            Optional<Inspeccion> anteriorFallida = historial.stream()
-                    .map(Infraccion::getInspeccion)
-                    .filter(Objects::nonNull)
-                    .filter(i -> !i.isResultado())
-                    .max(Comparator.comparing(Inspeccion::getFechaInspeccion));
-
-            if (anteriorFallida.isPresent() &&
-                    inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
-                return "TERCER_GRADO";
-            }
-
-            return "PRIMER_GRADO";
-        }
-
-        return null; // No hay infracción*/
-   // }
-
-
-    private String clasificarGradoCompleto(Inspeccion inspeccion, List<Infraccion> historial) {
-        boolean falloActual = !inspeccion.isResultado();
-
-        // 3ER GRADO: Segunda inspección fallida
-        if (falloActual) {
-            Optional<Inspeccion> anteriorFallida = historial.stream()
-                    .map(Infraccion::getInspeccion)
-                    .filter(Objects::nonNull)
-                    .filter(i -> !i.isResultado())
-                    .max(Comparator.comparing(Inspeccion::getFechaInspeccion));
-
-            if (anteriorFallida.isPresent() &&
-                    inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
-                return "TERCER GRADO";//GradoInfraccion.TERCER;
-            }
-        }
-
-        // 2DO GRADO: Reincidencia en no tener certificación o no pagar multas
-        long infraccionesNoPagadas = historial.stream()
-                .filter(i -> !i.isEstadoPago())
-                .count();
-
-        if (infraccionesNoPagadas >= 2) {
-            return "SEGUNDO GRADO"; //GradoInfraccion.SEGUNDO;
-        }
-
-        long inspeccionesFallidas = historial.stream()
-                .map(Infraccion::getInspeccion)
-                .filter(Objects::nonNull)
-                .filter(i -> !i.isResultado())
-                .count();
-
-        if (inspeccionesFallidas >= 2) {
-            return "SEGUNDO GRADO";// GradoInfraccion.SEGUNDO;
-        }
-
-        // 1ER GRADO: Primera vez que falla inspección
-        if (falloActual) {
-            return "PRIMER GRADO"; //GradoInfraccion.PRIMER;
-        }
-
-        // No aplica infracción
-        return null;
-    }
-
 }

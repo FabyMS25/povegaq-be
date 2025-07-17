@@ -11,6 +11,8 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,23 +40,28 @@ public class Infraccion {
     @Column(name = "monto_total", precision = 20, scale = 4, nullable = false)
     private BigDecimal montoTotal;
     @Column(name = "status_infraccion", length = 30) //
-    private String statusInfraccion;
+    private String statusInfraccion; //GENERADA, ENVIADA, PAGADA
     @Column(name = "estado_pago", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estadoPago;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_pago", nullable = true)
     private Date fechaPago;
     @Column(name = "numero_tasa", nullable = true, length = 15)
-    private String numeroTasa;
+    private String numeroTasa; // Código que devuelve el sistema externo
     @Column(name = "motivo", nullable = false, length = 250)
     private String motivo;
     @Column(name = "nombre_registrador", nullable = false, length = 100)
     private String nombreRegistrador;
     @Column(name = "uuid_usuario", nullable = false, length = 64)
     private String uuidUsuario;
-
+    @Column(name = "generado_sistema", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
+    private boolean generadoSistema;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
+
+    // Campo transitorio lógico y no persistente
+    @Transient
+    private boolean enPlazo;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -93,8 +100,20 @@ public class Infraccion {
                 ", motivo='" + motivo + '\'' +
                 ", nombreRegistrador='" + nombreRegistrador + '\'' +
                 ", uuidUsuario='" + uuidUsuario + '\'' +
+                ", generadoSistema="+ generadoSistema +
                 ", estado=" + estado +
                 '}';
+    }
+
+    // Getter manual que anula el de Lombok
+    public boolean isEnPlazo(int diasPermitidos) {
+        if (fechaInfraccion == null) return false;
+
+        LocalDate fecha = fechaInfraccion.toInstant()
+                .atZone(ZoneId.systemDefault())// modificar 2026
+                .toLocalDate();
+        //int diasPermitidos = 10; // o parametrizable según reglas de negocio
+        return !LocalDate.now().isAfter(fecha.plusDays(diasPermitidos));
     }
 
     @PrePersist

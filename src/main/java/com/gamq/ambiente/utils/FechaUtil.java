@@ -12,13 +12,14 @@ import java.util.Set;
 public class FechaUtil {
 
     private static final int GESTION_ACTUAL = LocalDate.now().getYear();
-    public static Date calcularFechaVencimiento(Date fechaEntrega) {
+    public static Date calcularFechaVencimiento(Date fechaEntrega, int cantidadAnual) {
         // Convertir Date a LocalDate
         LocalDate localDate = fechaEntrega.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
-        int nuevoAnio = localDate.getYear() + 2;
+        //int nuevoAnio = localDate.getYear() + 2;
+        int nuevoAnio = localDate.getYear() + cantidadAnual;
         int mes = localDate.getMonthValue();
         int dia = localDate.getDayOfMonth();
 

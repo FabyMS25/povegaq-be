@@ -83,15 +83,20 @@ public class InspeccionServiceImpl implements InspeccionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Actividad", "uuid", inspeccionDto.getActividadDto().getUuid()));
         Vehiculo vehiculo = vehiculoRepository.findByUuid(inspeccionDto.getVehiculoDto().getUuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid()));
-        Conductor conductor = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid())
-                .orElseThrow(() -> new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid()));
         Equipo equipo = equipoRepository.findByUuid(inspeccionDto.getEquipoDto().getUuid())
                 .orElseThrow(() -> new ResourceNotFoundException("Equipo", "uuid", inspeccionDto.getEquipoDto().getUuid()));
 
         Inspeccion nuevoInspeccion = InspeccionMapper.toInspeccion(inspeccionDto);
         nuevoInspeccion.setActividad(actividad);
         nuevoInspeccion.setVehiculo(vehiculo);
-        nuevoInspeccion.setConductor(conductor);
+
+        if(inspeccionDto.getConductorDto() != null &&
+           inspeccionDto.getConductorDto().getUuid() != null){
+            Conductor conductor = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid())
+                    .orElseThrow(() -> new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid()));
+            nuevoInspeccion.setConductor(conductor);
+        }
+
         nuevoInspeccion.setEquipo(equipo);
         if (inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {
             Optional<Evento> eventoOptional = eventoRepository.findByUuid(inspeccionDto.getEventoDto().getUuid());
@@ -136,8 +141,6 @@ public class InspeccionServiceImpl implements InspeccionService {
                 .orElseThrow(()-> new ResourceNotFoundException("Actividad", "uuid", inspeccionDto.getActividadDto().getUuid()));
         Vehiculo vehiculo = vehiculoRepository.findByUuid(inspeccionDto.getVehiculoDto().getUuid())
                 .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "uuid", inspeccionDto.getVehiculoDto().getUuid()));
-        Conductor conductor = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid())
-                .orElseThrow(()-> new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid()));
         Equipo equipo = equipoRepository.findByUuid(inspeccionDto.getEquipoDto().getUuid())
                 .orElseThrow(()-> new ResourceNotFoundException("Equipo", "uuid", inspeccionDto.getEquipoDto().getUuid()));
 
@@ -145,7 +148,14 @@ public class InspeccionServiceImpl implements InspeccionService {
         updateInspeccion.setIdInspeccion(inspeccion.getIdInspeccion());
         updateInspeccion.setActividad(actividad);
         updateInspeccion.setVehiculo(vehiculo);
-        updateInspeccion.setConductor(conductor);
+
+        if (inspeccionDto.getConductorDto() != null &&
+            inspeccionDto.getConductorDto().getUuid() != null){
+            Conductor conductor = conductorRepository.findByUuid(inspeccionDto.getConductorDto().getUuid())
+                    .orElseThrow(()-> new ResourceNotFoundException("Conductor", "uuid", inspeccionDto.getConductorDto().getUuid()));
+            updateInspeccion.setConductor(conductor);
+        }
+
         updateInspeccion.setEquipo(equipo);
 
         if (inspeccionDto != null && inspeccionDto.getEventoDto() != null && inspeccionDto.getEventoDto().getUuid() != null) {

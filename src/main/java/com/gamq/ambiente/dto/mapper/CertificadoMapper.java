@@ -100,7 +100,6 @@ public class CertificadoMapper {
                                         )
 
                                 )
-                                //tabla 2025
                                 .setVehiculoTipoCombustibleDtoList(certificado.getInspeccion().getVehiculo().getVehiculoTipoCombustibleList().stream().map(vehiculoTipoCombustible -> {
                                     return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
                                 }).collect(Collectors.toList()))

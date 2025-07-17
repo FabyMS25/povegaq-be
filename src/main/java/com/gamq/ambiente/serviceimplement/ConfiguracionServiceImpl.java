@@ -133,4 +133,25 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public String obtenerValorString(String clave) {
+        return configuracionRepository.findByClave(clave)
+                .orElseThrow(()-> new ResourceNotFoundException("Configuracion", "clave", clave))
+                .getClave();
+    }
+
+    @Override
+    public Integer obtenerValorEntero(String clave) {
+        return Integer.parseInt(obtenerValorString(clave));
+    }
+
+    @Override
+    public boolean obtenerValorBoolean(String clave) {
+        return Boolean.parseBoolean(obtenerValorString(clave));
+    }
+
+    @Override
+    public Double obtenerValorDouble(String clave) {
+        return Double.parseDouble(obtenerValorString(clave));
+    }
 }

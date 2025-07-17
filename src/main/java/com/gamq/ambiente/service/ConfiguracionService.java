@@ -16,4 +16,8 @@ public interface ConfiguracionService {
     List<ConfiguracionDto> obtenerConfiguracionesPorAnio(Integer year);
     ConfiguracionDto actualizarConfiguracionActivo(String uuid, boolean nuevoActivo);
     List<ConfiguracionDto> obtenerConfiguracionesEntreFechas(Date rangoInicio, Date rangoFin);
+    String obtenerValorString(String clave);
+    Integer obtenerValorEntero(String clave);
+    boolean obtenerValorBoolean(String clave);
+    Double obtenerValorDouble(String clave);
 }
