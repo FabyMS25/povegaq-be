@@ -44,4 +44,9 @@ public class TipoInfraccionController {
     public Response deleteTipoInfraccion(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(tipoInfraccionService.eliminarTipoInfraccion(uuid));
     }
+
+    @GetMapping("/no-automatico/{uuidTipoContribuyente}")
+    public Response getTipoInfraccionNoAutomatico(@PathVariable("uuidTipoContribuyente") String uuidTipoContribuyente){
+        return Response.ok().setPayload(tipoInfraccionService.obtenerTipoInfraccionNoAutomativoPorUuidTipoContribuyente(uuidTipoContribuyente));
+    }
 }

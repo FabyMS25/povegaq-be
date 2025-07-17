@@ -12,7 +12,9 @@ public class TipoInfraccionMapper {
         return new TipoInfraccionDto()
                 .setUuid(tipoInfraccion.getUuid())
                 .setValorUFV(tipoInfraccion.getValorUFV())
+                .setDescripcion(tipoInfraccion.getDescripcion())
                 .setGrado(tipoInfraccion.getGrado())
+                .setEsAutomatico(tipoInfraccion.isEsAutomatico())
                 .setEstado(tipoInfraccion.isEstado())
                 .setTipoContribuyenteDto(tipoInfraccion.getTipoContribuyente() == null? null: new TipoContribuyenteDto()
                         .setUuid(tipoInfraccion.getTipoContribuyente().getUuid())
@@ -27,8 +29,7 @@ public class TipoInfraccionMapper {
                         .setFechaEmision(tipoInfraccion.getReglamento().getFechaEmision())
                         .setActivo(tipoInfraccion.getReglamento().isActivo())
                         .setEstado(tipoInfraccion.getReglamento().isEstado())
-                )
-                ;
+                );
 
     }
 
@@ -36,7 +37,9 @@ public class TipoInfraccionMapper {
         return new TipoInfraccion()
                 .setUuid(tipoInfraccionDto.getUuid())
                 .setValorUFV(tipoInfraccionDto.getValorUFV())
+                .setDescripcion(tipoInfraccionDto.getDescripcion())
                 .setGrado(tipoInfraccionDto.getGrado())
+                .setEsAutomatico(tipoInfraccionDto.isEsAutomatico())
                 .setEstado(tipoInfraccionDto.isEstado())
                 .setTipoContribuyente(tipoInfraccionDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
                         .setUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid())
@@ -51,8 +54,6 @@ public class TipoInfraccionMapper {
                         .setFechaEmision(tipoInfraccionDto.getReglamentoDto().getFechaEmision())
                         .setActivo(tipoInfraccionDto.getReglamentoDto().isActivo())
                         .setEstado(tipoInfraccionDto.getReglamentoDto().isEstado())
-                )
-
-                ;
+                );
    }
 }

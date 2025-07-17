@@ -43,7 +43,15 @@ public class ComparacionEmisionServiceImpl implements ComparacionEmisionService 
 
         boolean resultadoGeneral = true;
         for (DetalleInspeccion detalle : inspeccion.getDetalleInspeccionList()) {
+            if (detalle.getTipoParametro() == null || detalle.getTipoParametro().getUuid() == null) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"ingrese el tipo de parámetro uuid.");
+            }
             TipoParametro tipoParametro = obtenerTipoParametro(detalle.getTipoParametro().getUuid());
+
+            if (detalle.getTipoCombustible() == null || detalle.getTipoCombustible().getUuid() == null) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,"ingrese el tipo de combustible uuid.");
+            }
+
             TipoCombustible tipoCombustible = obtenerTipoCombustible(detalle.getTipoCombustible().getUuid());
 
             DatoTecnico datoTecnico = inspeccion.getVehiculo().getDatoTecnico();

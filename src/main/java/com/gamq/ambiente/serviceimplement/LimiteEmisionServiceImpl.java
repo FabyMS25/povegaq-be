@@ -59,7 +59,6 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     @Override
     public LimiteEmisionDto crearLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
         TipoCombustible tipoCombustible = obtenerTipoCombustiblePorUuidOThrow( limiteEmisionDto.getTipoCombustibleDto().getUuid());
-        Optional<ClaseVehiculo> claseVehiculoOptional = claseVehiculoRepository.findByUuid(limiteEmisionDto.getClaseVehiculoDto().getUuid());
         TipoParametro tipoParametro = obtenerTipoParametroPorUuidOThrow( limiteEmisionDto.getTipoParametroDto().getUuid());
         String nombre = tipoParametro.getNombre();
         if (nombre == null) {
@@ -68,9 +67,17 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         LimiteEmision nuevoLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
         nuevoLimiteEmision.setTipoParametro(tipoParametro);
         nuevoLimiteEmision.setTipoCombustible(tipoCombustible);
-        if (claseVehiculoOptional.isPresent()){
-            nuevoLimiteEmision.setClaseVehiculo(claseVehiculoOptional.get());
+
+        if (limiteEmisionDto.getClaseVehiculoDto() != null &&
+                limiteEmisionDto.getClaseVehiculoDto().getUuid() != null) {
+            Optional<ClaseVehiculo> claseVehiculoOptional = claseVehiculoRepository.findByUuid(limiteEmisionDto.getClaseVehiculoDto().getUuid());
+            if (claseVehiculoOptional.isPresent()) {
+                nuevoLimiteEmision.setClaseVehiculo(claseVehiculoOptional.get());
+            } else {
+                throw new ResourceNotFoundException("Clase vehiculo", "uuid", limiteEmisionDto.getClaseVehiculoDto().getUuid());
+            }
         }
+
         return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(nuevoLimiteEmision));
     }
 
@@ -78,15 +85,23 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
     public LimiteEmisionDto actualizarLimiteEmision(LimiteEmisionDto limiteEmisionDto) {
         LimiteEmision limiteEmision = obtenerLimiteEmisionPorUuidOThrow(limiteEmisionDto.getUuid());
         TipoCombustible tipoCombustible = obtenerTipoCombustiblePorUuidOThrow( limiteEmisionDto.getTipoCombustibleDto().getUuid());
-        Optional<ClaseVehiculo> claseVehiculoOptional = claseVehiculoRepository.findByUuid(limiteEmisionDto.getClaseVehiculoDto().getUuid());
         TipoParametro tipoParametro = obtenerTipoParametroPorUuidOThrow(limiteEmisionDto.getTipoParametroDto().getUuid());
         LimiteEmision updateLimiteEmision = LimiteEmisionMapper.toLimiteEmision(limiteEmisionDto);
         updateLimiteEmision.setIdLimiteEmision(limiteEmision.getIdLimiteEmision());
         updateLimiteEmision.setTipoCombustible(tipoCombustible);
         updateLimiteEmision.setTipoParametro(tipoParametro);
-        if(claseVehiculoOptional.isPresent()){
-            updateLimiteEmision.setClaseVehiculo(claseVehiculoOptional.get());
+
+        if (limiteEmisionDto.getClaseVehiculoDto() != null &&
+            limiteEmisionDto.getClaseVehiculoDto().getUuid() != null ){
+            Optional<ClaseVehiculo> claseVehiculoOptional1 = claseVehiculoRepository.findByUuid(limiteEmisionDto.getClaseVehiculoDto().getUuid());
+            if(claseVehiculoOptional1.isPresent()){
+                updateLimiteEmision.setClaseVehiculo(claseVehiculoOptional1.get());
+            }
+            else {
+                throw  new ResourceNotFoundException("Clase vehiculo", "uuid", limiteEmisionDto.getClaseVehiculoDto().getUuid());
+            }
         }
+
         return LimiteEmisionMapper.toLimiteEmisionDto(limiteEmisionRepository.save(updateLimiteEmision));
     }
 
@@ -121,8 +136,8 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         try {
             List<LimiteEmision> limiteEmisionList = limiteEmisionRepository.findAll();
 
-            //prueba paso a paso
-        /*    List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
+      /*      //prueba paso a paso
+           List<LimiteEmision> resultado = new ArrayList<>(limiteEmisionList);
             System.out.println("Total inicial: " + resultado.size());
 
             resultado = resultado.stream()
@@ -143,7 +158,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
 
 
             resultado = resultado.stream()
-                    .filter(l -> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getClase()))
+                    .filter(l -> l.getClaseVehiculo() == null || l.getClaseVehiculo().getUuid().equals(datoTecnico.getTipoClaseVehiculo().getClaseVehiculo().getUuid()))
                     .collect(Collectors.toList());
             System.out.println("Después de claseVehiculo: " + resultado.size());
 
@@ -180,16 +195,13 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
             resultado = resultado.stream()
                     .filter(LimiteEmision::isActivo)
                     .collect(Collectors.toList());
-            System.out.println("Después de isActivo: " + resultado.size());*/
-
+            System.out.println("Después de isActivo: " + resultado.size());
+*/
 
         List<LimiteEmision> limiteEmisionFitrados = limiteEmisionList.stream()
                 .filter(l -> l.getTipoParametro() != null && l.getTipoParametro().getUuid().equals(tipoParametro.getUuid()))
                 .filter(l -> l.getTipoMotor() == null || l.getTipoMotor().equalsIgnoreCase(datoTecnico.getTipoMotor()))
-                //tabla 2025
                 .filter(l -> l.getTipoCombustible() != null && l.getTipoCombustible().getUuid().equals(tipoCombustible.getUuid()))
-                //getClase()
-                //.filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().equalsIgnoreCase(datoTecnico.getTipoClaseVehiculo().getClaseVehiculo().getNombre()))
                 .filter(l-> l.getClaseVehiculo() == null || l.getClaseVehiculo().getUuid().equals(datoTecnico.getTipoClaseVehiculo().getClaseVehiculo().getUuid()))
                 .filter(l -> l.getCategoriaVehiculo() == null
                         || l.getCategoriaVehiculo().equalsIgnoreCase(datoTecnico.getCategoriaVehiculo()))
@@ -224,7 +236,7 @@ public class LimiteEmisionServiceImpl implements LimiteEmisionService {
         if (value == null) {
             return min == null && max == null;
         }
-        if (min == null && max == null) {return true;};  //2025
+        if (min == null && max == null) {return true;};  //2026
         return (min == null || value >= min) && (max == null || value <= max);
     }
 

@@ -16,7 +16,7 @@ public interface ConfiguracionRepository extends JpaRepository<Configuracion, Lo
     @Query("SELECT c FROM Configuracion c WHERE c.uuid = :uuid AND c.estado = false")
     Optional<Configuracion> findByUuid(String uuid);
 
-    @Query("SELECT c FROM Configuracion c  WHERE LOWER(rtrim(ltrim(c.clave))) = LOWER(rtrim(ltrim(:clave)))")
+    @Query("SELECT c FROM Configuracion c  WHERE c.estado = false AND c.activo = true AND LOWER(rtrim(ltrim(c.clave))) = LOWER(rtrim(ltrim(:clave)))")
     Optional<Configuracion> findByClave(@Param("clave") String clave);
     @Query("SELECT case when count(c) > 0 then true else false end FROM Configuracion c WHERE c.activo = true AND lower(rtrim(ltrim(c.clave))) = lower(rtrim(ltrim(:clave))) AND c.uuid <> :uuidConfiguracion")
     boolean exitsConfiguracionLikeClave(@Param("clave") String clave,

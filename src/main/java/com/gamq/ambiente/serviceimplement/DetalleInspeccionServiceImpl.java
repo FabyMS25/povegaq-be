@@ -235,7 +235,6 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
         List<DetalleInspeccion>  detalleInspeccionList = inspeccionDetalleInspeccionDto.getDetalleInspeccionDtoList().stream().map(detalleInspeccionDto -> {
         TipoParametro tipoParametro = entidadHelper.obtenerTipoParametro(detalleInspeccionDto.getTipoParametroDto().getUuid());
         TipoCombustible tipoCombustible = entidadHelper.obtenerTipoCombustible(detalleInspeccionDto.getTipoCombustibleDto().getUuid());
-        //2025
             if (!detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(), inspeccion.getUuid(), nuevaEjecucion, detalleInspeccionDto.getTipoCombustibleDto().getUuid())) {
                 detalleInspeccionDto.setNroEjecucion(nuevaEjecucion);
                 DetalleInspeccion nuevoDetalleInspeccion = crearNuevoDetalleInspeccion(detalleInspeccionDto, inspeccion, tipoParametro, tipoCombustible);

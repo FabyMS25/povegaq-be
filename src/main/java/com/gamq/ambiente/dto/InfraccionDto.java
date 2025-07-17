@@ -46,18 +46,16 @@ public class InfraccionDto {
     @NotBlank(message = "El uuid del usuario es requerido")
     @Size(max = 64, message = "El uuidUsuario no puede exceder los 64 caracteres")
     private String uuidUsuario;
-    //2025
-    //@NotNull
-    //private String uuidVehiculo;
+    private boolean generadoSistema;
     private boolean estado;
 
-    //@Valid
+    private boolean enPlazo;
+
     @NotNull
     private TipoInfraccionDto tipoInfraccionDto;
     @NotNull
     private VehiculoDto vehiculoDto;
 
-    // @Valid
    // @NotNull
     private InspeccionDto inspeccionDto;
     private NotificacionDto notificacionDto;

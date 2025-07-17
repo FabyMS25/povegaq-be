@@ -18,11 +18,14 @@ public class InfraccionMapper {
                 .setMotivo(infraccion.getMotivo())
                 .setNombreRegistrador(infraccion.getNombreRegistrador())
                 .setUuidUsuario(infraccion.getUuidUsuario())
+                .setGeneradoSistema(infraccion.isGeneradoSistema())
                 .setEstado(infraccion.isEstado())
                 .setTipoInfraccionDto(infraccion.getTipoInfraccion()==null? null: new TipoInfraccionDto()
                         .setUuid(infraccion.getTipoInfraccion().getUuid())
                         .setGrado(infraccion.getTipoInfraccion().getGrado())
+                        .setDescripcion(infraccion.getTipoInfraccion().getDescripcion())
                         .setValorUFV(infraccion.getTipoInfraccion().getValorUFV())
+                        .setEsAutomatico(infraccion.getTipoInfraccion().isEsAutomatico())
                         .setEstado(infraccion.getTipoInfraccion().isEstado())
                 )
                 .setVehiculoDto(infraccion.getVehiculo()==null? null: new VehiculoDto()
@@ -32,7 +35,6 @@ public class InfraccionMapper {
                         .setPoliza(infraccion.getVehiculo().getPoliza())
                         .setVinNumeroIdentificacion(infraccion.getVehiculo().getVinNumeroIdentificacion())
                         .setPinNumeroIdentificacion(infraccion.getVehiculo().getPinNumeroIdentificacion())
-                        //tabla 2025
                         .setVehiculoTipoCombustibleDtoList(infraccion.getVehiculo().getVehiculoTipoCombustibleList().stream().map( vehiculoTipoCombustible -> {
                                     return VehiculoTipoCombustibleMapper.toDtoSinVehiculo(vehiculoTipoCombustible);
                         }).collect(Collectors.toList()))
@@ -73,6 +75,7 @@ public class InfraccionMapper {
                 .setMotivo(infraccionDto.getMotivo())
                 .setNombreRegistrador(infraccionDto.getNombreRegistrador())
                 .setUuidUsuario(infraccionDto.getUuidUsuario())
+                .setGeneradoSistema(infraccionDto.isGeneradoSistema())
                 .setEstado(infraccionDto.isEstado());
     }
 }

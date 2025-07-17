@@ -15,7 +15,9 @@ import javax.persistence.Column;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,9 +34,14 @@ public class TipoInfraccionDto {
     private String uuid;
     @NotNull(message = "El grado de infracción es obligatorio")
     private GradoInfraccion grado;
+    @NotNull
+    @NotBlank(message = "La descripcion es requerido")
+    @Size(max = 500, message = "la descripcion no puede exceder los 500 caracteres")
+    private String descripcion;
     @NotNull(message = "El valor UFV es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El valor UFV debe ser mayor que cero")
     private BigDecimal valorUFV;
+    private boolean esAutomatico;
     private boolean estado;
 
     @NotNull(message = "El uuid del tipo de contribuyente es obligatorio")

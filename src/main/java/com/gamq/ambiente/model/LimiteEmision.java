@@ -98,7 +98,7 @@ public class LimiteEmision {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_clase_vehiculo", nullable = true)
-    private ClaseVehiculo claseVehiculo; // tipoCombustible;
+    private ClaseVehiculo claseVehiculo;
 
     public LimiteEmision(String uuid) {this.uuid = uuid;}
 
