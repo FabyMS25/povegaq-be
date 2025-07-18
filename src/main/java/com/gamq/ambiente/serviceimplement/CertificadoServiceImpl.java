@@ -99,8 +99,16 @@ public class CertificadoServiceImpl implements CertificadoService {
         if(certificadoOptional.isPresent()) {
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()){
+                if (!inspeccionOptional.get().isResultado()){
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado por el resultado de la inspeccion  es Negativo(no paso la prueba)");
+                }
+                if (inspeccionOptional.get().getDetalleInspeccionList().size()==0){
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion no tiene Detalles de inspeccion");
+                }
                 Certificado updateCertificado = CertificadoMapper.toCertificado(certificadoDto);
                 updateCertificado.setIdCertificado(certificadoOptional.get().getIdCertificado());
+                int enYearValidez = configuracionService.obtenerValorEntero("certificado.validez.anual");
+                updateCertificado.setFechaVencimiento(FechaUtil.calcularFechaVencimiento(updateCertificado.getFechaEmision(), enYearValidez));
                 updateCertificado.setInspeccion(inspeccionOptional.get());
                 return CertificadoMapper.toCertificadoDto(certificadoRepository.save(updateCertificado));
             } else {
