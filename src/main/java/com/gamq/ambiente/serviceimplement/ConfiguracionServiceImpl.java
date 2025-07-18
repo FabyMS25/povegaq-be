@@ -137,7 +137,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     public String obtenerValorString(String clave) {
         return configuracionRepository.findByClave(clave)
                 .orElseThrow(()-> new ResourceNotFoundException("Configuracion", "clave", clave))
-                .getClave();
+                .getValor();
     }
 
     @Override
