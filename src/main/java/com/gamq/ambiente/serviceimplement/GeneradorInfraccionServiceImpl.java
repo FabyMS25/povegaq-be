@@ -1,10 +1,13 @@
 package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.InfraccionDto;
+import com.gamq.ambiente.dto.mapper.InfraccionMapper;
 import com.gamq.ambiente.dto.mapper.InspeccionMapper;
 import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
+import com.gamq.ambiente.dto.mapper.VehiculoMapper;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.GradoInfraccion;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.InfraccionRepository;
@@ -23,7 +26,6 @@ public class GeneradorInfraccionServiceImpl {
     TipoInfraccionRepository tipoInfraccionRepository;
 
     public InfraccionDto generarDesdeInspeccion(Inspeccion inspeccion) {
-        // Obtener historial de infracciones del vehículo
         List<Infraccion> historial = infraccionRepository.findByInspeccionVehiculo(inspeccion.getVehiculo());
         TipoContribuyente tipoContribuyente = ContribuyenteUtil.resolverTipoContribuyente(inspeccion);
         // Clasificar grado de infraccion segun reglas de documento
@@ -38,11 +40,27 @@ public class GeneradorInfraccionServiceImpl {
         infraccionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccion));
         infraccionDto.setTipoInfraccionDto(TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion));
         infraccionDto.setMontoTotal(tipoInfraccion.getValorUFV());
-        infraccionDto.setStatusInfraccion("PENDIENTE");
+        infraccionDto.setStatusInfraccion(StatusInfraccion.PENDIENTE);
         infraccionDto.setEstadoPago(false);
         infraccionDto.setGeneradoSistema(true);
-
-        // Guardar y devolver
+        infraccionDto.setEnPlazo(true);
+        infraccionDto.setVehiculoDto(VehiculoMapper.toVehiculoDto(inspeccion.getVehiculo()));
+        /*
+        // Guardar
+        Infraccion infraccion = new Infraccion();
+        infraccion.setFechaInfraccion(new Date());
+        infraccion.setInspeccion(inspeccion);
+        infraccion.setTipoInfraccion(tipoInfraccion);
+        infraccion.setMontoTotal(tipoInfraccion.getValorUFV());
+        infraccion.setStatusInfraccion(StatusInfraccion.PENDIENTE);
+        infraccion.setEstadoPago(false);
+        infraccion.setGeneradoSistema(true);
+        infraccion.setVehiculo(inspeccion.getVehiculo());
+        infraccion.setMotivo("el motivo es por que ...");
+        infraccion.setNombreRegistrador("JUAN PABLO RIOS");
+        infraccion.setUuidUsuario("eb4b420b-3114-4cfd-8366-9867b4df45b8");
+        infraccionRepository.save(infraccion);
+        //Guardar  */
         return  infraccionDto; // infraccionRepository.save(infraccion);
     }
 
@@ -58,10 +76,8 @@ public class GeneradorInfraccionServiceImpl {
         if (tieneNotificacionInfraccionVencidaSegundoIntento) {
             return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
              "Acceder a una segunda inspección sin haber procedido a la readecuación",
-                    GradoInfraccion.TERCER_GRADO,tipoContribuyente
-
-            ).get();
-            //return GradoInfraccion.TERCER_GRADO;// "TERCER_GRADO"; // Art. 19.1
+                       GradoInfraccion.TERCER_GRADO,tipoContribuyente).get();
+            // "TERCER_GRADO"; // Art. 19.1
         }
 
         // Reincidencia no paga → Segundo grado (Art. 18.2)
@@ -71,8 +87,9 @@ public class GeneradorInfraccionServiceImpl {
                 .count();
         if (infraccionesNoPagadas >= 2) return
                 tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
-                "No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente",
-                GradoInfraccion.SEGUNDO_GRADO, tipoContribuyente).get(); // "SEGUNDO_GRADO";
+                        "No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente",
+                                  GradoInfraccion.SEGUNDO_GRADO, tipoContribuyente).get();
+                                  // "SEGUNDO_GRADO";
 
         // Si no pasó inspección y ya falló antes → Tercer grado (Art. 19.2)
         if (resultadoFallo) {
@@ -86,7 +103,8 @@ public class GeneradorInfraccionServiceImpl {
                     inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
                 return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
                         "Acceder a una segunda inspección sin haber procedido a la readecuación",
-                        GradoInfraccion.TERCER_GRADO, tipoContribuyente).get() ;// "TERCER_GRADO";
+                                   GradoInfraccion.TERCER_GRADO, tipoContribuyente).get() ;
+                                  // "TERCER_GRADO";
             }
             //return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
         }

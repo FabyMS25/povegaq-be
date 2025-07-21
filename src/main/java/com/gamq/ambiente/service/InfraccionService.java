@@ -15,4 +15,6 @@ public interface InfraccionService {
     InfraccionDto generarInfraccion(String uuidInspeccion);
     InfraccionDto actualizarInfraccion(InfraccionDto InfraccionDto);
     InfraccionDto eliminarInfraccion(String uuid);
+    InfraccionDto marcarInfraccionComoPagada(String uuidInfraccion, String numeroTasa, Date fechaPago);
+    InfraccionDto notificarInfraccion(String uuidInfraccion);
 }

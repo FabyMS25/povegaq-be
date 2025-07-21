@@ -1,6 +1,7 @@
 package com.gamq.ambiente.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,8 +40,9 @@ public class Infraccion {
     private Date fechaInfraccion;
     @Column(name = "monto_total", precision = 20, scale = 4, nullable = false)
     private BigDecimal montoTotal;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_infraccion", length = 30) //
-    private String statusInfraccion; //GENERADA, ENVIADA, PAGADA
+    private StatusInfraccion statusInfraccion;
     @Column(name = "estado_pago", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estadoPago;
     @Temporal(TemporalType.TIMESTAMP)
@@ -106,15 +108,21 @@ public class Infraccion {
     }
 
     // Getter manual que anula el de Lombok
-    public boolean isEnPlazo(int diasPermitidos) {
+  /*  public boolean isEnPlazo() {
+        if (statusInfraccion == StatusInfraccion.PAGADA
+                || statusInfraccion == StatusInfraccion.CANCELADA
+                || statusInfraccion == StatusInfraccion.VENCIDA) {
+            return false;
+        }
+
         if (fechaInfraccion == null) return false;
 
         LocalDate fecha = fechaInfraccion.toInstant()
                 .atZone(ZoneId.systemDefault())// modificar 2026
                 .toLocalDate();
-        //int diasPermitidos = 10; // o parametrizable según reglas de negocio
+        int diasPermitidos = 10; // o parametrizable según reglas de negocio
         return !LocalDate.now().isAfter(fecha.plusDays(diasPermitidos));
-    }
+    }*/
 
     @PrePersist
     public void initializeUuid() {

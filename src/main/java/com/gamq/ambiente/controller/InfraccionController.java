@@ -1,6 +1,7 @@
 package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.InfraccionDto;
+import com.gamq.ambiente.dto.PagoInfraccionRequest;
 import com.gamq.ambiente.dto.response.Response;
 import com.gamq.ambiente.service.InfraccionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,6 +69,16 @@ public class InfraccionController {
         return Response.ok().setPayload(infraccionService.eliminarInfraccion(uuid));
     }
 
+    @PostMapping("/pagar-infraccion")
+    @Operation(
+            summary = "Actualiza el pago de la Infraccion",
+            description = "Actualiza el pago de la infraccion de uuidInfraccion, numera tasa y fecha pago"
+    )
+    public Response markPayInfraccion(@RequestBody PagoInfraccionRequest pagoInfraccionRequest){
+        return Response.ok().setPayload(infraccionService.marcarInfraccionComoPagada(pagoInfraccionRequest.getUuidInfraccion(),
+                                                                                     pagoInfraccionRequest.getNumeroTasa(),
+                                                                                     pagoInfraccionRequest.getFechaPago()));
+    }
   }
 
 

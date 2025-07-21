@@ -2,21 +2,21 @@ package com.gamq.ambiente.serviceimplement;
 
 import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
-import com.gamq.ambiente.dto.mapper.InspeccionMapper;
-import com.gamq.ambiente.dto.mapper.TipoInfraccionMapper;
-import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.*;
 import com.gamq.ambiente.repository.*;
+import com.gamq.ambiente.service.ConfiguracionService;
 import com.gamq.ambiente.service.InfraccionService;
+import com.gamq.ambiente.utils.ZonaHorariaBolivia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,12 +38,18 @@ public class InfraccionServiceImpl implements InfraccionService {
     VehiculoRepository vehiculoRepository;
     @Autowired
     AlertaRepository alertaRepository;
+    @Autowired
+    ConfiguracionService configuracionService;
+    @Autowired
+    ZonaHorariaBolivia zonaHorariaBolivia;
 
     @Override
     public InfraccionDto obtenerInfraccionPorUuid(String uuid) {
         Optional<Infraccion> infraccionOptional = infraccionRepository.findByUuid(uuid);
         if(infraccionOptional.isPresent()){
-            return InfraccionMapper.toInfraccionDto(infraccionOptional.get());
+            Infraccion infraccion = infraccionOptional.get();
+            this.calcularYSetearEnPlazo(infraccion);
+            return InfraccionMapper.toInfraccionDto(infraccion);
         }
         throw new ResourceNotFoundException("Infraccion", "uuid", uuid);
     }
@@ -51,7 +57,9 @@ public class InfraccionServiceImpl implements InfraccionService {
     @Override
     public List<InfraccionDto> obtenerInfraccionPorFecha(Date fecha) {
         List<Infraccion> infraccionList = infraccionRepository.findByFechaInfraccion(fecha);
-        return infraccionList.stream().map(infraccion -> {
+        return infraccionList.stream()
+                .peek(this::calcularYSetearEnPlazo)
+                .map(infraccion -> {
             return InfraccionMapper.toInfraccionDto(infraccion);
         }).collect(Collectors.toList());
     }
@@ -59,7 +67,9 @@ public class InfraccionServiceImpl implements InfraccionService {
     @Override
     public List<InfraccionDto> obtenerInfracciones() {
         List<Infraccion> infraccionList = infraccionRepository.findAll();
-        return  infraccionList.stream().map( infraccion -> {
+        return  infraccionList.stream()
+                .peek(this::calcularYSetearEnPlazo)
+                .map(infraccion -> {
             return  InfraccionMapper.toInfraccionDto(infraccion);
         }).collect(Collectors.toList());
     }
@@ -71,7 +81,9 @@ public class InfraccionServiceImpl implements InfraccionService {
             throw new ResourceNotFoundException("Vehiculo","uuid", uuidVehiculo);
         }
         List<Infraccion> infraccionList = infraccionRepository.findByVehiculo(vehiculoOptional.get());
-        return  infraccionList.stream().map( infraccion -> {
+        return  infraccionList.stream()
+                .peek(this::calcularYSetearEnPlazo)
+                .map( infraccion -> {
             return  InfraccionMapper.toInfraccionDto(infraccion);
         }).collect(Collectors.toList());
     }
@@ -89,6 +101,14 @@ public class InfraccionServiceImpl implements InfraccionService {
 
         Infraccion nuevoInfraccion = InfraccionMapper.toInfraccion(infraccionDto);
         nuevoInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
+
+        if(infraccionDto.getInspeccionDto() != null &&
+           infraccionDto.getInspeccionDto().getUuid() != null )
+        {
+            Inspeccion inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid())
+                    .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
+             nuevoInfraccion.setInspeccion(inspeccion);
+        }
         nuevoInfraccion.setVehiculo(vehiculoOptional.get());
         nuevoInfraccion.setGeneradoSistema(false);
         Infraccion nuevoInfraccionGrabada = infraccionRepository.save(nuevoInfraccion);
@@ -108,12 +128,26 @@ public class InfraccionServiceImpl implements InfraccionService {
             if (tipoInfraccionOptional.isEmpty()) {
                 throw new ResourceNotFoundException("Tipo Infraccion","uuid", infraccionDto.getTipoInfraccionDto().getUuid());
             }
+
             Infraccion updateInfraccion = InfraccionMapper.toInfraccion(infraccionDto);
             updateInfraccion.setIdInfraccion(infraccionOptional.get().getIdInfraccion());
+
+            if(infraccionDto.getInspeccionDto() != null &&
+                    infraccionDto.getInspeccionDto().getUuid() != null )
+            {
+                Inspeccion inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid())
+                        .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
+                updateInfraccion.setInspeccion(inspeccion);
+            }
             updateInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
+            updateInfraccion.setMontoTotal(tipoInfraccionOptional.get().getValorUFV());
+            updateInfraccion.setStatusInfraccion(StatusInfraccion.PENDIENTE);
+            updateInfraccion.setEstadoPago(false);
             updateInfraccion.setVehiculo(vehiculoOptional.get());
             updateInfraccion.setGeneradoSistema(false);
-            return InfraccionMapper.toInfraccionDto(infraccionRepository.save(updateInfraccion));
+            infraccionRepository.save(updateInfraccion);
+            this.calcularYSetearEnPlazo(updateInfraccion);
+            return InfraccionMapper.toInfraccionDto(updateInfraccion);
         }
         throw new ResourceNotFoundException("Infraccion", "uuid",infraccionDto.getUuid());
     }
@@ -132,6 +166,40 @@ public class InfraccionServiceImpl implements InfraccionService {
         }
         throw new ResourceNotFoundException("Infraccion","uuid", uuid);
     }
+
+    @Transactional
+    public InfraccionDto marcarInfraccionComoPagada(String uuidInfraccion, String numeroTasa, Date fechaPago) {
+        Infraccion infraccion = infraccionRepository.findByUuid(uuidInfraccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Infraccion", "uuid", uuidInfraccion));
+
+        if (infraccion.getStatusInfraccion() == StatusInfraccion.PAGADA ||
+                infraccion.getStatusInfraccion() == StatusInfraccion.CANCELADA) {
+            throw new IllegalStateException("La infracción ya está pagada o cancelada.");
+        }
+
+        infraccion.setEstadoPago(true);
+        infraccion.setFechaPago(fechaPago);
+        infraccion.setNumeroTasa(numeroTasa);
+        infraccion.setStatusInfraccion(StatusInfraccion.PAGADA);
+
+        infraccionRepository.save(infraccion);
+        return InfraccionMapper.toInfraccionDto(infraccion);
+    }
+
+    @Transactional
+    public InfraccionDto notificarInfraccion(String uuidInfraccion) {
+        Infraccion infraccion = infraccionRepository.findByUuid(uuidInfraccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Infraccion", "uuid", uuidInfraccion));
+
+        if (infraccion.getStatusInfraccion() != StatusInfraccion.NOTIFICADA) {
+            infraccion.setStatusInfraccion(StatusInfraccion.NOTIFICADA);
+            infraccionRepository.save(infraccion);
+        }
+
+        this.calcularYSetearEnPlazo(infraccion);
+        return InfraccionMapper.toInfraccionDto(infraccion);
+    }
+
      //EVALUAR LOS METODOS
     @Override
     public InfraccionDto generarInfraccion(String uuidInspeccion) {
@@ -144,19 +212,6 @@ public class InfraccionServiceImpl implements InfraccionService {
             throw  new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar INFRACCION para inspeccion "+ uuidInspeccion);
         }
         return infraccionDto;//  InfraccionMapper.toInfraccionDto(infraccion);
-    }
-
-    private InfraccionDto vistaPreviaInfraccion(Inspeccion inspeccion, GradoInfraccion grado, TipoContribuyente tipoContribuyente, String descripcion) {
-        Optional<TipoInfraccion> tipo = tipoInfraccionRepository.findByGradoAndTipoContribuyente( grado, tipoContribuyente);
-        InfraccionDto  infraccionDto = new InfraccionDto();
-        infraccionDto.setFechaInfraccion(new Date());
-        infraccionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccion));
-        infraccionDto.setTipoInfraccionDto(TipoInfraccionMapper.toTipoInfraccionDto(tipo.get()));
-        infraccionDto.setMontoTotal(tipo.get().getValorUFV());
-        infraccionDto.setStatusInfraccion(StatusInfraccion.PENDIENTE.name());
-        infraccionDto.setEstadoPago(false);
-        infraccionDto.setEstado(true);
-        return infraccionDto;
     }
 
     @Transactional
@@ -172,4 +227,24 @@ public class InfraccionServiceImpl implements InfraccionService {
         alertaRepository.save(alerta);
     }
 
+    public void calcularYSetearEnPlazo(Infraccion infraccion) {
+        int plazoPagoInfraccionEnDias = configuracionService.obtenerValorEntero("infraccion.plazo_pago.dias");
+        boolean estaEnPlazo = estaEnPlazo(infraccion, plazoPagoInfraccionEnDias);
+        infraccion.setEnPlazo(estaEnPlazo);
+    }
+
+    public boolean estaEnPlazo(Infraccion infraccion, int diasPermitidos) {
+        if (infraccion.getStatusInfraccion() == StatusInfraccion.PAGADA
+                || infraccion.getStatusInfraccion() == StatusInfraccion.CANCELADA
+                || infraccion.getStatusInfraccion() == StatusInfraccion.VENCIDA
+                || infraccion.getFechaInfraccion() == null) {
+            return false;
+        }
+
+        LocalDate fecha = infraccion.getFechaInfraccion()
+                .toInstant()
+                .atZone(zonaHorariaBolivia.getZonaId())
+                .toLocalDate();
+        return !LocalDate.now().isAfter(fecha.plusDays(diasPermitidos));
+    }
 }

@@ -41,7 +41,7 @@ public class TipoInfraccionMapper {
                 .setGrado(tipoInfraccionDto.getGrado())
                 .setEsAutomatico(tipoInfraccionDto.isEsAutomatico())
                 .setEstado(tipoInfraccionDto.isEstado())
-                .setTipoContribuyente(tipoInfraccionDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
+         /*      .setTipoContribuyente(tipoInfraccionDto.getTipoContribuyenteDto() == null? null: new TipoContribuyente()
                         .setUuid(tipoInfraccionDto.getTipoContribuyenteDto().getUuid())
                         .setDescripcion(tipoInfraccionDto.getTipoContribuyenteDto().getDescripcion())
                         .setCodigo(tipoInfraccionDto.getTipoContribuyenteDto().getCodigo())
@@ -54,6 +54,6 @@ public class TipoInfraccionMapper {
                         .setFechaEmision(tipoInfraccionDto.getReglamentoDto().getFechaEmision())
                         .setActivo(tipoInfraccionDto.getReglamentoDto().isActivo())
                         .setEstado(tipoInfraccionDto.getReglamentoDto().isEstado())
-                );
+                )*/;
    }
 }

@@ -208,7 +208,7 @@ public class ReporteController {
         try {
             String nombreUsuario = headers.getOrDefault("usuario", "Admin");
             HashMap<String, Object> parametros = new HashMap<String,Object>();
-            BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+            //BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
             String lugarInspeccion="";
             Date fechaActual =  new Date();
             String nombreCompleto = "";
@@ -234,6 +234,7 @@ public class ReporteController {
                     parametros,
                     response
             );
+         //   InfraccionDto infraccionDto = infraccionService.notificarInfraccion(infraccionUuid);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getLocalizedMessage());

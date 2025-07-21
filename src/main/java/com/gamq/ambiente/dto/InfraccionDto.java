@@ -3,6 +3,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class InfraccionDto {
     @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal montoTotal;
     @NotNull
-    private String statusInfraccion; //pendiente pagado
+    private StatusInfraccion statusInfraccion;
     private boolean estadoPago;
     private Date fechaPago;
     private String numeroTasa;

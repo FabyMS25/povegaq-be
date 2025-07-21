@@ -1,5 +1,6 @@
 package com.gamq.ambiente.repository;
 
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,6 +21,7 @@ public interface InfraccionRepository extends JpaRepository<Infraccion, Long> {
     @Query("SELECT i FROM Infraccion i WHERE i.vehiculo = :vehiculo")
     List<Infraccion> findByVehiculo(@Param("vehiculo") Vehiculo vehiculo);
 
+    List<Infraccion> findByStatusInfraccionIn(List<StatusInfraccion> estados);
     //2026
     //boolean existsByInspeccionUuidAndTipoInfraccionUuid(String uuidInspeccion, String uuidTipoInfraccion);
     //boolean existsByInspeccionAndTipoInfraccionAndEstadoPagoFalse(Inspeccion inspeccion, TipoInfraccion tipoInfraccion);
