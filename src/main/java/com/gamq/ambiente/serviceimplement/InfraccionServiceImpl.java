@@ -42,6 +42,8 @@ public class InfraccionServiceImpl implements InfraccionService {
     ConfiguracionService configuracionService;
     @Autowired
     ZonaHorariaBolivia zonaHorariaBolivia;
+    @Autowired
+    NotificacionRepository notificacionRepository;
 
     @Override
     public InfraccionDto obtenerInfraccionPorUuid(String uuid) {
@@ -109,6 +111,15 @@ public class InfraccionServiceImpl implements InfraccionService {
                     .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
              nuevoInfraccion.setInspeccion(inspeccion);
         }
+
+        if(infraccionDto.getNotificacionDto() != null &&
+           infraccionDto.getNotificacionDto().getUuid() != null)
+        {
+            Notificacion notificacion = notificacionRepository.findByUuid(infraccionDto.getNotificacionDto().getUuid())
+                    .orElseThrow(()-> new ResourceNotFoundException("Notificacion", "uuid", infraccionDto.getNotificacionDto().getUuid()));
+            nuevoInfraccion.setNotificacion(notificacion);
+        }
+
         nuevoInfraccion.setVehiculo(vehiculoOptional.get());
         nuevoInfraccion.setGeneradoSistema(false);
         Infraccion nuevoInfraccionGrabada = infraccionRepository.save(nuevoInfraccion);
@@ -139,6 +150,14 @@ public class InfraccionServiceImpl implements InfraccionService {
                         .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
                 updateInfraccion.setInspeccion(inspeccion);
             }
+
+            if(infraccionDto.getNotificacionDto() != null &&
+               infraccionDto.getNotificacionDto().getUuid() != null){
+                Notificacion notificacion = notificacionRepository.findByUuid(infraccionDto.getNotificacionDto().getUuid())
+                        .orElseThrow(()-> new ResourceNotFoundException("Notificacion", "uuid", infraccionDto.getNotificacionDto().getUuid()));
+                updateInfraccion.setNotificacion(notificacion);
+            }
+
             updateInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
             updateInfraccion.setMontoTotal(tipoInfraccionOptional.get().getValorUFV());
             updateInfraccion.setStatusInfraccion(StatusInfraccion.PENDIENTE);
