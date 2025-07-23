@@ -3,6 +3,7 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.model.Certificado;
 import com.gamq.ambiente.model.Inspeccion;
 import com.gamq.ambiente.repository.CertificadoRepository;
@@ -208,7 +209,6 @@ public class ReporteController {
         try {
             String nombreUsuario = headers.getOrDefault("usuario", "Admin");
             HashMap<String, Object> parametros = new HashMap<String,Object>();
-            //BigDecimal montoTotal = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
             String lugarInspeccion="";
             Date fechaActual =  new Date();
             String nombreCompleto = "";
@@ -234,7 +234,7 @@ public class ReporteController {
                     parametros,
                     response
             );
-         //   InfraccionDto infraccionDto = infraccionService.notificarInfraccion(infraccionUuid);
+            InfraccionDto infraccionDto = infraccionService.actualizarStatusInfraccion(infraccionUuid, StatusInfraccion.NOTIFICADA);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getLocalizedMessage());

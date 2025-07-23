@@ -219,6 +219,14 @@ public class InfraccionServiceImpl implements InfraccionService {
         return InfraccionMapper.toInfraccionDto(infraccion);
     }
 
+    public InfraccionDto actualizarStatusInfraccion(String uuidInfraccion, StatusInfraccion nuevoStatus) {
+        Infraccion infraccion = infraccionRepository.findByUuid(uuidInfraccion)
+                .orElseThrow(() -> new ResourceNotFoundException("Infraccion", "uuid", uuidInfraccion));
+
+        infraccion.setStatusInfraccion(nuevoStatus);
+        return InfraccionMapper.toInfraccionDto(infraccionRepository.save(infraccion));
+    }
+
      //EVALUAR LOS METODOS
     @Override
     public InfraccionDto generarInfraccion(String uuidInspeccion) {

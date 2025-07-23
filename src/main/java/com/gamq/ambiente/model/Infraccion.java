@@ -49,7 +49,7 @@ public class Infraccion {
     @Column(name = "fecha_pago", nullable = true)
     private Date fechaPago;
     @Column(name = "numero_tasa", nullable = true, length = 15)
-    private String numeroTasa; // Código que devuelve el sistema externo
+    private String numeroTasa;
     @Column(name = "motivo", nullable = false, length = 250)
     private String motivo;
     @Column(name = "nombre_registrador", nullable = false, length = 100)
@@ -61,10 +61,8 @@ public class Infraccion {
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 
-    // Campo transitorio lógico y no persistente
     @Transient
     private boolean enPlazo;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_infraccion", nullable = false)

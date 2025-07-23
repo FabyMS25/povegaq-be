@@ -1,6 +1,7 @@
 package com.gamq.ambiente.service;
 
 import com.gamq.ambiente.dto.InfraccionDto;
+import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.model.Vehiculo;
 
 import java.util.Date;
@@ -17,4 +18,5 @@ public interface InfraccionService {
     InfraccionDto eliminarInfraccion(String uuid);
     InfraccionDto marcarInfraccionComoPagada(String uuidInfraccion, String numeroTasa, Date fechaPago);
     InfraccionDto notificarInfraccion(String uuidInfraccion);
+    InfraccionDto actualizarStatusInfraccion(String uuidInfraccion, StatusInfraccion nuevoStatus);
 }
