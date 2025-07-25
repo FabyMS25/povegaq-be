@@ -17,7 +17,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,24 +45,14 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
     }
 
     @Override
-    public TipoInfraccionDto obtenerTipoInfraccionPorDescripcionYGradoYTipoContribuyente(String descripcion, GradoInfraccion gradoInfraccion, TipoContribuyente tipoContribuyente) {
-        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(descripcion, gradoInfraccion, tipoContribuyente);
+    public TipoInfraccionDto obtenerTipoInfraccionPorArticuloYGradoYTipoContribuyente(String articulo, GradoInfraccion gradoInfraccion, TipoContribuyente tipoContribuyente) {
+        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByArticuloAndGradoInfraccionAndTipoContribuyente(articulo, gradoInfraccion, tipoContribuyente);
         if (tipoInfraccionOptional.isEmpty()){
-            throw  new ResourceNotFoundException("Tipo infraccion", "descripcion", descripcion);
+            throw  new ResourceNotFoundException("Tipo infraccion", "articulo", articulo);
         }
         TipoInfraccion tipoInfraccion = tipoInfraccionOptional.get();
         return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
     }
-/*
-    @Override
-    public TipoInfraccionDto obtenerTipoInfraccionPorDescripcionYTipoContribuyente(String descripcion, TipoContribuyente tipoContribuyente) {
-        Optional<TipoInfraccion> tipoInfraccionOptional = tipoInfraccionRepository.findByDescripcionAndTipoContribuyente(descripcion, tipoContribuyente);
-        if (tipoInfraccionOptional.isEmpty()){
-            throw  new ResourceNotFoundException("Tipo infraccion", "descripcion", descripcion);
-        }
-        TipoInfraccion tipoInfraccion = tipoInfraccionOptional.get();
-        return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
-    }*/
 
     @Override
     public List<TipoInfraccionDto> obtenerTipoInfracciones() {

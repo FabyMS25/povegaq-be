@@ -42,6 +42,10 @@ public class TipoInfraccionDto {
     @DecimalMin(value = "0.0", inclusive = false, message = "El valor UFV debe ser mayor que cero")
     private BigDecimal valorUFV;
     private boolean esAutomatico;
+    @NotNull(message = "El articulo es obligatorio")
+    private String articulo;
+    @NotNull(message = "El numero de tasa es obligatorio")
+    private String conceptoRuat;
     private boolean estado;
 
     @NotNull(message = "El uuid del tipo de contribuyente es obligatorio")

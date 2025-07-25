@@ -9,7 +9,7 @@ import java.util.List;
 public interface TipoInfraccionService {
     TipoInfraccionDto obtenerTipoInfraccionPorUuid(String uuid);
     List<TipoInfraccionDto> obtenerTipoInfraccionPorGrado(GradoInfraccion grado);
-    TipoInfraccionDto obtenerTipoInfraccionPorDescripcionYGradoYTipoContribuyente(String descripcion,GradoInfraccion gradoInfraccion, TipoContribuyente tipoContribuyente);
+    TipoInfraccionDto obtenerTipoInfraccionPorArticuloYGradoYTipoContribuyente(String articulo, GradoInfraccion gradoInfraccion, TipoContribuyente tipoContribuyente);
     List<TipoInfraccionDto> obtenerTipoInfracciones();
     TipoInfraccionDto crearTipoInfraccion(TipoInfraccionDto tipoInfraccionDto);
     TipoInfraccionDto actualizarTipoInfraccion(TipoInfraccionDto tipoInfraccionDto);

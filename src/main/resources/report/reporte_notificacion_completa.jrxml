@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="560"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="430"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="956"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="31"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="188"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -38,31 +38,32 @@ p.nombre || ' ' ||
 p.primer_apellido || ' ' || 
   COALESCE(p.segundo_apellido) || ' ' || 
   COALESCE(p.apellido_esposo, '')  AS nombre_completo,p.numero_documento, n.numero_intento 
- ,v.placa, dt.color, dt.marca, dt.modelo, dt.clase, year_fabricacion, i.fecha_inspeccion, i.lugar_inspeccion 
+ ,v.placa, dt.color, dt.marca, dt.modelo,  tcv.nombre as clase, year_fabricacion, i.fecha_inspeccion, i.lugar_inspeccion 
 from notificaciones as n
 inner join inspecciones as i on i.id_inspeccion = n.id_inspeccion
 inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 inner join propietarios as p on p.id_propietario = v.id_propietario
+left join tipo_clase_vehiculo as tcv on tcv.id_tipo_clase_vehiculo = dt.id_tipo_clase_vehiculo and  (tcv.estado = false OR tcv.estado IS NULL)
 where n.uuid =$P{uuidNotificacion}
 and n.estado = false
 and i.estado = false
 and v.estado = false
 and p.estado = false
 and dt.estado = false
-
 union
 select n.numero_notificacion, n.fecha_asistencia,n.hora_asistencia,n.es_denuncia,n.actividad,n.direccion,n.observacion, n.sancion,n.nombre_notificador, n.fecha_notificacion,
 p.nombre || ' ' || 
 p.primer_apellido || ' ' || 
   COALESCE(p.segundo_apellido) || ' ' || 
   COALESCE(p.apellido_esposo, '')  AS nombre_completo, p.numero_documento, n.numero_intento 
- ,v.placa, dt.color, dt.marca, dt.modelo, dt.clase, year_fabricacion, i.fecha_inspeccion, i.lugar_inspeccion 
+ ,v.placa, dt.color, dt.marca, dt.modelo,  tcv.nombre as clase, year_fabricacion, i.fecha_inspeccion, i.lugar_inspeccion 
  from notificaciones as n
 inner join inspecciones as i on i.id_inspeccion = n.id_inspeccion
 inner join vehiculos as v on v.id_vehiculo = i.id_vehiculo
 inner join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
 inner join conductores as p on p.id_conductor = i.id_conductor
+left join tipo_clase_vehiculo as tcv on tcv.id_tipo_clase_vehiculo = dt.id_tipo_clase_vehiculo and  (tcv.estado = false OR tcv.estado IS NULL)
 where n.uuid =$P{uuidNotificacion}
 and n.estado = false
 and i.estado = false
@@ -252,11 +253,11 @@ and dt.estado = false]]>
 			<textField>
 				<reportElement x="30" y="320" width="450" height="60" uuid="72e6f554-8ed2-454e-8220-1ec870400513"/>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[En cumplimiento a la Ley Municipal Autonómica N° 030/2024 de “Gestión Integral de la Calidad
-del Aire” y el Reglamento Técnico Ambiental para Vehículos Automotores en Circulación, se
-notifica al propietario del vehículo con placa $F{placa} por emisión visible y excesiva de gases
-contaminantes, conforme a las observaciones realizadas por el equipo de fiscalización
-ambiental del GAMC, el día $F{fecha_inspeccion}, en la zona $F{lugar_inspeccion}.]]></textFieldExpression>
+				<textFieldExpression><![CDATA["En cumplimiento a la Ley Municipal Autonómica N° 030/2024 de Gestión Integral de la Calidad"+
+" del Aire y el Reglamento Técnico Ambiental para Vehículos Automotores en Circulación, se " +
+" notifica al propietario del vehículo con placa " +  $F{placa} +" por emisión visible y excesiva de gases " +
+" contaminantes, conforme a las observaciones realizadas por el equipo de fiscalización " +
+" ambiental del GAMC, el día "+ $F{fecha_inspeccion} +", en la zona "+ $F{lugar_inspeccion} + "."]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="160" y="180" width="360" height="20" uuid="5ad07cd6-998b-42fe-8fe6-7300d58cb593"/>
@@ -325,9 +326,9 @@ ambiental del GAMC, el día $F{fecha_inspeccion}, en la zona $F{lugar_inspeccion
 			</staticText>
 			<textField>
 				<reportElement x="20" y="15" width="500" height="51" uuid="e189fbe4-253c-4dd9-99ad-6831bc51ace1"/>
-				<textFieldExpression><![CDATA[Se otorga un plazo hasta el dia $F{fecha_asistencia} y hora de asistencia $F{hora_asistencia} para que el vehículo sea sometido a mantenimiento y vuelva a cumplir con los estándares de emisiones establecidos.
-El propietario deberá presentar el informe de mantenimiento y prueba de emisiones ante la
-Dirección de Medio Ambiente.]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Se otorga un plazo hasta el dia" + $F{fecha_asistencia} + " y hora de asistencia " + $F{hora_asistencia} + " para que el vehículo sea sometido a mantenimiento y vuelva a cumplir con los " + " estándares de emisiones establecidos." +
+" El propietario deberá presentar el informe de mantenimiento y prueba de emisiones ante la " +
+" Dirección de Medio Ambiente. "]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="20" y="70" width="269" height="20" uuid="2f6efb8e-0fd6-4225-a44a-f31ea2577866"/>
@@ -359,26 +360,26 @@ pudiendo incluir:]]></text>
 		<band height="82" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="50" y="10" width="190" height="20" uuid="62ad9acb-dc54-421c-a954-64c3e4d9e077"/>
+				<reportElement x="50" y="27" width="190" height="20" uuid="62ad9acb-dc54-421c-a954-64c3e4d9e077"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FIRMA EL TECNICO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="50" y="30" width="190" height="30" uuid="a8f75d7d-55cf-43cb-b822-478c8f4e0b64"/>
+				<reportElement x="50" y="47" width="190" height="30" uuid="a8f75d7d-55cf-43cb-b822-478c8f4e0b64"/>
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_notificador}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="30" width="190" height="30" uuid="b21bbe72-ef5b-4a6e-a8c5-d30debbbf6ed"/>
+				<reportElement x="280" y="47" width="190" height="30" uuid="b21bbe72-ef5b-4a6e-a8c5-d30debbbf6ed"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA["Aclaracion de Firma:"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="280" y="10" width="190" height="20" uuid="2d2f200a-2965-45a9-b2ac-61cd884aaa5c"/>
+				<reportElement x="280" y="27" width="190" height="20" uuid="2d2f200a-2965-45a9-b2ac-61cd884aaa5c"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>

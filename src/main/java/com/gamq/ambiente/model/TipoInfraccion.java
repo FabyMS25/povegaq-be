@@ -41,6 +41,10 @@ public class TipoInfraccion {
     private BigDecimal valorUFV;
     @Column(name = "es_automatico", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean esAutomatico;
+    @Column(name = "articulo", nullable = false, length = 20)
+    private String articulo;
+    @Column(name = "concepto_ruat", nullable = false, length = 15)
+    private String conceptoRuat;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

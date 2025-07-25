@@ -120,9 +120,10 @@ public class NotificacionServiceImpl implements NotificacionService {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No es posible generar una notificacion por que el resultado de inspeccion Positivo o true");
         }
 
-        if (notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(inspeccionOptional.get().getVehiculo(), TipoNotificacion.REINSPECCION_PENDIENTE, new Date() ) ){
+        if (notificacionRepository.existsByInspeccion_VehiculoAndTypeNotificacionAndFechaAsistenciaGreaterThanEqual(inspeccionOptional.get().getVehiculo(), TipoNotificacion.REINSPECCION_PENDIENTE, new Date())){
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "Tiene un notificacion vigente");
         }
+
         Optional<NotificacionIntentoDto> notificacionIntentoDto = notificacionRepository.getNumeroIntentoNotificacionByUuidVehiculo(inspeccionOptional.get().getVehiculo().getUuid()).map(vi->
                 new NotificacionIntentoDto(
                         vi.getUuidVehiculo(),

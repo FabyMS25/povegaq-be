@@ -42,4 +42,7 @@ public interface TipoInfraccionRepository extends JpaRepository<TipoInfraccion, 
 
     @Query("SELECT t FROM TipoInfraccion t  WHERE LOWER(rtrim(ltrim(t.descripcion))) = LOWER(rtrim(ltrim(:descripcion))) AND t.grado = :grado AND t.tipoContribuyente = :tipoContribuyente AND t.esAutomatico = true")
     Optional<TipoInfraccion> findByDescripcionAndGradoInfraccionAndTipoContribuyente(String descripcion, GradoInfraccion grado, TipoContribuyente tipoContribuyente);
+
+    @Query("SELECT t FROM TipoInfraccion t  WHERE LOWER(rtrim(ltrim(t.articulo))) = LOWER(rtrim(ltrim(:articulo))) AND t.grado = :grado AND t.tipoContribuyente = :tipoContribuyente AND t.esAutomatico = true")
+    Optional<TipoInfraccion> findByArticuloAndGradoInfraccionAndTipoContribuyente(String articulo, GradoInfraccion grado, TipoContribuyente tipoContribuyente);
 }

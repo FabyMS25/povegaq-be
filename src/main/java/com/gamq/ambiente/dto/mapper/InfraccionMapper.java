@@ -27,6 +27,8 @@ public class InfraccionMapper {
                         .setDescripcion(infraccion.getTipoInfraccion().getDescripcion())
                         .setGrado(infraccion.getTipoInfraccion().getGrado())
                         .setEsAutomatico(infraccion.getTipoInfraccion().isEsAutomatico())
+                        .setArticulo(infraccion.getTipoInfraccion().getArticulo())
+                        .setConceptoRuat(infraccion.getTipoInfraccion().getConceptoRuat())
                         .setEstado(infraccion.getTipoInfraccion().isEstado())
                         //ojo 2025
                         .setTipoContribuyenteDto(infraccion.getTipoInfraccion().getTipoContribuyente() == null? null: new TipoContribuyenteDto()

@@ -74,10 +74,11 @@ public class GeneradorInfraccionServiceImpl {
                         n.getStatusNotificacion() == EstadoNotificacion.VENCIDA);
 
         if (tieneNotificacionInfraccionVencidaSegundoIntento) {
-            return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
-             "Acceder a una segunda inspección sin haber procedido a la readecuación",
+            return tipoInfraccionRepository.findByArticuloAndGradoInfraccionAndTipoContribuyente(
+             "Art. 19.1",
                        GradoInfraccion.TERCER_GRADO,tipoContribuyente).get();
             // "TERCER_GRADO"; // Art. 19.1
+            //  Acceder a una segunda inspección sin haber procedido a la readecuación
         }
 
         // Reincidencia no paga → Segundo grado (Art. 18.2)
@@ -86,11 +87,11 @@ public class GeneradorInfraccionServiceImpl {
                 .filter(i -> !i.isEstadoPago())
                 .count();
         if (infraccionesNoPagadas >= 2) return
-                tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
-                        "No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente",
+                tipoInfraccionRepository.findByArticuloAndGradoInfraccionAndTipoContribuyente(
+                        "Art. 18.2",
                                   GradoInfraccion.SEGUNDO_GRADO, tipoContribuyente).get();
                                   // "SEGUNDO_GRADO";
-
+                                 //"No haber cancelado la multa impuesta dentro de los plazos establecidos para el pago de la sancion correspondiente"
         // Si no pasó inspección y ya falló antes → Tercer grado (Art. 19.2)
         if (resultadoFallo) {
             Optional<Inspeccion> anteriorFallida = historial.stream()
@@ -101,10 +102,11 @@ public class GeneradorInfraccionServiceImpl {
 
             if (anteriorFallida.isPresent() &&
                     inspeccion.getFechaInspeccion().after(anteriorFallida.get().getFechaInspeccion())) {
-                return tipoInfraccionRepository.findByDescripcionAndGradoInfraccionAndTipoContribuyente(
-                        "Acceder a una segunda inspección sin haber procedido a la readecuación",
+                return tipoInfraccionRepository.findByArticuloAndGradoInfraccionAndTipoContribuyente(
+                        "Art. 19.1",
                                    GradoInfraccion.TERCER_GRADO, tipoContribuyente).get() ;
                                   // "TERCER_GRADO";
+                                  // "Acceder a una segunda inspección sin haber procedido a la readecuación"
             }
             //return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
         }

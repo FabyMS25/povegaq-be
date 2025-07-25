@@ -3,6 +3,7 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.NotificacionDto;
 import com.gamq.ambiente.dto.mapper.InfraccionMapper;
+import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.StatusInfraccion;
 import com.gamq.ambiente.model.Certificado;
 import com.gamq.ambiente.model.Inspeccion;
@@ -53,6 +54,41 @@ public class ReporteController {
     private InspeccionRepository inspeccionRepository;
 
 
+    @RequestMapping( value = "/notificacion-completa", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarNotificacionCompleta(
+            @RequestParam( name = "uuidNotificacion") String uuidNotificacion,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            Date fechaActual =  new Date();
+
+            if (uuidNotificacion != null ) {
+                NotificacionDto notificacionDto = notificacionService.obtenerNotificacionPorUuid(uuidNotificacion);
+            }
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("subtitulo", "");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("fechaActual", fechaActual);
+            parametros.put("uuidNotificacion", uuidNotificacion);
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_notificacion_completa",
+                    "classpath:report/reporte_notificacion_completa.jrxml",
+                    parametros,
+                    response
+            );
+            NotificacionDto notificacionDto = notificacionService.actualizarEstadoNotificacion(uuidNotificacion, EstadoNotificacion.ENVIADA);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
     @RequestMapping( value = "/notificacion", method= RequestMethod.GET)
     @ResponseBody
     public void generarNotificacion(
@@ -81,6 +117,7 @@ public class ReporteController {
                     parametros,
                     response
             );
+            NotificacionDto notificacionDto = notificacionService.actualizarEstadoNotificacion(uuidNotificacion, EstadoNotificacion.ENVIADA);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getLocalizedMessage());
@@ -234,7 +271,7 @@ public class ReporteController {
                     parametros,
                     response
             );
-            InfraccionDto infraccionDto = infraccionService.actualizarStatusInfraccion(infraccionUuid, StatusInfraccion.NOTIFICADA);
+   //         InfraccionDto infraccionDto = infraccionService.actualizarStatusInfraccion(infraccionUuid, StatusInfraccion.NOTIFICADA);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getLocalizedMessage());
