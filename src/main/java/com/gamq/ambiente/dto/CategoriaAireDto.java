@@ -24,5 +24,7 @@ public class CategoriaAireDto {
     private String descripcion;
     private String color;
     private String norma;
+    private String recomendacion;
+    private boolean activo;
     private boolean estado;
 }

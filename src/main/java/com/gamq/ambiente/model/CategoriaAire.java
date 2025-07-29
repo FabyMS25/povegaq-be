@@ -39,8 +39,13 @@ public class CategoriaAire {
     private String color;
     @Column(name = "norma")
     private String norma;
+    @Column(name = "recomendacion")
+    private String recomendacion;
+    @Column(name = "activo", columnDefinition = "BOOLEAN NOT NULL DEFAULT '1'")
+    private boolean activo;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
+
 
     public CategoriaAire(String uuid) {this.uuid = uuid;}
 

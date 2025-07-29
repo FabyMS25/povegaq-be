@@ -121,7 +121,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public ActividadDto actualizarActividadActivo(String uuid, boolean nuevoActivo) {
         Actividad actividad = actividadRepository.findByUuid(uuid)
-                .orElseThrow(()-> new RuntimeException("la actividad no encontrado"));
+                .orElseThrow(()-> new ResourceNotFoundException("Actividad","uuid", uuid));
         actividad.setActivo(nuevoActivo);
         if(!nuevoActivo){
             actividad.setFechaFin(new Date());
