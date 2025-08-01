@@ -9,6 +9,7 @@ public class GrupoRiesgoMapper {
         return new GrupoRiesgoDto()
                 .setUuid(grupoRiesgo.getUuid())
                 .setGrupo(grupoRiesgo.getGrupo())
+                .setRecomendacion(grupoRiesgo.getRecomendacion())
                 .setEstado(grupoRiesgo.isEstado())
                 .setCategoriaAireDto(grupoRiesgo.getCategoriaAire() == null? null: new CategoriaAireDto()
                         .setUuid(grupoRiesgo.getCategoriaAire().getUuid())
@@ -28,6 +29,7 @@ public class GrupoRiesgoMapper {
         return new GrupoRiesgo()
                 .setUuid(grupoRiesgoDto.getUuid())
                 .setGrupo(grupoRiesgoDto.getGrupo())
+                .setRecomendacion(grupoRiesgoDto.getRecomendacion())
                 .setEstado(grupoRiesgoDto.isEstado());
     }
 }
