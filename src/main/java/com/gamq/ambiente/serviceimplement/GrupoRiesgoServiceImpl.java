@@ -30,10 +30,11 @@ public class GrupoRiesgoServiceImpl implements GrupoRiesgoService {
     }
 
     @Override
-    public GrupoRiesgoDto obtenerGrupoRiesgoPorGrupo(String grupo) {
-        GrupoRiesgo grupoRiesgo = grupoRiesgoRepository.findByGrupo(grupo)
-                .orElseThrow(()-> new ResourceNotFoundException("GrupoRiesgo","grupo", grupo));
-        return GrupoRiesgoMapper.toGrupoRiesgoDto(grupoRiesgo);
+    public List<GrupoRiesgoDto> obtenerGrupoRiesgoPorGrupo(String grupo) {
+        List<GrupoRiesgo> grupoRiesgoList = grupoRiesgoRepository.findByGrupo(grupo);
+        return grupoRiesgoList.stream().map( grupoRiesgo -> {
+            return GrupoRiesgoMapper.toGrupoRiesgoDto(grupoRiesgo);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -56,12 +57,12 @@ public class GrupoRiesgoServiceImpl implements GrupoRiesgoService {
     public GrupoRiesgoDto crearGrupoRiesgo(GrupoRiesgoDto grupoRiesgoDto) {
         String grupo = grupoRiesgoDto.getGrupo();
         if(grupo == null || grupo.isBlank()){ throw new ResourceNotFoundException("GrupoRiesgo","grupo", grupo);}
-        if (grupoRiesgoRepository.findByGrupo(grupo).isPresent()) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El grupoRiesgo ya existe");
-        }
+
         CategoriaAire categoriaAire = categoriaAireRepository.findByUuid(grupoRiesgoDto.getCategoriaAireDto().getUuid())
                 .orElseThrow(()-> new ResourceNotFoundException("Categoria", "uuid", grupoRiesgoDto.getCategoriaAireDto().getUuid()));
-
+        if (grupoRiesgoRepository.findByGrupoAndCategoriaAire(grupo, grupoRiesgoDto.getCategoriaAireDto().getUuid()).isPresent()) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El grupoRiesgo ya existe");
+        }
         GrupoRiesgo nuevoGrupoRiesgo = GrupoRiesgoMapper.toGrupoRiesgo(grupoRiesgoDto);
         nuevoGrupoRiesgo.setCategoriaAire(categoriaAire);
         return GrupoRiesgoMapper.toGrupoRiesgoDto(grupoRiesgoRepository.save(nuevoGrupoRiesgo));

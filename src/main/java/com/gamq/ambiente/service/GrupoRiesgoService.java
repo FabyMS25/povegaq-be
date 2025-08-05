@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GrupoRiesgoService {
     GrupoRiesgoDto obtenerGrupoRiesgoPorUuid(String uuid);
-    GrupoRiesgoDto obtenerGrupoRiesgoPorGrupo(String grupo);
+    List<GrupoRiesgoDto> obtenerGrupoRiesgoPorGrupo(String grupo);
     List<GrupoRiesgoDto> obtenerGrupoRiesgos();
     List<GrupoRiesgoDto> obtenerGrupoRiesgoPorUuidCategoriaAire(String uuidCategoriaAire);
     GrupoRiesgoDto crearGrupoRiesgo(GrupoRiesgoDto grupoRiesgoDto);

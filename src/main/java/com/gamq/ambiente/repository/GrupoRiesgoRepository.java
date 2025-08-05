@@ -13,7 +13,10 @@ import java.util.Optional;
 public interface GrupoRiesgoRepository extends JpaRepository<GrupoRiesgo, Long> {
     Optional<GrupoRiesgo> findByUuid(String uuid);
     @Query("SELECT g FROM GrupoRiesgo g WHERE LOWER(rtrim(ltrim(g.grupo))) = LOWER(rtrim(ltrim(:grupo)))")
-    Optional<GrupoRiesgo> findByGrupo(@Param("grupo") String grupo);
+    List<GrupoRiesgo> findByGrupo(@Param("grupo") String grupo);
+    @Query("SELECT g FROM GrupoRiesgo g WHERE LOWER(rtrim(ltrim(g.grupo))) = LOWER(rtrim(ltrim(:grupo))) AND  g.categoriaAire.uuid = :uuidCategoriaAire")
+    Optional<GrupoRiesgo> findByGrupoAndCategoriaAire(@Param("grupo") String grupo,
+                                                      @Param("uuidCategoriaAire") String uuidCategoriaAire);
     @Query("SELECT case when count(g) > 0 then true else false end FROM GrupoRiesgo g WHERE lower(rtrim(ltrim(g.grupo))) = lower(rtrim(ltrim(:grupo))) AND g.uuid <> :uuidGrupo")
     boolean exitsGrupoRiesgoLikeGrupo(@Param("grupo") String grupo,
                                       @Param("uuidGrupo") String uuidGrupo);
