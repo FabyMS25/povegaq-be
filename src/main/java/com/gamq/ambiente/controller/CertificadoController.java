@@ -51,7 +51,7 @@ public class CertificadoController {
     }
 
     @DeleteMapping("/{uuid}")
-    @Operation(summary = "Eliminar certificado por UUID", description = "Elimina logicamnete un certificado existente por su uuid")
+    @Operation(summary = "Eliminar certificado por UUID", description = "Elimina logicamente un certificado existente por su uuid")
     public Response deleteCertificado(@PathVariable("uuid") String uuid){
         return Response.ok().setPayload(certificadoService.eliminarCertificado(uuid));
     }

@@ -96,5 +96,4 @@ public class ReglamentoServiceImpl implements ReglamentoService {
         }
         else {return false;}
     }
-
 }

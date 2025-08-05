@@ -159,12 +159,10 @@ public class VehiculoServiceImpl implements VehiculoService {
         datoTecnico = datoTecnicoRepository.save(datoTecnico);
         vehiculo.setDatoTecnico(datoTecnico);
 
-       //vehiculo.setDatoTecnico(datoTecnicoRepository.save(DatoTecnicoMapper.toDatoTecnico(vehiculoDto.getDatoTecnicoDto()).setVehiculo(vehiculo).setTipoClaseVehiculo(tipoClaseVehiculo)));
         return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
     private boolean validarDatoTecnico(DatoTecnicoDto datoTecnicoDto) {
-        //.getClase()
         return datoTecnicoDto != null && datoTecnicoDto.getTipoClaseVehiculoDto().getUuid() != null && datoTecnicoDto.getMarca() != null
         && datoTecnicoDto.getPais() != null && datoTecnicoDto.getModelo() != null && datoTecnicoDto.getColor() != null
                 && (datoTecnicoDto.getYearFabricacion() != null && datoTecnicoDto.getYearFabricacion() > 1900 && datoTecnicoDto.getYearFabricacion() <= Year.now().getValue()) && datoTecnicoDto.getTipoMotor() != null
@@ -255,8 +253,7 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public VehiculoDto eliminarVehiculo(String uuid) {
-        Vehiculo vehiculoQBE = new Vehiculo(uuid);
-        Optional<Vehiculo> optionalVehiculo = vehiculoRepository.findByUuid(uuid);// .findOne(Example.of(vehiculoQBE));
+        Optional<Vehiculo> optionalVehiculo = vehiculoRepository.findByUuid(uuid);
         if(optionalVehiculo.isPresent()){
             Vehiculo vehiculo = optionalVehiculo.get();
             if(!vehiculo.getInspeccionList().isEmpty()){
@@ -292,7 +289,7 @@ public class VehiculoServiceImpl implements VehiculoService {
             }
 
             tipoCombustibleRepository.findByUuid(vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid())
-                    .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid",vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid() ) );
+                    .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid()));
         }
     }
 }

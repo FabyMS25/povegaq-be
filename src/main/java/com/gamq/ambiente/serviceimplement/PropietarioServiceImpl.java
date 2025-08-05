@@ -175,5 +175,4 @@ public class PropietarioServiceImpl implements PropietarioService {
         }
         throw new ResourceNotFoundException("Propietario", "uuid", uuid);
     }
-
 }

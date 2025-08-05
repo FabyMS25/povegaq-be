@@ -41,19 +41,14 @@ public class NotificacionServiceImpl implements NotificacionService {
     private String zonaHorario;
     @Autowired
     NotificacionRepository notificacionRepository;
-
     @Autowired
     InspeccionRepository inspeccionRepository;
-
     @Autowired
     InspeccionService inspeccionService;
-
     @Autowired
     AlertaRepository alertaRepository;
-
     @Autowired
     private EmailUtil  emailUtil;
-
     @Autowired
     ConfiguracionService configuracionService;
 
@@ -83,8 +78,7 @@ public class NotificacionServiceImpl implements NotificacionService {
         return notificacionList.stream().map(notificacion -> {
             return NotificacionMapper.toNotificacionDto(notificacion);
         }).collect(Collectors.toList());
-   }
-
+    }
 
     @Override
     public NotificacionDto crearNotificacion(NotificacionDto notificacionDto) {
@@ -172,7 +166,6 @@ public class NotificacionServiceImpl implements NotificacionService {
         notificacionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccionOptional.get()));
         return notificacionDto;
     }
-
 
     @Override
     public NotificacionDto actualizarNotificacion(NotificacionDto notificacionDto) {

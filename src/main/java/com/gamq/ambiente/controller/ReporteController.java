@@ -53,6 +53,93 @@ public class ReporteController {
     @Autowired
     private InspeccionRepository inspeccionRepository;
 
+    @RequestMapping( value = "/infraccion-portipo", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarInfraccionesPorTipo(
+            @RequestParam( name = "fechaInicio") Date fechaInicio,
+            @RequestParam( name = "fechaFin") Date fechaFin,
+            @RequestParam( name = "estadoPago") boolean estadoPago,
+            @RequestParam(name = "descripcion", required = false) String descripcion,
+            @RequestParam(name = "articulo", required = false) String articulo,
+            @RequestParam(name = "grado", required = false) String grado,
+            @RequestParam(name = "valorUFV", required = false) BigDecimal valorUFV,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            Date fechaActual =  new Date();
+
+            ZoneId zona = ZoneId.of(zonaHorario);
+            Date fechaInicioAjustada = FechaUtil.ajustarFechaInicioDia(fechaInicio,zona);
+            Date fechaFinAjustada = FechaUtil.ajustarFechaFinDia(fechaFin,zona);
+            parametros.put("fechaInicial",new Timestamp(fechaInicioAjustada.getTime()));
+            parametros.put("fechaFinal", new Timestamp(fechaFinAjustada.getTime()));
+            parametros.put("estadoPago", estadoPago);
+
+            if (descripcion != null && !descripcion.isBlank()) parametros.put("descripcion", descripcion);
+            if (articulo != null && !articulo.isBlank()) parametros.put("articulo", articulo);
+            if (grado != null && !grado.isBlank()) parametros.put("grado", grado);
+            if (valorUFV != null) parametros.put("valorUFV", valorUFV);
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("criterio", estadoPago?"Pagadas":"Adeudadas");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("fechaActual", fechaActual);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_infracciones_portipo",
+                    "classpath:report/reporte_infracciones_portipo.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+
+    @RequestMapping( value = "/infraccion-detallada", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarInfraccionDetallada(
+            @RequestParam( name = "fechaInicio") Date fechaInicio,
+            @RequestParam( name = "fechaFin") Date fechaFin,
+            @RequestParam( name = "estadoPago") boolean estadoPago,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            Date fechaActual =  new Date();
+
+            ZoneId zona = ZoneId.of(zonaHorario);
+            Date fechaInicioAjustada = FechaUtil.ajustarFechaInicioDia(fechaInicio,zona);
+            Date fechaFinAjustada = FechaUtil.ajustarFechaFinDia(fechaFin,zona);
+            parametros.put("fechaInicial",new Timestamp(fechaInicioAjustada.getTime()));
+            parametros.put("fechaFinal", new Timestamp(fechaFinAjustada.getTime()));
+            parametros.put("estadoPago", estadoPago);
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("criterio", estadoPago?"Pagadas":"Adeudadas");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("fechaActual", fechaActual);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_infraccion_detallada",
+                    "classpath:report/reporte_infraccion_detallada.jrxml",
+                    parametros,
+                    response
+            );
+       } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
 
     @RequestMapping( value = "/notificacion-completa", method= RequestMethod.GET)
     @ResponseBody

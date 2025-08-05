@@ -59,7 +59,6 @@ public class MedicionAireServiceImpl implements MedicionAireService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public MedicionAireDto actualizarMedicionAire(MedicionAireDto medicionAireDto) {
         MedicionAire medicionAire = obtenerMedicionAirePorUuidOThrow(medicionAireDto.getUuid());

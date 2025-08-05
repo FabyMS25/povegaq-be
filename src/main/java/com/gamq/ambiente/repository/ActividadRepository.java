@@ -21,7 +21,7 @@ public interface ActividadRepository extends JpaRepository<Actividad, Long> {
                                             @Param("uuidActividad") String uuidActividad);
     List<Actividad> findByActivoTrueOrderByFechaInicioAsc();
 
-    @Query("SELECT a FROM Actividad a WHERE YEAR(a.fechaInicio) = :year AND a.estado = false ")
+    @Query("SELECT a FROM Actividad a WHERE a.activo = true AND YEAR(a.fechaInicio) = :year AND a.estado = false")
     List<Actividad> findActividadesPorAnio(Integer year);
 
     @Query("SELECT a FROM Actividad a WHERE a.activo = true AND a.fechaInicio <= :rangoFin AND a.fechaFin >= :rangoInicio")
