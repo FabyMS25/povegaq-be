@@ -40,7 +40,7 @@ public class GeneradorInfraccionServiceImpl {
         infraccionDto.setInspeccionDto(InspeccionMapper.toInspeccionDto(inspeccion));
         infraccionDto.setTipoInfraccionDto(TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion));
         infraccionDto.setMontoTotal(tipoInfraccion.getValorUFV());
-        infraccionDto.setStatusInfraccion(StatusInfraccion.PENDIENTE);
+        infraccionDto.setStatusInfraccion(StatusInfraccion.GENERADA);
         infraccionDto.setEstadoPago(false);
         infraccionDto.setGeneradoSistema(true);
         infraccionDto.setEnPlazo(true);
@@ -108,7 +108,6 @@ public class GeneradorInfraccionServiceImpl {
                                   // "TERCER_GRADO";
                                   // "Acceder a una segunda inspección sin haber procedido a la readecuación"
             }
-            //return GradoInfraccion.PRIMER_GRADO;// "PRIMER_GRADO"; // Art. 17
         }
         return null; // No hay infracción
     }

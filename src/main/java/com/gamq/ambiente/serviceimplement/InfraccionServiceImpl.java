@@ -160,7 +160,7 @@ public class InfraccionServiceImpl implements InfraccionService {
 
             updateInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());
             updateInfraccion.setMontoTotal(tipoInfraccionOptional.get().getValorUFV());
-            updateInfraccion.setStatusInfraccion(StatusInfraccion.PENDIENTE);
+            updateInfraccion.setStatusInfraccion(StatusInfraccion.GENERADA);
             updateInfraccion.setEstadoPago(false);
             updateInfraccion.setVehiculo(vehiculoOptional.get());
             updateInfraccion.setGeneradoSistema(false);

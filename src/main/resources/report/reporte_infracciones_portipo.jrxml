@@ -294,7 +294,7 @@ AND inf.fecha_infraccion < $P{fechaFinal}
 				<box leftPadding="2">
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -304,7 +304,7 @@ AND inf.fecha_infraccion < $P{fechaFinal}
 				<box>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{articulo}]]></textFieldExpression>
 			</textField>
 		</band>

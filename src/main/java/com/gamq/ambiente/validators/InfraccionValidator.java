@@ -19,7 +19,7 @@ public class InfraccionValidator {
 
     public void marcarInfraccionesVencidas(){
         List<StatusInfraccion> activos = Arrays.asList(
-                StatusInfraccion.PENDIENTE,
+                StatusInfraccion.GENERADA,
                 StatusInfraccion.NOTIFICADA
         );
 
