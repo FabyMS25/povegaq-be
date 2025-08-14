@@ -88,4 +88,6 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
             List<EstadoNotificacion> estadosNotificacion,
             Date fechaActual
     );
+
+    Optional<Notificacion> findFirstByPlacaOrderByFechaNotificacionDesc(String placa);
 }

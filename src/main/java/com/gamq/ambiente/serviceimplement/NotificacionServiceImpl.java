@@ -16,6 +16,7 @@ import com.gamq.ambiente.model.Vehiculo;
 import com.gamq.ambiente.repository.AlertaRepository;
 import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.repository.NotificacionRepository;
+import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.ConfiguracionService;
 import com.gamq.ambiente.service.InspeccionService;
 import com.gamq.ambiente.service.NotificacionService;
@@ -47,6 +48,8 @@ public class NotificacionServiceImpl implements NotificacionService {
     InspeccionService inspeccionService;
     @Autowired
     AlertaRepository alertaRepository;
+    @Autowired
+    VehiculoRepository vehiculoRepository;
     @Autowired
     private EmailUtil  emailUtil;
     @Autowired
@@ -346,5 +349,17 @@ public class NotificacionServiceImpl implements NotificacionService {
     public void generarNotificacionesFallidas(String usuarioUuid, String usuarioNombreCompleto) {
         List<Inspeccion> inspeccionesFallidas = inspeccionRepository.findByResultadoFalse();
         generarNotificacionesMasivas(inspeccionesFallidas, usuarioUuid, usuarioNombreCompleto);
+    }
+
+    @Override
+    public NotificacionDto obtenerUltimaNotificacionPorUuidVehiculo(String uuidVehiculo) {
+        Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(uuidVehiculo);
+        Optional<Notificacion> notificacion = notificacionRepository.findFirstByPlacaOrderByFechaNotificacionDesc(vehiculo.getPlaca());
+        return NotificacionMapper.toNotificacionDto(notificacion.get());
+    }
+
+    private Vehiculo obtenerVehiculoPorUuidOThrow(String uuid){
+        return  vehiculoRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "uuid", uuid));
     }
 }

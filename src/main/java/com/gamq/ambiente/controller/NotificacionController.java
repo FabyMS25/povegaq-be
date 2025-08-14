@@ -120,4 +120,8 @@ public class NotificacionController {
         notificacionService.generarNotificacionesFallidas(usuarioUuid, usuarioNombreCompleto);
         return Response.ok().setPayload("Notificaciones generadas para inspecciones fallidas");
     }
+    @GetMapping("/ultima-notificacion/{uuidVehiculo}")
+    public Response lastNotificacionByUuidVehiculo(@PathVariable("uuidVehiculo") String uuidVehiculo){
+        return Response.ok().setPayload(notificacionService.obtenerUltimaNotificacionPorUuidVehiculo(uuidVehiculo));
+    }
 }
