@@ -1,34 +1,22 @@
+version: "3.8"
+
 services:
-  be-provegaq:
-    depends_on:
-      - db-provegaq
-    image: 'provegaq-be'
-    container_name: 'provegaq-be'
-    build: .
-    ports:
-      - '8090:8090'
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-provegaq:5432/db_provegaq
-      - SPRING_DATASOURCE_USERNAME=provegaq
-      - SPRING_DATASOURCE_PASSWORD=provegaq123
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    restart: always
   db-provegaq:
     image: postgis/postgis:14-3.2-alpine
-#    image: postgres:14-alpine
-    container_name: 'provegaq-db'
+    container_name: provegaq-db
     environment:
       - POSTGRES_USER=provegaq
       - POSTGRES_PASSWORD=provegaq123
       - POSTGRES_DB=db_provegaq
     ports:
-      - '5443:5432'
+      - "5443:5432"
     volumes:
       - db:/var/lib/postgresql/data
     restart: always
+
   pg-provegaq:
     image: dpage/pgadmin4
-    container_name: 'provegaq-pg'
+    container_name: provegaq-pg
     ports:
       - "5060:80"
     environment:
@@ -39,14 +27,32 @@ services:
     volumes:
       - pg:/var/lib/pgadmin
     restart: always
-  fe-provegaq:
-    image: 'provegaq-fe'
-    container_name: 'provegaq-fe'
+
+  be-provegaq:
+    build: ./provegaq-be
+    image: provegaq-be
+    container_name: provegaq-be
+    depends_on:
+      - db-provegaq
     ports:
-      - '4210:80'
+      - "8090:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db-provegaq:5432/db_provegaq
+      - SPRING_DATASOURCE_USERNAME=provegaq
+      - SPRING_DATASOURCE_PASSWORD=provegaq123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    restart: always
+
+  fe-provegaq:
+    build: ./provegaq-fe
+    image: provegaq-fe
+    container_name: provegaq-fe
     depends_on:
       - be-provegaq
+    ports:
+      - "4210:80"
     restart: always
+
 volumes:
   db:
   pg:
