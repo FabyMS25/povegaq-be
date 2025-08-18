@@ -29,7 +29,7 @@ services:
     restart: always
 
   be-provegaq:
-    build: ./provegaq-be
+    build: ./
     image: provegaq-be
     container_name: provegaq-be
     depends_on:
@@ -44,7 +44,7 @@ services:
     restart: always
 
   fe-provegaq:
-    build: ./provegaq-fe
+    build: ./
     image: provegaq-fe
     container_name: provegaq-fe
     depends_on:
