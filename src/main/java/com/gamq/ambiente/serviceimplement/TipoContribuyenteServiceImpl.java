@@ -5,6 +5,7 @@ import com.gamq.ambiente.dto.mapper.TipoContribuyenteMapper;
 import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.TipoContribuyente;
+import com.gamq.ambiente.repository.ConductorRepository;
 import com.gamq.ambiente.repository.TipoContribuyenteRepository;
 import com.gamq.ambiente.service.TipoContribuyenteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 public class TipoContribuyenteServiceImpl implements TipoContribuyenteService {
     @Autowired
     TipoContribuyenteRepository tipoContribuyenteRepository;
+    @Autowired
+    ConductorRepository conductorRepository;
 
     @Override
     public TipoContribuyenteDto obtenerTipoContribuyentePorUuid(String uuid) {
@@ -80,9 +83,12 @@ public class TipoContribuyenteServiceImpl implements TipoContribuyenteService {
         Optional<TipoContribuyente> optionalTipoContribuyente = tipoContribuyenteRepository.findOne(Example.of(tipoContribuyenteQBE));
         if(optionalTipoContribuyente.isPresent()){
             TipoContribuyente tipoContribuyente = optionalTipoContribuyente.get();
-        /*    if(!tipoContribuyente.get.getTipoContribuyenteInspeccionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el TipoContribuyente ya esta siendo usado por las inspecciones");
-            }*/
+            if(!tipoContribuyente.getPropietarioList().isEmpty()){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el TipoContribuyente ya esta siendo usado en los propietarios");
+            }
+            if(conductorRepository.exitsConductorWithUuidTipoContribuyente(uuid)){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el TipoContribuyente ya esta siendo usado en los conductores");
+            }
             tipoContribuyenteRepository.delete(tipoContribuyente);
             return TipoContribuyenteMapper.toTipoContribuyenteDto(tipoContribuyente);
         }

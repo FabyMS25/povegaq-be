@@ -364,4 +364,90 @@ public class ReporteController {
             System.out.println(e.getLocalizedMessage());
         }
     }
+
+    @RequestMapping( value = "/verificacion-tecnica", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarReporteVerificacionTecnica(
+            @RequestParam( name = "uuidVehiculo") String uuidVehiculo,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            String lugarInspeccion="";
+            Date fechaActual =  new Date();
+            String nombreCompleto = "";
+
+            if (!uuidVehiculo.equalsIgnoreCase("0")) {
+              //  InfraccionDto infraccionDto =  infraccionService.obtenerInfraccionPorUuid(infraccionUuid);
+              //  lugarInspeccion = infraccionDto.getInspeccionDto().getLugarInspeccion();
+               // Optional<Inspeccion> inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
+             //   nombreCompleto= NombreContribuyenteUtil.resolverNombreContribuyente(inspeccion.get());
+            }
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("subtitulo", "");
+            //parametros.put("lugarInspeccion", lugarInspeccion);
+            parametros.put("fechaActual", fechaActual);
+            parametros.put("uuidVehiculo", uuidVehiculo);
+            //parametros.put("nombreCompleto", nombreCompleto);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_verificacion_tecnica",
+                    "classpath:report/reporte_verificacion_tecnica.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+    @RequestMapping( value = "/infraccion-resumen", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarResumenInfraccion(
+         //   @RequestParam( name = "uuidVehiculo") String uuidVehiculo,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
+            String lugarInspeccion="";
+            Date fechaActual =  new Date();
+            String nombreCompleto = "";
+
+           // if (!uuidVehiculo.equalsIgnoreCase("0")) {
+                //  InfraccionDto infraccionDto =  infraccionService.obtenerInfraccionPorUuid(infraccionUuid);
+                //  lugarInspeccion = infraccionDto.getInspeccionDto().getLugarInspeccion();
+                // Optional<Inspeccion> inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
+                //   nombreCompleto= NombreContribuyenteUtil.resolverNombreContribuyente(inspeccion.get());
+           // }
+
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("subtitulo", "");
+            //parametros.put("lugarInspeccion", lugarInspeccion);
+            parametros.put("fechaActual", fechaActual);
+            //parametros.put("uuidVehiculo", uuidVehiculo);
+            //parametros.put("nombreCompleto", nombreCompleto);
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_resumen_recaudacion",
+                    "classpath:report/reporte_resumen_recaudacion.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
+
 }

@@ -129,12 +129,12 @@ public class TipoInfraccionServiceImpl implements TipoInfraccionService {
     @Override
     public TipoInfraccionDto eliminarTipoInfraccion(String uuid) {
         TipoInfraccion tipoInfraccionQBE = new TipoInfraccion(uuid);
-        Optional<TipoInfraccion> optionalTipoInfraccion = tipoInfraccionRepository.findOne(Example.of(tipoInfraccionQBE));
+        Optional<TipoInfraccion> optionalTipoInfraccion = tipoInfraccionRepository.findByUuid(uuid);//.findOne(Example.of(tipoInfraccionQBE));
         if(optionalTipoInfraccion.isPresent()){
             TipoInfraccion tipoInfraccion = optionalTipoInfraccion.get();
-           /* if(!tipoInfraccion.getTipoInfraccionInspeccionList().isEmpty()){
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el TipoInfraccion ya esta siendo usado por las inspecciones");
-            }*/
+            if(!tipoInfraccion.getInfraccionList().isEmpty()){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la Infraccion ya esta siendo usado por las multas y sanciones");
+           }
             tipoInfraccionRepository.delete(tipoInfraccion);
             return TipoInfraccionMapper.toTipoInfraccionDto(tipoInfraccion);
         }

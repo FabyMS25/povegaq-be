@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="507"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="481"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="681"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="307"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="188"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -26,7 +26,7 @@
 	<parameter name="usuario" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Usuario Default"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="uuidNotificacion" class="java.lang.String"/>
+	<parameter name="uuidVehiculo" class="java.lang.String"/>
 	<parameter name="subtitulo" class="java.lang.String">
 		<defaultValueExpression><![CDATA["subtitulo"]]></defaultValueExpression>
 	</parameter>
@@ -39,7 +39,7 @@
 ,di.nro_ejecucion, di.resultado_parcial, di.valor, di.limite_permisible, tp.nombre as tipoparametro_nombre
 ,inf.fecha_infraccion, ti.grado, ti.articulo, ti.descripcion
 ,cer.es_valido,cer.fecha_emision, cer.fecha_vencimiento
-,noti.fecha_notificacion, noti.numero_notificacion, noti.observacion as obervacion_notificacion
+,noti.fecha_notificacion, noti.numero_notificacion, noti.observacion as observacion_notificacion
 , inf.monto_total, inf.estado_pago
 from inspecciones as i 
 left join vehiculos as v on v.id_vehiculo = i.id_vehiculo
@@ -59,7 +59,9 @@ left join tipo_infracciones as ti on ti.id_tipo_infraccion = inf.id_tipo_infracc
 
 left join certificados as cer on cer.id_inspeccion = i.id_inspeccion
 
-left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
+left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion
+where v.uuid = $P{uuidVehiculo} 
+]]>
 	</queryString>
 	<field name="uuid" class="java.lang.String"/>
 	<field name="fecha_inspeccion" class="java.util.Date"/>
@@ -95,6 +97,14 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
+	<group name="Group1">
+		<groupHeader>
+			<band height="35"/>
+		</groupHeader>
+		<groupFooter>
+			<band height="50"/>
+		</groupFooter>
+	</group>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -161,7 +171,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<text><![CDATA[Codigo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="21" y="153" width="499" height="20" uuid="7a84c041-933e-47f8-bae7-b0fb0bda84ef"/>
+				<reportElement x="21" y="153" width="526" height="20" uuid="7a84c041-933e-47f8-bae7-b0fb0bda84ef"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -203,25 +213,25 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<text><![CDATA[Marca:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="283" y="271" width="117" height="20" uuid="2e8754fa-7836-40d5-b1b0-e1685dd57251"/>
+				<reportElement x="283" y="271" width="107" height="20" uuid="2e8754fa-7836-40d5-b1b0-e1685dd57251"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Tipo de Vehiculo:]]></text>
+				<text><![CDATA[Tipo Combustible:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="283" y="291" width="117" height="20" uuid="2117baca-d1e1-48f7-9add-61e6aa4f028a"/>
+				<reportElement x="283" y="291" width="53" height="20" uuid="2117baca-d1e1-48f7-9add-61e6aa4f028a"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Modelo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="30" y="311" width="50" height="20" uuid="ceb01f92-a016-4050-b04b-0da976b42322"/>
+				<reportElement x="30" y="311" width="90" height="20" uuid="ceb01f92-a016-4050-b04b-0da976b42322"/>
 				<textElement verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Color:]]></text>
+				<text><![CDATA[Clase Vehiculo:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="283" y="311" width="117" height="20" uuid="b7bd5da8-b775-444f-893f-01ff9d1d7d1c"/>
@@ -241,17 +251,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="80" y="311" width="200" height="20" uuid="3fe8f4e9-513a-4e56-bb74-fcce9dd66f38"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{color}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="400" y="271" width="130" height="20" uuid="a44a18ea-443e-4659-adb6-64ef6b8837f9"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{clase}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="400" y="291" width="130" height="20" uuid="9382963b-c9f9-4243-9b19-43e728a1a4b9"/>
+				<reportElement x="339" y="291" width="130" height="20" uuid="9382963b-c9f9-4243-9b19-43e728a1a4b9"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{modelo}]]></textFieldExpression>
 			</textField>
@@ -308,7 +308,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<textFieldExpression><![CDATA[$F{fecha_inspeccion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="379" y="172" width="160" height="20" uuid="f3f75d62-85b2-476c-b4c5-44937f13f446"/>
+				<reportElement x="379" y="172" width="170" height="20" uuid="f3f75d62-85b2-476c-b4c5-44937f13f446"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{lugar_inspeccion}]]></textFieldExpression>
 			</textField>
@@ -328,7 +328,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<textFieldExpression><![CDATA[$F{examen_visual_conforme}?"CONFORME":"NO CONFORME"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="379" y="213" width="160" height="20" uuid="7aaeb208-24e2-443f-a7cf-549a4174919f"/>
+				<reportElement x="379" y="213" width="170" height="20" uuid="7aaeb208-24e2-443f-a7cf-549a4174919f"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{gases_escape_conforme}? "CONFORME": "NO CONFORME"]]></textFieldExpression>
 			</textField>
@@ -342,13 +342,23 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{uuid}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="391" y="270" width="159" height="20" uuid="fe4d9c8c-b896-442b-82c6-52ea48aa398e"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tipocombustible_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="311" width="155" height="20" uuid="723fa203-86b1-4510-bb42-859188a08097"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{clasevehiculo_nombre}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="20"/>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch"/>
+		<band height="22" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
 		<band height="208">
@@ -361,7 +371,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 			</staticText>
 			<textField>
 				<reportElement x="20" y="15" width="500" height="51" uuid="e189fbe4-253c-4dd9-99ad-6831bc51ace1"/>
-				<textFieldExpression><![CDATA["Se otorga un plazo hasta el dia" + $F{fecha_asistencia} + " y hora de asistencia " + $F{hora_asistencia} + " para que el vehículo sea sometido a mantenimiento y vuelva a cumplir con los " + " estándares de emisiones establecidos." +
+				<textFieldExpression><![CDATA["Se otorga un plazo hasta el dia" +"fecha_asistencia" + " y hora de asistencia " + "hora_asistencia" + " para que el vehículo sea sometido a mantenimiento y vuelva a cumplir con los " + " estándares de emisiones establecidos." +
 " El propietario deberá presentar el informe de mantenimiento y prueba de emisiones ante la " +
 " Dirección de Medio Ambiente. "]]></textFieldExpression>
 			</textField>
@@ -403,7 +413,7 @@ left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion]]>
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre_notificador}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{nombre_inspector}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="280" y="74" width="190" height="30" uuid="b21bbe72-ef5b-4a6e-a8c5-d30debbbf6ed"/>

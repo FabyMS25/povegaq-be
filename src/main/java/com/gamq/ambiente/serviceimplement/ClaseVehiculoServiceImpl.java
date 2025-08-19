@@ -65,9 +65,9 @@ public class ClaseVehiculoServiceImpl implements ClaseVehiculoService {
     @Override
     public ClaseVehiculoDto eliminarClaseVehiculo(String uuid) {
         ClaseVehiculo claseVehiculo = obtenerClaseVehiculoPorUuidOThrow(uuid);
-       // if(!claseVehiculo.getClaseVehiculoList().isEmpty()){
-       //     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el claseVehiculo ya esta siendo usado por las inspecciones");
-       // }
+        if(!claseVehiculo.getTipoClaseVehiculoList().isEmpty()){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "La claseVehiculo ya esta siendo usado tipo clase vehiculo");
+        }
         claseVehiculoRepository.delete(claseVehiculo);
         return ClaseVehiculoMapper.toClaseVehiculoDto(claseVehiculo);
     }
