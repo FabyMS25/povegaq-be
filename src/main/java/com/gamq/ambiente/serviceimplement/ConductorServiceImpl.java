@@ -158,9 +158,9 @@ public class ConductorServiceImpl implements ConductorService {
         Optional<Conductor> optionalConductor = conductorRepository.findOne(Example.of(conductorQBE));
         if(optionalConductor.isPresent()){
             Conductor conductor = optionalConductor.get();
-          //  if(!conductor.getInspeccionList().isEmpty()){
-          //      throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Conductor ya esta siendo usado por las inspecciones");
-          //  }
+            if (!conductor.getInspeccionList().isEmpty()){
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el Conductor ya esta siendo usado por las inspecciones");
+            }
             conductorRepository.delete(conductor);
             return ConductorMapper.toConductorDto(conductor);
         }

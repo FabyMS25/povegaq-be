@@ -15,4 +15,6 @@ public interface ConductorRepository  extends JpaRepository<Conductor, Long> {
     @Query("SELECT case when count(c) > 0 then true else false end FROM Conductor c WHERE lower(rtrim(ltrim(c.numeroDocumento))) = lower(rtrim(ltrim(:numeroDocumento))) AND c.uuid <> :uuidConductor")
     boolean exitsConductorLikeNumeroDocumento(@Param("numeroDocumento") String numeroDocumento,
                                               @Param("uuidConductor") String uuidConductor);
+    @Query("SELECT case when count(c) > 0 then true else false end FROM Conductor c WHERE c.tipoContribuyente.uuid = :uuidTipoContribuyente")
+    boolean exitsConductorWithUuidTipoContribuyente(@Param("uuidTipoContribuyente") String uuidTipoContribuyente);
 }

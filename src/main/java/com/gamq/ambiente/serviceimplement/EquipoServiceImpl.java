@@ -6,6 +6,7 @@ import com.gamq.ambiente.exceptions.BlogAPIException;
 import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.Equipo;
 import com.gamq.ambiente.repository.EquipoRepository;
+import com.gamq.ambiente.repository.InspeccionRepository;
 import com.gamq.ambiente.service.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import java.util.stream.Collectors;
 public class EquipoServiceImpl implements EquipoService {
     @Autowired
     EquipoRepository equipoRepository;
+    @Autowired
+    InspeccionRepository inspeccionRepository;
     @Override
     public EquipoDto obtenerEquipoPorUuid(String uuid) {
         Equipo equipo = obtenerEquipoPorUuidOThrow(uuid);
@@ -62,9 +65,9 @@ public class EquipoServiceImpl implements EquipoService {
     @Override
     public EquipoDto eliminarEquipo(String uuid) {
         Equipo equipo = obtenerEquipoPorUuidOThrow(uuid);
-        // if(!equipo.getEquipoInspeccionList().isEmpty()){
-        //     throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el equipo ya esta siendo usado por las inspecciones");
-        // }
+        if (inspeccionRepository.exitsInspeccionWithUuidEquipo(uuid)){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el equipo ya esta siendo usado por las inspecciones");
+        }
         equipoRepository.delete(equipo);
         return EquipoMapper.toEquipoDto(equipo);
     }

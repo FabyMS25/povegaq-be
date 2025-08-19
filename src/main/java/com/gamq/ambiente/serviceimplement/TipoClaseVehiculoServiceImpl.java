@@ -7,6 +7,7 @@ import com.gamq.ambiente.exceptions.ResourceNotFoundException;
 import com.gamq.ambiente.model.ClaseVehiculo;
 import com.gamq.ambiente.model.TipoClaseVehiculo;
 import com.gamq.ambiente.repository.ClaseVehiculoRepository;
+import com.gamq.ambiente.repository.DatoTecnicoRepository;
 import com.gamq.ambiente.repository.TipoClaseVehiculoRepository;
 import com.gamq.ambiente.service.TipoClaseVehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class TipoClaseVehiculoServiceImpl implements TipoClaseVehiculoService {
     TipoClaseVehiculoRepository tipoClaseVehiculoRepository;
     @Autowired
     ClaseVehiculoRepository claseVehiculoRepository;
+    @Autowired
+    DatoTecnicoRepository datoTecnicoRepository;
 
     @Override
     public TipoClaseVehiculoDto obtenerTipoClaseVehiculoPorUuid(String uuid) {
@@ -79,9 +82,9 @@ public class TipoClaseVehiculoServiceImpl implements TipoClaseVehiculoService {
     @Override
     public TipoClaseVehiculoDto eliminarTipoClaseVehiculo(String uuid) {
         TipoClaseVehiculo tipoClaseVehiculo = obtenerTipoClaseVehiculoPorUuidOThrow(uuid);
-      //  if(!tipoClaseVehiculo.getTipoClaseVehiculoInspeccionList().isEmpty()){
-      //      throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipoClaseVehiculo ya esta siendo usado por las inspecciones");
-      //  }
+        if (datoTecnicoRepository.exitsDatoTecnicoUuidTipoClaseVehiculo(uuid)) {
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipoClaseVehiculo ya esta siendo usado por los datos tecnicos");
+        }
         tipoClaseVehiculoRepository.delete(tipoClaseVehiculo);
         return TipoClaseVehiculoMapper.toTipoClaseVehiculoDto(tipoClaseVehiculo);
     }
