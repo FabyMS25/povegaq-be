@@ -410,7 +410,8 @@ public class ReporteController {
     @RequestMapping( value = "/infraccion-resumen", method= RequestMethod.GET)
     @ResponseBody
     public void generarResumenInfraccion(
-         //   @RequestParam( name = "uuidVehiculo") String uuidVehiculo,
+            @RequestParam( name = "fechaInicio") Date fechaInicio,
+            @RequestParam( name = "fechaFin") Date fechaFin,
             @RequestHeader Map<String, String> headers,
             HttpServletResponse response
     )
@@ -418,24 +419,15 @@ public class ReporteController {
         try {
             String nombreUsuario = headers.getOrDefault("usuario", "Admin");
             HashMap<String, Object> parametros = new HashMap<String,Object>();
-            String lugarInspeccion="";
-            Date fechaActual =  new Date();
-            String nombreCompleto = "";
-
-           // if (!uuidVehiculo.equalsIgnoreCase("0")) {
-                //  InfraccionDto infraccionDto =  infraccionService.obtenerInfraccionPorUuid(infraccionUuid);
-                //  lugarInspeccion = infraccionDto.getInspeccionDto().getLugarInspeccion();
-                // Optional<Inspeccion> inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid());
-                //   nombreCompleto= NombreContribuyenteUtil.resolverNombreContribuyente(inspeccion.get());
-           // }
 
             parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
             parametros.put("usuario", nombreUsuario);
             parametros.put("subtitulo", "");
-            //parametros.put("lugarInspeccion", lugarInspeccion);
-            parametros.put("fechaActual", fechaActual);
-            //parametros.put("uuidVehiculo", uuidVehiculo);
-            //parametros.put("nombreCompleto", nombreCompleto);
+            ZoneId zona = ZoneId.of(zonaHorario);
+            Date fechaInicioAjustada = FechaUtil.ajustarFechaInicioDia(fechaInicio, zona);
+            Date fechaFinAjustada = FechaUtil.ajustarFechaFinDia(fechaFin, zona);
+            parametros.put("fechaInicial", new Timestamp(fechaInicioAjustada.getTime()));
+            parametros.put("fechaFinal", new Timestamp(fechaFinAjustada.getTime()));
 
             generadorReporte.generarSqlReportePdf(
                     "reporte_resumen_recaudacion",
@@ -449,5 +441,37 @@ public class ReporteController {
         }
     }
 
+    @RequestMapping( value = "/infraccion-detalle-pago", method= RequestMethod.GET)
+    @ResponseBody
+    public void generarDetallePagoInfraccion(
+            @RequestParam( name = "fechaInicio") Date fechaInicio,
+            @RequestParam( name = "fechaFin") Date fechaFin,
+            @RequestHeader Map<String, String> headers,
+            HttpServletResponse response
+    )
+    {
+        try {
+            String nombreUsuario = headers.getOrDefault("usuario", "Admin");
+            HashMap<String, Object> parametros = new HashMap<String,Object>();
 
+            parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("usuario", nombreUsuario);
+            parametros.put("subtitulo", "");
+            ZoneId zona = ZoneId.of(zonaHorario);
+            Date fechaInicioAjustada = FechaUtil.ajustarFechaInicioDia(fechaInicio, zona);
+            Date fechaFinAjustada = FechaUtil.ajustarFechaFinDia(fechaFin, zona);
+            parametros.put("fechaInicial", new Timestamp(fechaInicioAjustada.getTime()));
+            parametros.put("fechaFinal", new Timestamp(fechaFinAjustada.getTime()));
+
+            generadorReporte.generarSqlReportePdf(
+                    "reporte_pago_infraccion_detallado",
+                    "classpath:report/reporte_pago_infraccion_detallado.jrxml",
+                    parametros,
+                    response
+            );
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
 }

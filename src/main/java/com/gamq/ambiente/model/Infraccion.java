@@ -88,7 +88,7 @@ public class Infraccion {
 
     @Override
     public String toString() {
-        return "Inspeccion{" +
+        return "Infraccion{" +
                 "idInfraccion=" + idInfraccion +
                 ", uuid='" + uuid + '\'' +
                 ", fechaInfraccion=" + fechaInfraccion +
