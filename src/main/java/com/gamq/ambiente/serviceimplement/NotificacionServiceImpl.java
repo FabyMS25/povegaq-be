@@ -295,7 +295,9 @@ public class NotificacionServiceImpl implements NotificacionService {
                                    vi.getPuedeEmitirNuevaNotificacion(),
                                    vi.getProximoTipoNotificacion())
                    );
-
+                   if (!notificacionIntentoDto.isPresent()) {
+                       continue;
+                   }
                    Notificacion notificacion = new Notificacion();
                    notificacion.setActividad(inspeccion.getActividad().getTipoActividad());
 
@@ -322,7 +324,7 @@ public class NotificacionServiceImpl implements NotificacionService {
                        notificacion.setObservacion("No adecuó el vehículo dentro de los 90 días posteriores a la segunda inspección.");
                        notificacion.setSancion("Multa 3er grado por incumplimiento final");
                        notificacion.setNumeroIntento(3);
-                   }
+                   } else { continue;}
 
                    notificacion.setInspeccion(inspeccion);
 

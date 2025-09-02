@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="681"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="307"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="593"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="396"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="188"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -33,37 +33,63 @@
 	<parameter name="qr" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[select i.uuid, i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector, i.resultado, i.observacion, i.examen_visual_conforme, i.gases_escape_conforme
-,v.placa, dt.modelo, dt.marca, dt.year_fabricacion, cv.nombre as clasevehiculo_nombre
-,tc.nombre as tipocombustible_nombre
-,di.nro_ejecucion, di.resultado_parcial, di.valor, di.limite_permisible, tp.nombre as tipoparametro_nombre
-,inf.fecha_infraccion, ti.grado, ti.articulo, ti.descripcion
-,cer.es_valido,cer.fecha_emision, cer.fecha_vencimiento
-,noti.fecha_notificacion, noti.numero_notificacion, noti.observacion as observacion_notificacion
-, inf.monto_total, inf.estado_pago
-from inspecciones as i 
-left join vehiculos as v on v.id_vehiculo = i.id_vehiculo
-left join vehiculo_tipo_combustible as vtc on vtc.id_vehiculo = v.id_vehiculo
-left join tipo_combustibles as tc on tc.id_tipo_combustible = vtc.id_tipo_combustible
-left join datos_tecnicos as dt on dt.id_vehiculo = v.id_vehiculo
-left join tipo_clase_vehiculo as tcv on tcv.id_tipo_clase_vehiculo = dt.id_tipo_clase_vehiculo
-left join clase_vehiculo as cv on cv.id_clase_vehiculo = tcv.id_clase_vehiculo
-left join detalle_inspecciones as di on di.id_inspeccion = i.id_inspeccion
-left join tipo_parametros as tp on tp.id_tipo_parametro = di.id_tipo_parametro
-left join infracciones as inf on inf.id_inspeccion = i.id_inspeccion
+		<![CDATA[SELECT 
+  i.uuid, di.id_detalle_inspeccion, inf.id_infraccion, noti.id_notificacion, cer.id_certificado, i.fecha_inspeccion, i.lugar_inspeccion, i.nombre_inspector, 
+  i.resultado, i.observacion, i.examen_visual_conforme, i.gases_escape_conforme,
 
-left join propietarios as pro on pro.id_propietario = v.id_propietario
-left join tipo_contribuyentes as tcont on tcont.id_tipo_contribuyente = pro.id_tipo_contribuyente
+  v.placa, dt.modelo, dt.marca, dt.year_fabricacion, 
+  cv.nombre AS clasevehiculo_nombre,
+  tc.nombre AS tipocombustible_nombre,
 
-left join tipo_infracciones as ti on ti.id_tipo_infraccion = inf.id_tipo_infraccion and ti.id_tipo_contribuyente = tcont.id_tipo_contribuyente
+  di.nro_ejecucion, di.resultado_parcial, di.valor, di.limite_permisible, 
+  tp.nombre AS tipoparametro_nombre,
 
-left join certificados as cer on cer.id_inspeccion = i.id_inspeccion
+  inf.fecha_infraccion, ti.grado, ti.articulo, ti.descripcion AS infraccion_descripcion,
+  inf.monto_total, inf.estado_pago,
 
-left join notificaciones as noti on noti.id_inspeccion = i.id_inspeccion
-where v.uuid = $P{uuidVehiculo} 
-]]>
+  cer.es_valido, cer.fecha_emision, cer.fecha_vencimiento,
+
+  noti.fecha_notificacion, noti.numero_notificacion, noti.observacion AS observacion_notificacion,
+  
+  CASE WHEN di.id_detalle_inspeccion IS NOT NULL THEN true ELSE false END AS tiene_medicion,
+  CASE WHEN inf.id_infraccion IS NOT NULL THEN true ELSE false END AS tiene_infraccion,
+  CASE WHEN noti.id_notificacion IS NOT NULL THEN true ELSE false END AS tiene_notificacion,
+  CASE WHEN cer.id_certificado IS NOT NULL THEN true ELSE false END AS tiene_certificacion
+
+FROM inspecciones AS i 
+LEFT JOIN vehiculos AS v ON v.id_vehiculo = i.id_vehiculo
+LEFT JOIN vehiculo_tipo_combustible AS vtc ON vtc.id_vehiculo = v.id_vehiculo
+LEFT JOIN tipo_combustibles AS tc ON tc.id_tipo_combustible = vtc.id_tipo_combustible
+LEFT JOIN datos_tecnicos AS dt ON dt.id_vehiculo = v.id_vehiculo
+LEFT JOIN tipo_clase_vehiculo AS tcv ON tcv.id_tipo_clase_vehiculo = dt.id_tipo_clase_vehiculo
+LEFT JOIN clase_vehiculo AS cv ON cv.id_clase_vehiculo = tcv.id_clase_vehiculo
+
+LEFT JOIN detalle_inspecciones AS di ON di.id_inspeccion = i.id_inspeccion
+LEFT JOIN tipo_parametros AS tp ON tp.id_tipo_parametro = di.id_tipo_parametro
+
+LEFT JOIN infracciones AS inf ON inf.id_inspeccion = i.id_inspeccion
+
+LEFT JOIN propietarios AS pro ON pro.id_propietario = v.id_propietario
+LEFT JOIN conductores AS con ON con.id_conductor = i.id_conductor
+
+LEFT JOIN tipo_contribuyentes AS tcont 
+  ON tcont.id_tipo_contribuyente = COALESCE(con.id_tipo_contribuyente, pro.id_tipo_contribuyente)
+
+LEFT JOIN tipo_infracciones AS ti 
+  ON ti.id_tipo_infraccion = inf.id_tipo_infraccion 
+  AND ti.id_tipo_contribuyente = tcont.id_tipo_contribuyente
+
+LEFT JOIN certificados AS cer ON cer.id_inspeccion = i.id_inspeccion
+LEFT JOIN notificaciones AS noti ON noti.id_inspeccion = i.id_inspeccion AND noti.estado = false
+
+
+where v.uuid = $P{uuidVehiculo}]]>
 	</queryString>
 	<field name="uuid" class="java.lang.String"/>
+	<field name="id_detalle_inspeccion" class="java.lang.Long"/>
+	<field name="id_infraccion" class="java.lang.Long"/>
+	<field name="id_notificacion" class="java.lang.Long"/>
+	<field name="id_certificado" class="java.lang.Long"/>
 	<field name="fecha_inspeccion" class="java.util.Date"/>
 	<field name="lugar_inspeccion" class="java.lang.String"/>
 	<field name="nombre_inspector" class="java.lang.String"/>
@@ -85,25 +111,450 @@ where v.uuid = $P{uuidVehiculo}
 	<field name="fecha_infraccion" class="java.sql.Date"/>
 	<field name="grado" class="java.lang.String"/>
 	<field name="articulo" class="java.lang.String"/>
-	<field name="descripcion" class="java.lang.String"/>
+	<field name="infraccion_descripcion" class="java.lang.String"/>
+	<field name="monto_total" class="java.math.BigDecimal"/>
+	<field name="estado_pago" class="java.lang.Boolean"/>
 	<field name="es_valido" class="java.lang.Boolean"/>
 	<field name="fecha_emision" class="java.sql.Date"/>
 	<field name="fecha_vencimiento" class="java.sql.Date"/>
 	<field name="fecha_notificacion" class="java.sql.Date"/>
 	<field name="numero_notificacion" class="java.lang.String"/>
 	<field name="observacion_notificacion" class="java.lang.String"/>
-	<field name="monto_total" class="java.math.BigDecimal"/>
-	<field name="estado_pago" class="java.lang.Boolean"/>
+	<field name="tiene_medicion" class="java.lang.Boolean"/>
+	<field name="tiene_infraccion" class="java.lang.Boolean"/>
+	<field name="tiene_notificacion" class="java.lang.Boolean"/>
+	<field name="tiene_certificacion" class="java.lang.Boolean"/>
 	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
 	</variable>
 	<group name="Group1">
 		<groupHeader>
-			<band height="35"/>
+			<band height="181">
+				<staticText>
+					<reportElement x="30" y="158" width="90" height="20" uuid="ceb01f92-a016-4050-b04b-0da976b42322"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Clase Vehiculo:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="120" y="158" width="155" height="20" uuid="723fa203-86b1-4510-bb42-859188a08097"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{clasevehiculo_nombre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="284" y="158" width="117" height="20" uuid="b7bd5da8-b775-444f-893f-01ff9d1d7d1c"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Año de Fabricación:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="405" y="158" width="106" height="20" uuid="e84eee51-2c6c-420a-9ce1-a06d9239b831"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{year_fabricacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="30" y="137" width="50" height="20" uuid="142ad339-9701-488e-bd67-1f0d0640d270"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Marca:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="80" y="137" width="200" height="20" uuid="1b07ab06-656c-4818-a2e7-cf27f76c3ccf"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="283" y="137" width="53" height="20" uuid="f0be64e0-2811-447f-b9f6-2cfabb49783e"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Modelo:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="339" y="137" width="130" height="20" uuid="5d35a610-8d3c-4e04-98e3-071a41072fc7"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{modelo}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="30" y="117" width="50" height="20" uuid="0d747976-57a7-4910-b3be-d4229c7754f8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Placa:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="80" y="117" width="200" height="20" uuid="d7346192-50ff-4d44-88de-33debddf5456"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="283" y="117" width="107" height="20" uuid="eb3de7b2-01b8-44c8-8cb3-9d4a93282f6f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo Combustible:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="391" y="117" width="159" height="20" uuid="7cc70d21-7f5f-4a3b-ae85-2841dba3b296"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{tipocombustible_nombre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="101" width="269" height="16" uuid="dff304cd-28c2-4463-8480-617d9d7478c1"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATOS DEL VEHICULO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="31" y="81" width="78" height="20" uuid="2187497d-f960-4e83-b814-8bbcc156a3e9"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Descripcion:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="108" y="81" width="410" height="20" uuid="fdc439c6-9315-45a0-b4f0-a6c478511056"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{observacion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="121" y="61" width="148" height="20" uuid="b81c2c96-ec64-422d-92b5-7812ad463235"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{examen_visual_conforme}?"CONFORME":"NO CONFORME"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="31" y="61" width="90" height="20" uuid="9a3d1f5e-ccaf-41bf-9368-ae23af3f62b4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Examen Visual:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="380" y="61" width="170" height="20" uuid="d357f697-f82c-46d3-a39e-f39d5c44f28c"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{gases_escape_conforme}? "CONFORME": "NO CONFORME"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="276" y="61" width="104" height="20" uuid="3b3fe96f-04b1-4ce0-b356-42e678262cd3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Gases de Escape:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="31" y="41" width="68" height="20" uuid="45a19a47-3648-4d82-9e04-6c5b881cf800"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Inspector:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="99" y="41" width="170" height="20" uuid="bb800397-c8a7-494a-b2d7-887cc6a2d1fe"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{nombre_inspector}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="276" y="41" width="64" height="20" uuid="8b87ef7a-ee86-487a-a715-5ae26d20a6d8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Resultado:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="340" y="41" width="130" height="20" uuid="5e3e5209-3549-4e12-81a3-071703d66fce"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{resultado} ? "APROBADO" : "RECHAZADO"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="31" y="21" width="110" height="20" uuid="9a5b8aa3-425a-453a-a108-ca653d62e5e5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Inspeccion:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="138" y="21" width="120" height="20" uuid="dc010e6d-d262-4e55-a442-3b584901f9db"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{fecha_inspeccion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="276" y="21" width="104" height="20" uuid="59ac360d-2580-461e-9f25-e4f3be9af5b6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Lugar Inspeccion:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="380" y="21" width="170" height="20" uuid="f43071de-8bfd-4e88-8c4f-1f1f0ef888c2"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{lugar_inspeccion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="1" width="526" height="20" uuid="f6529246-5712-42bf-8865-afc6bab901b8"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATOS DE LA INSPECCION]]></text>
+				</staticText>
+			</band>
 		</groupHeader>
-		<groupFooter>
-			<band height="50"/>
-		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupHeader>
+			<band height="65">
+				<printWhenExpression><![CDATA[$F{tiene_medicion}]]></printWhenExpression>
+				<textField>
+					<reportElement x="35" y="40" width="62" height="20" isPrintWhenDetailOverflows="true" uuid="453a6612-7f13-4390-95d6-2be93472efdf">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="59022714-6af1-43c8-afe7-d54e8514c292"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{nro_ejecucion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="180" y="39" width="91" height="20" isPrintWhenDetailOverflows="true" uuid="a3c60c5e-4e31-4537-bd36-828cbc1c251e">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e02fcaaf-5bfc-4480-82a6-3face6bf20d9"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="270" y="40" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="b383acc1-17b1-4b07-a135-730876b0efdb">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="ab2636d7-b857-48b3-8e0f-cd2552b0525e"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{limite_permisible}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="371" y="40" width="69" height="20" isPrintWhenDetailOverflows="true" uuid="9d3e4ceb-aeec-48c4-88f0-a6ef34650c66">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="3613f333-c445-4a5c-a836-1e29bd3b7b6c"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{resultado_parcial}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="20" y="1" width="269" height="20" uuid="aa9d3bfa-6daa-475e-b52c-95fc83e74410"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[RESULTADOS DE MEDICION DE GASES]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="21" width="81" height="18" uuid="ed15157b-39de-4fe8-8695-e3d2dd55cca4"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Parametro]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="440" y="39" width="105" height="20" uuid="450f64fe-3bd3-4cb9-9514-5732bb2db6b2"/>
+					<textFieldExpression><![CDATA[$F{tipocombustible_nombre}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="97" y="40" width="83" height="20" isPrintWhenDetailOverflows="true" uuid="e77689f6-f9df-460c-9e66-3bc382bc0c7c">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="4023ec59-5544-463b-b6b1-8b49e4c1424e"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{tipoparametro_nombre}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="35" y="21" width="62" height="18" uuid="4eedf799-1073-4338-96e9-cd880e2286f5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nro.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="180" y="21" width="90" height="18" uuid="07c182f6-c730-4444-93e6-7ef1ce6d3886"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Valor]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="269" y="21" width="101" height="18" uuid="37e49d65-61a2-47ed-96b4-631e7665946f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Limite Permisible]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="370" y="21" width="70" height="18" uuid="e6f8de90-cbb7-4995-88fd-0b547b7ab04d"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Resultado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="440" y="21" width="105" height="18" uuid="87392414-d196-4fdc-9267-4c2670502a2f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo Combustible]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group3">
+		<groupHeader>
+			<band height="58">
+				<printWhenExpression><![CDATA[$F{tiene_certificacion}]]></printWhenExpression>
+				<staticText>
+					<reportElement x="18" y="1" width="269" height="20" uuid="9497368c-c81e-4e73-b536-0cd4c2ff5945"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[CERTIFICADO EMISION]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="35" y="15" width="86" height="20" uuid="5a73ebec-a9c6-4f00-b315-8b0a57952238"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Es valido]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="126" y="15" width="110" height="20" uuid="322c0834-b229-44d2-be7c-a3054dfa7c78"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Emision]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="251" y="14" width="110" height="20" uuid="d8bd0e11-0ee7-4752-8c9e-25b2b9f5c3b8"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Vencimiento]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="35" y="34" width="86" height="20" uuid="14d0f291-bb6b-41d0-83e4-3bb33011116f"/>
+					<textFieldExpression><![CDATA[$F{es_valido}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="127" y="35" width="110" height="20" uuid="94f29420-0f1f-4390-8db0-e2ae27ac81ea"/>
+					<textFieldExpression><![CDATA[$F{fecha_emision}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="251" y="35" width="149" height="20" uuid="6ba82ba9-2545-4d68-ab36-914933b485ee"/>
+					<textFieldExpression><![CDATA[$F{fecha_vencimiento}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group4">
+		<groupHeader>
+			<band height="59">
+				<printWhenExpression><![CDATA[$F{tiene_infraccion}]]></printWhenExpression>
+				<staticText>
+					<reportElement x="20" y="2" width="269" height="20" uuid="2f6efb8e-0fd6-4225-a44a-f31ea2577866"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[INFRACCIONES REGISTRADAS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="35" y="15" width="86" height="20" uuid="ad0f3941-a9dd-47e6-8d0b-99fbfb010e89"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Articulo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="120" y="16" width="81" height="20" uuid="3efc0e67-80ec-4473-a448-d9d09c5b0ce6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Grado]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="322" y="16" width="108" height="20" uuid="e75f736f-f2ad-43cc-9053-c6123f035dfe"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Monto]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="203" y="15" width="118" height="20" uuid="5e2caa04-0667-4d2f-8ec6-f62304f10b16"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Descripcion]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="430" y="14" width="100" height="20" uuid="d3d3786c-7239-4252-b377-e0bc1e61f07f"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Estado Pago]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="34" y="37" width="86" height="20" uuid="fdffa29a-f6fa-4ad5-bcae-2f33ff54fb2c"/>
+					<textFieldExpression><![CDATA[$F{articulo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="120" y="37" width="80" height="20" uuid="98a8e48d-8361-4ab4-9d93-dd3a2fb15362"/>
+					<textFieldExpression><![CDATA[$F{grado}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="203" y="37" width="118" height="20" uuid="b35e5b04-569d-47ae-9cb7-5ac0c1d551f0"/>
+					<textFieldExpression><![CDATA[$F{infraccion_descripcion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="322" y="36" width="108" height="20" uuid="8a163594-18f7-4784-90a5-2ca6087c7aef"/>
+					<textFieldExpression><![CDATA[$F{monto_total}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="430" y="36" width="100" height="20" uuid="2afefe8c-f0bd-4e5a-8cc0-d5bc18e5a64c"/>
+					<textFieldExpression><![CDATA[$F{estado_pago}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group5">
+		<groupHeader>
+			<band height="58">
+				<printWhenExpression><![CDATA[$F{tiene_notificacion}]]></printWhenExpression>
+				<staticText>
+					<reportElement x="20" y="1" width="269" height="20" uuid="5aa60a67-4d4d-4898-ae1a-7cbdf0a5e806"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[NOTIFICACIONES]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="162" y="37" width="100" height="20" isPrintWhenDetailOverflows="true" uuid="c8aa053c-e84a-4705-ad90-ce873c693476"/>
+					<textFieldExpression><![CDATA[$F{fecha_notificacion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="35" y="36" width="124" height="20" isPrintWhenDetailOverflows="true" uuid="e36bffac-96d7-427e-a0b5-d7aa6ddbc205"/>
+					<textFieldExpression><![CDATA[$F{numero_notificacion}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="316" y="37" width="180" height="20" isPrintWhenDetailOverflows="true" uuid="e533b294-025b-43dc-be84-3f9312055691"/>
+					<textFieldExpression><![CDATA[$F{observacion_notificacion}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="35" y="15" width="50" height="20" uuid="d2736bcb-7cd2-4cd2-83fd-96db1769f888"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[numero]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="161" y="15" width="114" height="20" uuid="5fafccef-fdb8-4aa5-be69-2b0decd0b6d5"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fecha Notificacion]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="316" y="15" width="142" height="20" uuid="02f47395-267e-4484-8f11-31038b643663"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Observacion]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
 	</group>
 	<background>
 		<band splitType="Stretch"/>
@@ -114,7 +565,7 @@ where v.uuid = $P{uuidVehiculo}
 		</band>
 	</title>
 	<pageHeader>
-		<band height="355" splitType="Stretch">
+		<band height="139" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<image scaleImage="FillFrame" onErrorType="Blank">
 				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
@@ -124,7 +575,7 @@ where v.uuid = $P{uuidVehiculo}
 				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{logo64}))]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="19" y="64" width="530" height="72" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
+				<reportElement x="10" y="70" width="546" height="68" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="26" isBold="true"/>
 					<paragraph lineSpacingSize="0.0"/>
@@ -163,282 +614,55 @@ where v.uuid = $P{uuidVehiculo}
 				</textElement>
 				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="160" y="136" width="86" height="20" uuid="4a3cd678-7046-47f1-813a-2f990f76ce8d"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Codigo:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="21" y="153" width="526" height="20" uuid="7a84c041-933e-47f8-bae7-b0fb0bda84ef"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DATOS DE LA INSPECCION]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="173" width="110" height="20" uuid="7e8b9c2e-70d6-4036-a108-1a903e14c86b"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Fecha Inspeccion:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="275" y="172" width="104" height="20" uuid="49a96fd1-5ee6-44a6-88f4-5f11aac1c03e"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Lugar Inspeccion:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="254" width="269" height="16" uuid="f2f39e6c-fd07-46cf-8cf1-279d93ca9fc1"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DATOS DEL VEHICULO]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="271" width="50" height="20" uuid="d30bd069-055b-4307-95ca-1ebbbacf046c"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Placa:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="291" width="50" height="20" uuid="b85107a8-5cfe-43d8-850e-557840f5b255"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Marca:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="283" y="271" width="107" height="20" uuid="2e8754fa-7836-40d5-b1b0-e1685dd57251"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Tipo Combustible:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="283" y="291" width="53" height="20" uuid="2117baca-d1e1-48f7-9add-61e6aa4f028a"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Modelo:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="311" width="90" height="20" uuid="ceb01f92-a016-4050-b04b-0da976b42322"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Clase Vehiculo:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="283" y="311" width="117" height="20" uuid="b7bd5da8-b775-444f-893f-01ff9d1d7d1c"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Año de Fabricación:]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="80" y="271" width="200" height="20" uuid="eb94fc42-84f8-45ba-a199-a4d137081ffc"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{placa}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="80" y="291" width="200" height="20" uuid="a346d69f-70a5-42b2-b6ac-802556d6af0d"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{marca}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="339" y="291" width="130" height="20" uuid="9382963b-c9f9-4243-9b19-43e728a1a4b9"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{modelo}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="400" y="311" width="130" height="20" uuid="e84eee51-2c6c-420a-9ce1-a06d9239b831"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{year_fabricacion}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="30" y="213" width="90" height="20" uuid="e5ab478e-93bf-4eba-83c0-a5e4c388179d"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Examen Visual:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="31" y="193" width="68" height="20" uuid="42379bb1-7db7-45db-8d7d-e7cbd742777a"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Inspector:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="276" y="192" width="64" height="20" uuid="8e35a0c9-d614-4205-a1e0-41a5a3eeea48"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Resultado:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="275" y="213" width="104" height="20" uuid="e0ecb158-2a6b-4954-afa6-748ca8d2fe1a"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Gases de Escape:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="31" y="233" width="78" height="20" uuid="b61c5c9f-ce97-4b8f-807c-7bc7b424ff69"/>
-				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Descripcion:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="331" width="269" height="20" uuid="aa9d3bfa-6daa-475e-b52c-95fc83e74410"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RESULTADOS DE MEDICION DE GASES]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="137" y="173" width="120" height="20" uuid="e034e89f-6df2-4d2c-9875-4f625c0ee7ce"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{fecha_inspeccion}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="379" y="172" width="170" height="20" uuid="f3f75d62-85b2-476c-b4c5-44937f13f446"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{lugar_inspeccion}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="99" y="193" width="170" height="20" uuid="b56886a1-4e54-4931-a938-3b354f2d1e22"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{nombre_inspector}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="340" y="192" width="130" height="20" uuid="e8f1173b-900d-4cd2-a195-21fc3d6d5169"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{resultado} ? "APROBADO" : "RECHAZADO"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="120" y="213" width="148" height="20" uuid="9e867a65-98c4-4b2f-a5fd-6553f126dc8b"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{examen_visual_conforme}?"CONFORME":"NO CONFORME"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="379" y="213" width="170" height="20" uuid="7aaeb208-24e2-443f-a7cf-549a4174919f"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{gases_escape_conforme}? "CONFORME": "NO CONFORME"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="108" y="233" width="410" height="20" uuid="c8c325f3-1a8d-4c85-8f74-eabcc00242b6"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{observacion}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="246" y="136" width="214" height="20" uuid="ebb4300c-1b22-4bc9-8350-bf6d0db344ea"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{uuid}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="391" y="270" width="159" height="20" uuid="fe4d9c8c-b896-442b-82c6-52ea48aa398e"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{tipocombustible_nombre}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="120" y="311" width="155" height="20" uuid="723fa203-86b1-4510-bb42-859188a08097"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{clasevehiculo_nombre}]]></textFieldExpression>
-			</textField>
 		</band>
 	</pageHeader>
-	<columnHeader>
-		<band height="20"/>
-	</columnHeader>
-	<detail>
-		<band height="22" splitType="Stretch"/>
-	</detail>
-	<columnFooter>
-		<band height="208">
-			<staticText>
-				<reportElement x="20" y="0" width="269" height="20" uuid="9497368c-c81e-4e73-b536-0cd4c2ff5945"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[CERTIFICADO EMISION]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="20" y="15" width="500" height="51" uuid="e189fbe4-253c-4dd9-99ad-6831bc51ace1"/>
-				<textFieldExpression><![CDATA["Se otorga un plazo hasta el dia" +"fecha_asistencia" + " y hora de asistencia " + "hora_asistencia" + " para que el vehículo sea sometido a mantenimiento y vuelva a cumplir con los " + " estándares de emisiones establecidos." +
-" El propietario deberá presentar el informe de mantenimiento y prueba de emisiones ante la " +
-" Dirección de Medio Ambiente. "]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="20" y="70" width="269" height="20" uuid="2f6efb8e-0fd6-4225-a44a-f31ea2577866"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[INFRACCIONES REGISTRADAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="21" y="114" width="269" height="20" uuid="5aa60a67-4d4d-4898-ae1a-7cbdf0a5e806"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[NOTIFICACIONES]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="20" y="180" width="269" height="20" uuid="3c9f455b-3e8a-4e1e-8c18-0f24ed8ed401"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RECOMENDACIONES]]></text>
-			</staticText>
-		</band>
-	</columnFooter>
 	<pageFooter>
-		<band height="118" splitType="Stretch">
+		<band height="115" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="50" y="54" width="190" height="20" uuid="62ad9acb-dc54-421c-a954-64c3e4d9e077"/>
+				<reportElement x="49" y="73" width="190" height="20" uuid="62ad9acb-dc54-421c-a954-64c3e4d9e077"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FIRMA EL TECNICO]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="50" y="74" width="190" height="30" uuid="a8f75d7d-55cf-43cb-b822-478c8f4e0b64"/>
+				<reportElement x="49" y="93" width="190" height="18" uuid="a8f75d7d-55cf-43cb-b822-478c8f4e0b64"/>
 				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombre_inspector}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="280" y="74" width="190" height="30" uuid="b21bbe72-ef5b-4a6e-a8c5-d30debbbf6ed"/>
+				<reportElement x="279" y="93" width="190" height="18" uuid="b21bbe72-ef5b-4a6e-a8c5-d30debbbf6ed"/>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA["Aclaracion de Firma:"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="280" y="54" width="190" height="20" uuid="2d2f200a-2965-45a9-b2ac-61cd884aaa5c"/>
+				<reportElement x="279" y="73" width="190" height="20" uuid="2d2f200a-2965-45a9-b2ac-61cd884aaa5c"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[FIRMA DEL NOTIFICADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="21" y="-8" width="491" height="30" uuid="5640c78d-007f-4440-8f10-7d4e9fbac4f3"/>
-				<text><![CDATA[En caso de incumplimiento, se procederá conforme a lo establecido en la normativa vigente,
-pudiendo incluir:]]></text>
+				<reportElement x="30" y="17" width="516" height="16" uuid="5640c78d-007f-4440-8f10-7d4e9fbac4f3"/>
+				<text><![CDATA[En caso de incumplimiento, se procederá conforme a lo establecido en la normativa vigente, pudiendo incluir:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="20" y="22" width="176" height="20" uuid="15489136-aa43-4b26-bbec-68710f45927a"/>
+				<reportElement x="30" y="33" width="176" height="20" uuid="15489136-aa43-4b26-bbec-68710f45927a"/>
 				<text><![CDATA[• Retención temporal del vehículo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="19" y="35" width="250" height="20" uuid="4f4cb878-ec15-48f1-9fbb-41516feb4463"/>
+				<reportElement x="29" y="46" width="250" height="20" uuid="4f4cb878-ec15-48f1-9fbb-41516feb4463"/>
 				<text><![CDATA[• Suspensión del permiso de circulación]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="0" width="269" height="16" uuid="3c9f455b-3e8a-4e1e-8c18-0f24ed8ed401"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECOMENDACIONES]]></text>
 			</staticText>
 		</band>
 	</pageFooter>
