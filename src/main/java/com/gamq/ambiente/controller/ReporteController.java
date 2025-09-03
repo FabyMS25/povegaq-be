@@ -85,6 +85,7 @@ public class ReporteController {
             if (valorUFV != null) parametros.put("valorUFV", valorUFV);
 
             parametros.put("titulo", "UNIDAD DE MEDIO AMBIENTE");
+            parametros.put("subtitulo", "UNIDAD");
             parametros.put("criterio", estadoPago?"Pagadas":"Adeudadas");
             parametros.put("usuario", nombreUsuario);
             parametros.put("fechaActual", fechaActual);

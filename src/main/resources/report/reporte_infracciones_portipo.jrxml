@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="383"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="606"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="823"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="166"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="188"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="805"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -44,11 +44,13 @@
   , ti.descripcion, ti.articulo, ti.grado, ti.valor_ufv
 from infracciones as inf
 inner join  tipo_infracciones as ti on ti.id_tipo_infraccion = inf.id_tipo_infraccion
-inner join inspecciones as ins on ins.id_inspeccion = inf.id_inspeccion
-inner join vehiculos as v on v.id_vehiculo = ins.id_vehiculo
+left join inspecciones as ins on ins.id_inspeccion = inf.id_inspeccion
+inner join vehiculos as v on v.id_vehiculo =COALESCE( ins.id_vehiculo, inf.id_vehiculo)
 inner join propietarios as p on p.id_propietario = v.id_propietario
-where inf.estado = false and ti.estado = false and ins.estado = false
-and v.estado= false and p.estado = false and inf.estado_pago = $P{estadoPago} 
+where inf.estado = false and ti.estado = false and (ins.id_inspeccion is NULL  or  ins.estado = false)
+and v.estado= false and p.estado = false 
+
+and inf.estado_pago = $P{estadoPago} 
 AND inf.fecha_infraccion >= $P{fechaInicial}
 AND inf.fecha_infraccion < $P{fechaFinal}
   AND ($P{descripcion} IS NULL OR ti.descripcion = $P{descripcion})
@@ -61,10 +63,10 @@ select v.placa, c.nombre || ' ' || c.primer_apellido ||
   , ti.descripcion, ti.articulo, ti.grado, ti.valor_ufv
 from infracciones as inf
 inner join tipo_infracciones as ti on ti.id_tipo_infraccion = inf.id_tipo_infraccion
-inner join inspecciones as ins on ins.id_inspeccion = inf.id_inspeccion
-inner join vehiculos as v on v.id_vehiculo = ins.id_vehiculo
+left join inspecciones as ins on ins.id_inspeccion = inf.id_inspeccion
+inner join vehiculos as v on v.id_vehiculo = COALESCE( ins.id_vehiculo, inf.id_vehiculo)
 inner join conductores as c on c.id_conductor = ins.id_conductor
-where inf.estado = false and ti.estado = false and ins.estado = false
+where inf.estado = false and ti.estado = false and (ins.id_inspeccion is NULL or ins.estado = false)
 and v.estado= false and c.estado = false and inf.estado_pago = $P{estadoPago}
 AND inf.fecha_infraccion >= $P{fechaInicial}
 AND inf.fecha_infraccion < $P{fechaFinal}
@@ -238,7 +240,7 @@ AND inf.fecha_infraccion < $P{fechaFinal}
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="44" splitType="Stretch">
+		<band height="27" splitType="Stretch">
 			<textField>
 				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="20" height="20" uuid="b8d34f20-e290-455c-adba-5c71487eb937"/>
 				<box rightPadding="2">

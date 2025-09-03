@@ -109,7 +109,15 @@ public class InfraccionServiceImpl implements InfraccionService {
         {
             Inspeccion inspeccion = inspeccionRepository.findByUuid(infraccionDto.getInspeccionDto().getUuid())
                     .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
-             nuevoInfraccion.setInspeccion(inspeccion);
+            nuevoInfraccion.setInspeccion(inspeccion);
+        }
+        else {
+                // Si no se manda la inspeccion pero el vehículo tiene una inspección activa
+                List<Inspeccion> inspecciones = inspeccionRepository.findByVehiculoAndEstado(vehiculoOptional.get(), false);
+
+                if (!inspecciones.isEmpty()) {
+                    throw new RuntimeException("El vehículo tiene inspecciones registradas. Debe verificar si corresponde y enviar el UUID de una inspección.");
+                }
         }
 
         if(infraccionDto.getNotificacionDto() != null &&
@@ -118,6 +126,13 @@ public class InfraccionServiceImpl implements InfraccionService {
             Notificacion notificacion = notificacionRepository.findByUuid(infraccionDto.getNotificacionDto().getUuid())
                     .orElseThrow(()-> new ResourceNotFoundException("Notificacion", "uuid", infraccionDto.getNotificacionDto().getUuid()));
             nuevoInfraccion.setNotificacion(notificacion);
+        }
+        else {
+            // si no se manda la notificacion pero el vehiculo tiene una notificacion
+            Optional<Notificacion> notificacion = notificacionRepository.findFirstByPlacaOrderByFechaNotificacionDesc(vehiculoOptional.get().getPlaca());
+            if(!notificacion.isEmpty()){
+                throw new RuntimeException("El vehiculo tiene notificaciones registradas. Debe verificar si corresponde y enviar el UUID de la notificacion.");
+            }
         }
 
         nuevoInfraccion.setVehiculo(vehiculoOptional.get());
@@ -150,12 +165,27 @@ public class InfraccionServiceImpl implements InfraccionService {
                         .orElseThrow(()-> new ResourceNotFoundException("Inspeccion", "uuid", infraccionDto.getInspeccionDto().getUuid()));
                 updateInfraccion.setInspeccion(inspeccion);
             }
+            else {
+                // Si no se manda la inspeccion pero el vehículo tiene una inspección activa
+                List<Inspeccion> inspecciones = inspeccionRepository.findByVehiculoAndEstado(vehiculoOptional.get(), false);
+
+                if (!inspecciones.isEmpty()) {
+                    throw new RuntimeException("El vehículo tiene inspecciones registradas. Debe verificar si corresponde enviar el UUID de una inspección.");
+                }
+            }
 
             if(infraccionDto.getNotificacionDto() != null &&
                infraccionDto.getNotificacionDto().getUuid() != null){
                 Notificacion notificacion = notificacionRepository.findByUuid(infraccionDto.getNotificacionDto().getUuid())
                         .orElseThrow(()-> new ResourceNotFoundException("Notificacion", "uuid", infraccionDto.getNotificacionDto().getUuid()));
                 updateInfraccion.setNotificacion(notificacion);
+            }
+            else {
+                // si no se manda la notificacion pero el vehiculo tiene una notificacion
+                Optional<Notificacion> notificacion = notificacionRepository.findFirstByPlacaOrderByFechaNotificacionDesc(vehiculoOptional.get().getPlaca());
+                if(!notificacion.isEmpty()){
+                    throw new RuntimeException("El vehiculo tiene notificaciones registradas. Debe verificar si corresponde y enviar el UUID de la notificacion.");
+                }
             }
 
             updateInfraccion.setTipoInfraccion(tipoInfraccionOptional.get());

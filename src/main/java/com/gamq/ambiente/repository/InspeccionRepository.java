@@ -30,4 +30,6 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
 
     @Query("SELECT case when count(i) > 0 then true else false end FROM Inspeccion i WHERE i.equipo.uuid = :uuidEquipo")
     boolean exitsInspeccionWithUuidEquipo(@Param("uuidEquipo") String uuidEquipo);
+
+    List<Inspeccion> findByVehiculoAndEstado(Vehiculo vehiculo, boolean estado);
 }
