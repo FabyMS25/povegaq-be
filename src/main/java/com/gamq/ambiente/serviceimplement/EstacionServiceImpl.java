@@ -65,9 +65,9 @@ public class EstacionServiceImpl implements EstacionService {
     @Override
     public EstacionDto eliminarEstacion(String uuid) {
         Estacion estacion = obtenerEstacionPorUuidOThrow(uuid);
-      //  if(!estacion.getEstacionInspeccionList().isEmpty()){
-      //      throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el estacion ya esta siendo usado por las inspecciones");
-      //  }
+       if(!estacion.getMedicionAireList().isEmpty()){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el estacion ya esta siendo usado por las mediciones de aire");
+        }
         estacionRepository.delete(estacion);
         return EstacionMapper.toEstacionDto(estacion);
     }

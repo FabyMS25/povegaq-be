@@ -65,9 +65,9 @@ public class ContaminanteServiceImpl implements ContaminanteService {
     @Override
     public ContaminanteDto eliminarContaminante(String uuid) {
         Contaminante contaminante = obtenerContaminantePorUuidOThrow(uuid);
-      //  if(!contaminante.getContaminanteList().isEmpty()){
-      //      throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el contaminante ya esta siendo usado por las inspecciones");
-      //  }
+        if(!contaminante.getMedicionAireList().isEmpty()){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el contaminante ya esta siendo usado por las medicion del aire");
+        }
         contaminanteRepository.delete(contaminante);
         return ContaminanteMapper.toContaminanteDto(contaminante);
     }
