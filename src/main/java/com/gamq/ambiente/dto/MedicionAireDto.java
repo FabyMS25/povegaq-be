@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gamq.ambiente.model.Estacion;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,4 +27,7 @@ public class MedicionAireDto {
     private BigDecimal valor;
     private String estacion;
     private boolean estado;
+
+    private EstacionDto estacionDto;
+    private ContaminanteDto contaminanteDto;
 }

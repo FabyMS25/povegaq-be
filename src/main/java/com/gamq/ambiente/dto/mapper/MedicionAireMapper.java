@@ -1,5 +1,7 @@
 package com.gamq.ambiente.dto.mapper;
 
+import com.gamq.ambiente.dto.ContaminanteDto;
+import com.gamq.ambiente.dto.EstacionDto;
 import com.gamq.ambiente.dto.MedicionAireDto;
 import com.gamq.ambiente.model.MedicionAire;
 
@@ -11,8 +13,23 @@ public class MedicionAireMapper {
                 .setMes(medicionAire.getMes())
                 .setDia(medicionAire.getDia())
                 .setValor(medicionAire.getValor())
-                .setEstacion(medicionAire.getEstacion())
-                .setEstado(medicionAire.isEstado());
+                .setEstado(medicionAire.isEstado())
+                .setEstacionDto(medicionAire.getEstacion()==null? null: new EstacionDto()
+                        .setUuid(medicionAire.getEstacion().getUuid())
+                        .setNombre(medicionAire.getEstacion().getNombre())
+                        .setDescripcion(medicionAire.getEstacion().getDescripcion())
+                        .setTipo(medicionAire.getEstacion().getTipo())
+                        .setUbicacion(medicionAire.getEstacion().getUbicacion())
+                        .setEstado(medicionAire.getEstacion().isEstado())
+                )
+                .setContaminanteDto(medicionAire.getContaminante()==null? null: new ContaminanteDto()
+                        .setUuid(medicionAire.getContaminante().getUuid())
+                        .setNombre(medicionAire.getContaminante().getNombre())
+                        .setDescripcion(medicionAire.getContaminante().getDescripcion())
+                        .setEstado(medicionAire.getContaminante().isEstado())
+                )
+                //.setEstacion(medicionAire.getEstacion())
+                ;
     }
 
     public static MedicionAire toMedicionAire(MedicionAireDto medicionAireDto){
@@ -22,7 +39,7 @@ public class MedicionAireMapper {
                 .setMes(medicionAireDto.getMes())
                 .setDia(medicionAireDto.getDia())
                 .setValor(medicionAireDto.getValor())
-                .setEstacion(medicionAireDto.getEstacion())
+              //  .setEstacion(medicionAireDto.getEstacion())
                 .setEstado(medicionAireDto.isEstado());
     }
 }
