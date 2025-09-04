@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
@@ -99,19 +100,24 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
+    @Transactional
     public VehiculoDto crearVehiculo(VehiculoDto vehiculoDto) {
-        if (!vehiculoValidator.validateVehiculo(vehiculoDto) ) {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
-        }
+        validarVehiculoNoExistente(vehiculoDto);
+        validarDatosTecnicos(vehiculoDto.getDatoTecnicoDto());
+        validarCombustibles(vehiculoDto.getVehiculoTipoCombustibleDtoList());
 
-        if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
+       /* if (!vehiculoValidator.validateVehiculo(vehiculoDto) ) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe con esa Placa o poliza o VIN o PIN ");
+        }*/
+
+      /*  if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
-        }
+        }*/
 
         TipoClaseVehiculo tipoClaseVehiculo = tipoClaseVehiculoRepository.findByUuid(vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid())
                         .orElseThrow(()-> new ResourceNotFoundException("TipoClaseVehiculo","uuid",vehiculoDto.getDatoTecnicoDto().getTipoClaseVehiculoDto().getUuid()));
 
-        validarCombustibles(vehiculoDto.getVehiculoTipoCombustibleDtoList());
+
 
         Vehiculo nuevoVehiculo = VehiculoMapper.toVehiculo(vehiculoDto);
 
@@ -158,6 +164,8 @@ public class VehiculoServiceImpl implements VehiculoService {
 
         datoTecnico = datoTecnicoRepository.save(datoTecnico);
         vehiculo.setDatoTecnico(datoTecnico);
+        // graba la relacion
+        vehiculo = vehiculoRepository.save(vehiculo);
 
         return VehiculoMapper.toVehiculoDto(vehiculo);
     }
@@ -170,6 +178,7 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
 
     @Override
+    @Transactional
     public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
         Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(vehiculoDto.getUuid());
         if (vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
@@ -290,6 +299,28 @@ public class VehiculoServiceImpl implements VehiculoService {
 
             tipoCombustibleRepository.findByUuid(vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid())
                     .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid()));
+        }
+        // ojo probar
+        Set<String> tiposCombustible = new HashSet<>();
+        for (VehiculoTipoCombustibleDto dto : combustibleList) {
+            String uuid = dto.getTipoCombustibleDto().getUuid();
+            if (!tiposCombustible.add(uuid)) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                        "El tipo de combustible no puede ser duplicado: " + uuid);
+            }
+        }
+    }
+
+    private void validarVehiculoNoExistente(VehiculoDto vehiculoDto) {
+        if (!vehiculoValidator.validateVehiculo(vehiculoDto)) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                    "El Vehiculo ya existe con esa Placa o Póliza o VIN o PIN");
+        }
+    }
+
+    private void validarDatosTecnicos(DatoTecnicoDto datoTecnicoDto) {
+        if (datoTecnicoDto == null || !validarDatoTecnico(datoTecnicoDto)) {
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "Error en los datos técnicos");
         }
     }
 }
