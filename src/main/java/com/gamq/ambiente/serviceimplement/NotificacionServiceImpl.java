@@ -309,7 +309,7 @@ public class NotificacionServiceImpl implements NotificacionService {
                        notificacion.setObservacion("La inspección detectó exceso en emisión de gases. Por favor realizar las correcciones y presentar para reinspeccion ya que tiene un plazo 1 año para adecuación técnica.");
                        notificacion.setNumeroIntento(1);
                    }
-                   if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
+                    else if (notificacionIntentoDto.get().getIntentosValidos() == 1) {
                        notificacion.setTypeNotificacion(TipoNotificacion.INFRACCION);
                        notificacion.setFechaAsistencia(FechaUtil.obtenerDiaHabilMasCercano(FechaUtil.sumarDias(new Date(),90), ZoneId.of(zonaHorario)));
                        notificacion.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
@@ -317,7 +317,7 @@ public class NotificacionServiceImpl implements NotificacionService {
                        notificacion.setNumeroIntento(2);
                        notificacion.setSancion("Multa 3er grado");
                    }
-                   if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
+                   else if ( notificacionIntentoDto.get().getIntentosValidos()  == 2 ){
                        notificacion.setTypeNotificacion(TipoNotificacion.INFRACCION_FINAL);
                        notificacion.setFechaAsistencia(new Date());
                        notificacion.setStatusNotificacion(EstadoNotificacion.PENDIENTE);
