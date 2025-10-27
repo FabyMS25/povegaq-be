@@ -34,6 +34,25 @@ public class Response<T> {
         return response;
     }
 
+    public static <T> Response<T> created(){
+        Response<T> response = new Response<>();
+        response.setStatus(Status.CREATED);
+        return response;
+    }
+
+    public static <T> Response<T> accepted(){
+        Response<T> response = new Response<>();
+        response.setStatus(Status.ACCEPTED);
+        return response;
+    }
+
+    public static <T> Response<T> noContent(){
+        Response<T> response = new Response<>();
+        response.setStatus(Status.NO_CONTEND);
+        return response;
+    }
+
+
     public static <T> Response<T> unauthorized() {
         Response<T> response = new Response<>();
         response.setStatus(Status.UNAUTHORIZED);
@@ -64,6 +83,12 @@ public class Response<T> {
         return response;
     }
 
+    public static <T> Response<T> internalServerError() {
+        Response<T> response = new Response<>();
+        response.setStatus(Status.INTERNAL_SERVER_ERROR);
+        return response;
+    }
+
     public static <T> Response<T> notFound() {
         Response<T> response = new Response<>();
         response.setStatus(Status.NOT_FOUND);
@@ -73,6 +98,12 @@ public class Response<T> {
     public static <T> Response<T> duplicateEntity() {
         Response<T> response = new Response<>();
         response.setStatus(Status.DUPLICATE_ENTITY);
+        return response;
+    }
+
+    public static <T> Response<T> conflict() {
+        Response<T> response = new Response<>();
+        response.setStatus(Status.CONFLICT);
         return response;
     }
 

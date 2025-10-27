@@ -2,9 +2,12 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.CategoriaAireDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.CategoriaAireService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,8 +40,9 @@ public class CategoriaAireController {
     }
 
     @PostMapping()
-    public Response createCategoriaAire(@Valid @RequestBody CategoriaAireDto categoriaAireDto){
-        return Response.ok().setPayload(categoriaAireService.crearCategoriaAire(categoriaAireDto));
+    public ResponseEntity<Response<CategoriaAireDto>> createCategoriaAire(@Valid @RequestBody CategoriaAireDto categoriaAireDto){
+        Response<CategoriaAireDto> response = Response.<CategoriaAireDto>created().setStatus(Status.OK).setPayload(categoriaAireService.crearCategoriaAire(categoriaAireDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -54,6 +58,7 @@ public class CategoriaAireController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteCategoriaAire(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(categoriaAireService.eliminarCategoriaAire(uuid));
+        categoriaAireService.eliminarCategoriaAire(uuid);
+        return Response.noContent().setPayload("La categoria fue eliminado exitosamente");
     }
 }

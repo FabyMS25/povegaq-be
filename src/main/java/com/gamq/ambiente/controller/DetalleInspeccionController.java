@@ -4,13 +4,17 @@ import com.gamq.ambiente.dto.DetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionDetalleInspeccionDto;
 import com.gamq.ambiente.dto.InspeccionRequestDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.DetalleInspeccionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.*;
 import javax.validation.Valid;
 
 @RestController
@@ -37,8 +41,9 @@ public class DetalleInspeccionController {
             summary = "Crear nuevo detalle de inspección",
             description = "Registra los datos de los detalles de inspeccionn"
     )
-    public Response createDetalleInspeccion(@Valid @RequestBody DetalleInspeccionDto detalleInspeccionDto){
-        return Response.ok().setPayload(detalleInspeccionService.crearDetalleInspeccion(detalleInspeccionDto));
+    public ResponseEntity<Response<DetalleInspeccionDto>> createDetalleInspeccion(@Valid @RequestBody DetalleInspeccionDto detalleInspeccionDto){
+        Response<DetalleInspeccionDto> response = Response.<DetalleInspeccionDto>created().setStatus(Status.OK).setPayload(detalleInspeccionService.crearDetalleInspeccion(detalleInspeccionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -56,7 +61,8 @@ public class DetalleInspeccionController {
             description = "Eliminar el detalle de inspeccion por su uuid"
     )
     public Response deleteDetalleInspeccion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(detalleInspeccionService.eliminarDetalleInspeccion(uuid));
+        detalleInspeccionService.eliminarDetalleInspeccion(uuid);
+        return Response.noContent().setPayload("El Detalle Inspeccion fue eliminado exitosamente");
     }
 
     @PutMapping("/add-detalle-inspecciones")

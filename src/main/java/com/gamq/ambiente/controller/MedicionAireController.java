@@ -2,9 +2,12 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.MedicionAireDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.MedicionAireService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,13 +37,15 @@ public class MedicionAireController {
     }
 
     @PostMapping()
-    public Response createMedicionAire(@Valid @RequestBody MedicionAireDto medicionAireDto){
-        return Response.ok().setPayload(medicionAireService.crearMedicionAire(medicionAireDto));
+    public ResponseEntity<Response<MedicionAireDto>> createMedicionAire(@Valid @RequestBody MedicionAireDto medicionAireDto){
+        Response<MedicionAireDto> response = Response.<MedicionAireDto>created().setStatus(Status.OK).setPayload(medicionAireService.crearMedicionAire(medicionAireDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/masivo")
-    public Response crearMedicionesMasivo(@RequestBody List<MedicionAireDto> medicionesDto) {
-        return Response.ok().setPayload(medicionAireService.crearMedicionesAireMasivo(medicionesDto));
+    public ResponseEntity<Response<List<MedicionAireDto>>> crearMedicionesMasivo(@RequestBody List<MedicionAireDto> medicionesDto) {
+        Response<List<MedicionAireDto>> response = Response.<List<MedicionAireDto>>created().setStatus(Status.OK).setPayload(medicionAireService.crearMedicionesAireMasivo(medicionesDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -50,6 +55,7 @@ public class MedicionAireController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteMedicionAire(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(medicionAireService.eliminarMedicionAire(uuid));
+        medicionAireService.eliminarMedicionAire(uuid);
+        return Response.noContent().setPayload("LaMedicion del Aire fue eliminado exitosamente");
     }
 }

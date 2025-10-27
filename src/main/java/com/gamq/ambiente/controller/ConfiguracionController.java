@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.ConfiguracionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ConfiguracionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,8 +39,9 @@ public class ConfiguracionController {
     }
 
     @PostMapping()
-    public Response createConfiguracion(@Valid @RequestBody ConfiguracionDto configuracionDto){
-        return Response.ok().setPayload(configuracionService.crearConfiguracion(configuracionDto));
+    public ResponseEntity<Response<ConfiguracionDto>> createConfiguracion(@Valid @RequestBody ConfiguracionDto configuracionDto){
+        Response<ConfiguracionDto> response = Response.<ConfiguracionDto>created().setStatus(Status.OK).setPayload(configuracionService.crearConfiguracion(configuracionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -47,7 +51,8 @@ public class ConfiguracionController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteConfiguracion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(configuracionService.eliminarConfiguracion(uuid));
+        configuracionService.eliminarConfiguracion(uuid);
+        return Response.noContent().setPayload("La Configuracion fue eliminado exitosamenete");
     }
 
     @GetMapping("/gestion")

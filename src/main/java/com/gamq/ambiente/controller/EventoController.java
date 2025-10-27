@@ -2,10 +2,13 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.EventoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.EventoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,8 +47,9 @@ public class EventoController {
 
     @PostMapping()
     @Operation(summary = "Crear Nuevo Evento de una actividad", description = "Registra los datos de un nuevo evento")
-    public Response createEvento(@Valid @RequestBody EventoDto eventoDto){
-        return Response.ok().setPayload(eventoService.crearEvento(eventoDto));
+    public ResponseEntity<Response<EventoDto>> createEvento(@Valid @RequestBody EventoDto eventoDto){
+        Response<EventoDto> response = Response.<EventoDto>created().setStatus(Status.OK).setPayload(eventoService.crearEvento(eventoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -57,7 +61,8 @@ public class EventoController {
     @DeleteMapping("/{uuid}")
     @Operation(summary = "Eliminar Evento", description = "Elimina el evento por el uuid")
     public Response deleteEvento(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(eventoService.eliminarEvento(uuid));
+        eventoService.eliminarEvento(uuid);
+        return Response.noContent().setPayload("El Evento fue eliminado exitosamente");
     }
 
     @GetMapping("/fechaFin")

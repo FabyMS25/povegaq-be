@@ -2,9 +2,12 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.TipoInfraccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.enumeration.GradoInfraccion;
 import com.gamq.ambiente.service.TipoInfraccionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +34,9 @@ public class TipoInfraccionController {
     }
 
     @PostMapping()
-    public Response createTipoInfraccion(@Valid @RequestBody TipoInfraccionDto TipoInfraccionDto){
-        return Response.ok().setPayload(tipoInfraccionService.crearTipoInfraccion(TipoInfraccionDto));
+    public ResponseEntity<Response<TipoInfraccionDto>> createTipoInfraccion(@Valid @RequestBody TipoInfraccionDto TipoInfraccionDto){
+        Response<TipoInfraccionDto> response = Response.<TipoInfraccionDto>created().setStatus(Status.OK).setPayload(tipoInfraccionService.crearTipoInfraccion(TipoInfraccionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -42,7 +46,8 @@ public class TipoInfraccionController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteTipoInfraccion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(tipoInfraccionService.eliminarTipoInfraccion(uuid));
+        tipoInfraccionService.eliminarTipoInfraccion(uuid);
+        return Response.noContent().setPayload("El Tipo Infraccion fue eliminado exitosamente");
     }
 
     @GetMapping("/no-automatico/{uuidTipoContribuyente}")

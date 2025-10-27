@@ -2,10 +2,13 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.ConductorDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ConductorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,8 +43,9 @@ public class ConductorController {
             summary = "Crear nuevo Conductor",
             description = "Registra los datos de un conductor"
     )
-    public Response createConductor(@Valid @RequestBody ConductorDto conductorDto){
-        return Response.ok().setPayload(conductorService.crearConductor(conductorDto));
+    public ResponseEntity<Response<ConductorDto>> createConductor(@Valid @RequestBody ConductorDto conductorDto){
+        Response<ConductorDto> response = Response.<ConductorDto>created().setStatus(Status.OK).setPayload(conductorService.crearConductor(conductorDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -59,6 +63,7 @@ public class ConductorController {
             description = "Eliminar el Conductor por su uuid"
     )
     public Response deleteConductor(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(conductorService.eliminarConductor(uuid));
+        conductorService.eliminarConductor(uuid);
+        return Response.noContent().setPayload("El conductor fue eliminado exitosamente");
     }
 }

@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.ContaminanteDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ContaminanteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class ContaminanteController {
     }
 
     @PostMapping()
-    public Response createContaminante(@Valid @RequestBody ContaminanteDto contaminanteDto){
-        return Response.ok().setPayload(contaminanteService.crearContaminante(contaminanteDto));
+    public ResponseEntity<Response<ContaminanteDto>> createContaminante(@Valid @RequestBody ContaminanteDto contaminanteDto){
+        Response<ContaminanteDto> response = Response.<ContaminanteDto>created().setStatus(Status.OK).setPayload(contaminanteService.crearContaminante(contaminanteDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,6 +45,7 @@ public class ContaminanteController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteContaminante(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(contaminanteService.eliminarContaminante(uuid));
+        contaminanteService.eliminarContaminante(uuid);
+        return Response.noContent().setPayload("El Contaminante fue eliminado exitosamenete");
     }
 }

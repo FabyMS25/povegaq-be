@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.TipoParametroDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.TipoParametroService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class TipoParametroController {
     }
 
     @PostMapping()
-    public Response createTipoParametro(@Valid @RequestBody TipoParametroDto tipoParametroDto){
-        return Response.ok().setPayload(tipoParametroService.crearTipoParametro(tipoParametroDto));
+    public ResponseEntity<Response<TipoParametroDto>> createTipoParametro(@Valid @RequestBody TipoParametroDto tipoParametroDto){
+        Response<TipoParametroDto> response = Response.<TipoParametroDto>created().setStatus(Status.OK).setPayload(tipoParametroService.crearTipoParametro(tipoParametroDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,7 +45,8 @@ public class TipoParametroController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteTipoParametro(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(tipoParametroService.eliminarTipoParametro(uuid));
+        tipoParametroService.eliminarTipoParametro(uuid);
+        return Response.noContent().setPayload("El Tipo Parametro fue eliminado exitosamente");
     }
 
     @PutMapping("/{uuid}/cambiar-activo")

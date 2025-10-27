@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.EquipoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.EquipoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class EquipoController {
     }
 
     @PostMapping()
-    public Response createEquipo(@Valid @RequestBody EquipoDto equipoDto){
-        return Response.ok().setPayload(equipoService.crearEquipo(equipoDto));
+    public ResponseEntity<Response<EquipoDto>> createEquipo(@Valid @RequestBody EquipoDto equipoDto){
+        Response<EquipoDto> response = Response.<EquipoDto>created().setStatus(Status.OK).setPayload(equipoService.crearEquipo(equipoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,6 +45,7 @@ public class EquipoController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteEquipo(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(equipoService.eliminarEquipo(uuid));
+        equipoService.eliminarEquipo(uuid);
+        return Response.noContent().setPayload("El Equipo fue eliminado exitosamente");
     }
 }

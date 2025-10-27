@@ -2,9 +2,12 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.InspeccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ComparacionEmisionService;
 import com.gamq.ambiente.service.InspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -49,8 +52,9 @@ public class InspeccionController {
     }
 
     @PostMapping()
-    public Response createInspeccion(@Valid @RequestBody InspeccionDto inspeccionDto){
-        return Response.ok().setPayload(inspeccionService.crearInspeccion(inspeccionDto));
+    public ResponseEntity<Response<InspeccionDto>> createInspeccion(@Valid @RequestBody InspeccionDto inspeccionDto){
+        Response<InspeccionDto> response = Response.<InspeccionDto>created().setStatus(Status.OK).setPayload(inspeccionService.crearInspeccion(inspeccionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -60,7 +64,8 @@ public class InspeccionController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteInspeccion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(inspeccionService.eliminarInspeccion(uuid));
+        inspeccionService.eliminarInspeccion(uuid);
+        return Response.ok().setPayload("La Inspeccion fue eliminado exitosamente");
     }
 
     @PostMapping("/validar-inspeccion/{uuidInspeccion}")

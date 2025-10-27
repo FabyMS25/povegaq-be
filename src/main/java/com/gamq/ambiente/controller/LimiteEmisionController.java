@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.LimiteEmisionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.LimiteEmisionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class LimiteEmisionController {
     }
 
     @PostMapping()
-    public Response createLimiteEmision(@Valid @RequestBody LimiteEmisionDto limiteEmisionDto){
-        return Response.ok().setPayload(limiteEmisionService.crearLimiteEmision(limiteEmisionDto));
+    public ResponseEntity<Response<LimiteEmisionDto>> createLimiteEmision(@Valid @RequestBody LimiteEmisionDto limiteEmisionDto){
+        Response<LimiteEmisionDto> response = Response.<LimiteEmisionDto>created().setStatus(Status.OK).setPayload(limiteEmisionService.crearLimiteEmision(limiteEmisionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,7 +45,8 @@ public class LimiteEmisionController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteLimiteEmision(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(limiteEmisionService.eliminarLimiteEmision(uuid));
+        limiteEmisionService.eliminarLimiteEmision(uuid);
+        return Response.noContent().setPayload("El Limite emision fue eliminado eitosamente");
     }
 
     @PutMapping("/{uuid}/cambiar-activo")

@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.UfvDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.UfvService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +34,9 @@ public class UfvController {
     }
 
     @PostMapping()
-    public Response createUfv(@Valid @RequestBody UfvDto ufvDto){
-        return Response.ok().setPayload(ufvService.crearUfv(ufvDto));
+    public ResponseEntity<Response<UfvDto>> createUfv(@Valid @RequestBody UfvDto ufvDto){
+        Response<UfvDto> response = Response.<UfvDto>created().setStatus(Status.OK).setPayload(ufvService.crearUfv(ufvDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -42,6 +46,7 @@ public class UfvController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteUfv(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(ufvService.eliminarUfv(uuid));
+        ufvService.eliminarUfv(uuid);
+        return Response.noContent().setPayload("El UFVs fue eliminado exitosamente");
     }
 }

@@ -3,8 +3,11 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.InspeccionRequisitoInspeccionDto;
 import com.gamq.ambiente.dto.RequisitoInspeccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.RequisitoInspeccionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,8 +34,9 @@ public class RequisitoInspeccionController {
     }
 
     @PostMapping()
-    public Response createRequisitoInspeccion(@Valid @RequestBody RequisitoInspeccionDto requisitoInspeccionDto){
-        return Response.ok().setPayload(requisitoInspeccionService.crearRequisitoInspeccion(requisitoInspeccionDto));
+    public ResponseEntity<Response<RequisitoInspeccionDto>> createRequisitoInspeccion(@Valid @RequestBody RequisitoInspeccionDto requisitoInspeccionDto){
+        Response<RequisitoInspeccionDto> response = Response.<RequisitoInspeccionDto>created().setStatus(Status.OK).setPayload(requisitoInspeccionService.crearRequisitoInspeccion(requisitoInspeccionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -42,7 +46,8 @@ public class RequisitoInspeccionController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteRequisitoInspeccion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(requisitoInspeccionService.eliminarRequisitoInspeccion(uuid));
+        requisitoInspeccionService.eliminarRequisitoInspeccion(uuid);
+        return Response.noContent().setPayload("El Requisito de Inspeccion fue eliminado exitosamente");
     }
 
     @PutMapping("/add-requisito-inspecciones")

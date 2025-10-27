@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.ClaseVehiculoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ClaseVehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class ClaseVehiculoController {
     }
 
     @PostMapping()
-    public Response createClaseVehiculo(@Valid @RequestBody ClaseVehiculoDto claseVehiculoDto){
-        return Response.ok().setPayload(claseVehiculoService.crearClaseVehiculo(claseVehiculoDto));
+    public ResponseEntity<Response<ClaseVehiculoDto>> createClaseVehiculo(@Valid @RequestBody ClaseVehiculoDto claseVehiculoDto){
+        Response<ClaseVehiculoDto> response = Response.<ClaseVehiculoDto>created().setStatus(Status.OK).setPayload(claseVehiculoService.crearClaseVehiculo(claseVehiculoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,6 +45,7 @@ public class ClaseVehiculoController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteClaseVehiculo(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(claseVehiculoService.eliminarClaseVehiculo(uuid));
+        claseVehiculoService.eliminarClaseVehiculo(uuid);
+        return Response.noContent().setPayload("La Clase Vehiculo fue eliminado exitosamente");
     }
 }

@@ -3,12 +3,14 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.ArchivoAdjuntoDto;
 import com.gamq.ambiente.dto.RequisitoInspeccionDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ArchivoAdjuntoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +47,7 @@ public class ArchivoAdjuntoController {
             summary = "Crear nuevo archivo adjunto para un requisito de inspeccion",
             description = "Registra los archivos adjuntos para un requisito de inspeccion"
     )
-    public Response createArchivoAdjunto(@Valid
+    public ResponseEntity<Response<ArchivoAdjuntoDto>> createArchivoAdjunto(@Valid
                                          @RequestParam String uuidUsuario,
                                          @RequestParam String uuidRequisitoInspeccion,
                                          @RequestParam Date fechaAdjunto,
@@ -54,7 +56,8 @@ public class ArchivoAdjuntoController {
                                          @ModelAttribute ArchivoAdjuntoDto archivoAdjuntoDto)
     {
         archivoAdjuntoDto.setRequisitoInspeccionDto(new RequisitoInspeccionDto().setUuid(uuidRequisitoInspeccion));
-        return Response.ok().setPayload(archivoAdjuntoService.crearArchivoAdjunto(archivoAdjuntoDto));
+        Response<ArchivoAdjuntoDto> response = Response.<ArchivoAdjuntoDto>created().setStatus(Status.OK).setPayload(archivoAdjuntoService.crearArchivoAdjunto(archivoAdjuntoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
@@ -79,7 +82,8 @@ public class ArchivoAdjuntoController {
     )
     public Response deleteArchivoAdjunto(@PathVariable("uuid") String uuid)
     {
-        return Response.ok().setPayload(archivoAdjuntoService.eliminarArchivoAdjunto(uuid));
+        archivoAdjuntoService.eliminarArchivoAdjunto(uuid);
+        return Response.noContent().setPayload("El archivo adjunto fue eliminado exitosamente");
     }
 
     @GetMapping("/descargar/{fileName:.+}")

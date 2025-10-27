@@ -3,10 +3,13 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.InfraccionDto;
 import com.gamq.ambiente.dto.PagoInfraccionRequest;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.InfraccionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -44,8 +47,9 @@ public class InfraccionController {
 
     @PostMapping()
     @Operation(summary = "Crear nueva Infraccion", description = "Registra los datos de la Infraccion")
-    public Response createInfraccion(@Valid @RequestBody InfraccionDto infraccionDto){
-        return Response.ok().setPayload(infraccionService.crearInfraccion(infraccionDto));
+    public ResponseEntity<Response<InfraccionDto>> createInfraccion(@Valid @RequestBody InfraccionDto infraccionDto){
+        Response<InfraccionDto> response = Response.<InfraccionDto>created().setStatus(Status.OK).setPayload(infraccionService.crearInfraccion(infraccionDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/generar/{uuidInspeccion}")
@@ -66,7 +70,8 @@ public class InfraccionController {
             description = "Eliminar la Infraccion logicamente"
     )
     public Response deleteInfraccion(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(infraccionService.eliminarInfraccion(uuid));
+        infraccionService.eliminarInfraccion(uuid);
+        return Response.noContent().setPayload("La Infraccion fue eliminado exitosamente");
     }
 
     @PostMapping("/pagar-infraccion")

@@ -3,12 +3,14 @@ package com.gamq.ambiente.controller;
 import com.gamq.ambiente.dto.FotoVehiculoDto;
 import com.gamq.ambiente.dto.VehiculoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.FotoVehiculoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,7 +51,7 @@ public class FotoVehiculoController {
             summary = "Crear nueva Fotos del Vehiculo",
             description = "Registra los fotos de un Vehiculo"
     )
-    public Response createFotoVehiculo(@Valid
+    public ResponseEntity<Response<FotoVehiculoDto>> createFotoVehiculo(@Valid
                                        @RequestParam String uuidVehiculo,
                                        @RequestParam String uuidUsuario,
                                        MultipartFile archivoFile,
@@ -57,7 +59,8 @@ public class FotoVehiculoController {
     {
 
         fotoVehiculoDto.setVehiculoDto(new VehiculoDto().setUuid(uuidVehiculo));
-        return Response.ok().setPayload(fotoVehiculoService.crearFotoVehiculo(fotoVehiculoDto));
+        Response<FotoVehiculoDto> response = Response.<FotoVehiculoDto>created().setStatus(Status.OK).setPayload(fotoVehiculoService.crearFotoVehiculo(fotoVehiculoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
@@ -94,6 +97,7 @@ public class FotoVehiculoController {
     )
     public Response deleteFotoVehiculo(@PathVariable("uuid") String uuid)
     {
-        return Response.ok().setPayload(fotoVehiculoService.eliminarFotoVehiculo(uuid));
+        fotoVehiculoService.eliminarFotoVehiculo(uuid);
+        return Response.noContent().setPayload("La Foto vehiculo fue eliminado exitosamente");
     }
 }

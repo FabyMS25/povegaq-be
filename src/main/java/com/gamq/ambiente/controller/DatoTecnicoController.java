@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.DatoTecnicoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.DatoTecnicoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,8 +23,9 @@ public class DatoTecnicoController {
     }
 
     @PostMapping()
-    public Response createDatoTecnico(@Valid @RequestBody DatoTecnicoDto datoTecnicoDto){
-        return Response.ok().setPayload(datoTecnicoService.crearDatoTecnico(datoTecnicoDto));
+    public ResponseEntity<Response<DatoTecnicoDto>> createDatoTecnico(@Valid @RequestBody DatoTecnicoDto datoTecnicoDto){
+        Response<DatoTecnicoDto> response = Response.<DatoTecnicoDto>created().setStatus(Status.OK).setPayload(datoTecnicoService.crearDatoTecnico(datoTecnicoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -31,6 +35,7 @@ public class DatoTecnicoController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteDatoTecnico(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(datoTecnicoService.eliminarDatoTecnico(uuid));
+        datoTecnicoService.eliminarDatoTecnico(uuid);
+        return Response.noContent().setPayload("El Dato Tecnico fue eliminado exitosamente");
     }
 }

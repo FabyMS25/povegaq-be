@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.ReglamentoDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.ReglamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class ReglamentoController {
     }
 
     @PostMapping()
-    public Response createReglamento(@Valid @RequestBody ReglamentoDto reglamentoDto){
-        return Response.ok().setPayload(reglamentoService.crearReglamento(reglamentoDto));
+    public ResponseEntity<Response<ReglamentoDto>> createReglamento(@Valid @RequestBody ReglamentoDto reglamentoDto){
+        Response<ReglamentoDto> response = Response.<ReglamentoDto>created().setStatus(Status.OK).setPayload(reglamentoService.crearReglamento(reglamentoDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,7 +45,8 @@ public class ReglamentoController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteReglamento(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(reglamentoService.eliminarReglamento(uuid));
+        reglamentoService.eliminarReglamento(uuid);
+        return Response.noContent().setPayload("El Reglamento fue eliminado exitosamente");
     }
 
     @PutMapping("/cambiar-inactivo")

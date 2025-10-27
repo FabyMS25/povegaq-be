@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.TipoCombustibleDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.TipoCombustibleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class TipoCombustibleController {
     }
 
     @PostMapping()
-    public Response createTipoCombustible(@Valid @RequestBody TipoCombustibleDto tipoCombustibleDto){
-        return Response.ok().setPayload(tipoCombustibleService.crearTipoCombustible(tipoCombustibleDto));
+    public ResponseEntity<Response<TipoCombustibleDto>> createTipoCombustible(@Valid @RequestBody TipoCombustibleDto tipoCombustibleDto){
+        Response<TipoCombustibleDto> response = Response.<TipoCombustibleDto>created().setStatus(Status.OK).setPayload(tipoCombustibleService.crearTipoCombustible(tipoCombustibleDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,6 +45,7 @@ public class TipoCombustibleController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteTipoCombustible(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(tipoCombustibleService.eliminarTipoCombustible(uuid));
+        tipoCombustibleService.eliminarTipoCombustible(uuid);
+        return Response.noContent().setPayload("El Tipo Combustible fue eliminado exitosamente");
     }
 }

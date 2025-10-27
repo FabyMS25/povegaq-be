@@ -2,10 +2,13 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.PropietarioDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.PropietarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,8 +43,9 @@ public class PropietarioController {
             summary = "Crear nuevo Propietario",
             description = "Registra los datos de un propietario"
     )
-    public Response createPropietario(@Valid @RequestBody PropietarioDto propietarioDto) {
-        return Response.ok().setPayload(propietarioService.crearPropietario(propietarioDto));
+    public ResponseEntity<Response<PropietarioDto>> createPropietario(@Valid @RequestBody PropietarioDto propietarioDto) {
+        Response<PropietarioDto> response = Response.<PropietarioDto>created().setStatus(Status.OK).setPayload(propietarioService.crearPropietario(propietarioDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -59,6 +63,7 @@ public class PropietarioController {
             description = "Eliminar el Propietario por su uuid"
     )
     public Response deletePropietario(@PathVariable("uuid") String uuid) {
-        return Response.ok().setPayload(propietarioService.eliminarPropietario(uuid));
+        propietarioService.eliminarPropietario(uuid);
+        return Response.noContent().setPayload("El Propietario fue elimnado exitosamente");
     }
 }

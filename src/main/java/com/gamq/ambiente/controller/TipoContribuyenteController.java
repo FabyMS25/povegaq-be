@@ -2,8 +2,11 @@ package com.gamq.ambiente.controller;
 
 import com.gamq.ambiente.dto.TipoContribuyenteDto;
 import com.gamq.ambiente.dto.response.Response;
+import com.gamq.ambiente.dto.response.Status;
 import com.gamq.ambiente.service.TipoContribuyenteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,8 +33,9 @@ public class TipoContribuyenteController {
     }
 
     @PostMapping()
-    public Response createTipoContribuyente(@Valid @RequestBody TipoContribuyenteDto tipoContribuyenteDto){
-        return Response.ok().setPayload(tipoContribuyenteService.crearTipoContribuyente(tipoContribuyenteDto));
+    public ResponseEntity<Response<TipoContribuyenteDto>> createTipoContribuyente(@Valid @RequestBody TipoContribuyenteDto tipoContribuyenteDto){
+        Response<TipoContribuyenteDto> response = Response.<TipoContribuyenteDto>created().setStatus(Status.OK).setPayload(tipoContribuyenteService.crearTipoContribuyente(tipoContribuyenteDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping()
@@ -41,6 +45,7 @@ public class TipoContribuyenteController {
 
     @DeleteMapping("/{uuid}")
     public Response deleteTipoContribuyente(@PathVariable("uuid") String uuid){
-        return Response.ok().setPayload(tipoContribuyenteService.eliminarTipoContribuyente(uuid));
+        tipoContribuyenteService.eliminarTipoContribuyente(uuid);
+        return Response.noContent().setPayload("El Tipo Contribuyente fue eliminado exitosamente");
     }
 }
