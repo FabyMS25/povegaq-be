@@ -46,6 +46,6 @@ public class ClaseVehiculoController {
     @DeleteMapping("/{uuid}")
     public Response deleteClaseVehiculo(@PathVariable("uuid") String uuid){
         claseVehiculoService.eliminarClaseVehiculo(uuid);
-        return Response.noContent().setPayload("La Clase Vehiculo fue eliminado exitosamente");
+        return Response.ok().setPayload("La Clase Vehiculo fue eliminado exitosamente");
     }
 }

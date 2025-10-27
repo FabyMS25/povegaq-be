@@ -98,6 +98,6 @@ public class FotoVehiculoController {
     public Response deleteFotoVehiculo(@PathVariable("uuid") String uuid)
     {
         fotoVehiculoService.eliminarFotoVehiculo(uuid);
-        return Response.noContent().setPayload("La Foto vehiculo fue eliminado exitosamente");
+        return Response.ok().setPayload("La Foto vehiculo fue eliminado exitosamente");
     }
 }

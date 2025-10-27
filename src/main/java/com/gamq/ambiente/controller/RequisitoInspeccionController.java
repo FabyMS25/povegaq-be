@@ -47,7 +47,7 @@ public class RequisitoInspeccionController {
     @DeleteMapping("/{uuid}")
     public Response deleteRequisitoInspeccion(@PathVariable("uuid") String uuid){
         requisitoInspeccionService.eliminarRequisitoInspeccion(uuid);
-        return Response.noContent().setPayload("El Requisito de Inspeccion fue eliminado exitosamente");
+        return Response.ok().setPayload("El Requisito de Inspeccion fue eliminado exitosamente");
     }
 
     @PutMapping("/add-requisito-inspecciones")

@@ -46,6 +46,6 @@ public class ContaminanteController {
     @DeleteMapping("/{uuid}")
     public Response deleteContaminante(@PathVariable("uuid") String uuid){
         contaminanteService.eliminarContaminante(uuid);
-        return Response.noContent().setPayload("El Contaminante fue eliminado exitosamenete");
+        return Response.ok().setPayload("El Contaminante fue eliminado exitosamenete");
     }
 }

@@ -36,6 +36,6 @@ public class DatoTecnicoController {
     @DeleteMapping("/{uuid}")
     public Response deleteDatoTecnico(@PathVariable("uuid") String uuid){
         datoTecnicoService.eliminarDatoTecnico(uuid);
-        return Response.noContent().setPayload("El Dato Tecnico fue eliminado exitosamente");
+        return Response.ok().setPayload("El Dato Tecnico fue eliminado exitosamente");
     }
 }

@@ -46,7 +46,7 @@ public class ReglamentoController {
     @DeleteMapping("/{uuid}")
     public Response deleteReglamento(@PathVariable("uuid") String uuid){
         reglamentoService.eliminarReglamento(uuid);
-        return Response.noContent().setPayload("El Reglamento fue eliminado exitosamente");
+        return Response.ok().setPayload("El Reglamento fue eliminado exitosamente");
     }
 
     @PutMapping("/cambiar-inactivo")

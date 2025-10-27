@@ -46,6 +46,6 @@ public class RequisitoController {
     @DeleteMapping("/{uuid}")
     public Response deleteRequisito(@PathVariable("uuid") String uuid){
         requisitoService.eliminarRequisito(uuid);
-        return Response.noContent().setPayload("El Requisito fue eliminado exitosamente");
+        return Response.ok().setPayload("El Requisito fue eliminado exitosamente");
     }
 }

@@ -64,6 +64,6 @@ public class ConductorController {
     )
     public Response deleteConductor(@PathVariable("uuid") String uuid){
         conductorService.eliminarConductor(uuid);
-        return Response.noContent().setPayload("El conductor fue eliminado exitosamente");
+        return Response.ok().setPayload("El conductor fue eliminado exitosamente");
     }
 }

@@ -71,7 +71,7 @@ public class InfraccionController {
     )
     public Response deleteInfraccion(@PathVariable("uuid") String uuid){
         infraccionService.eliminarInfraccion(uuid);
-        return Response.noContent().setPayload("La Infraccion fue eliminado exitosamente");
+        return Response.ok().setPayload("La Infraccion fue eliminado exitosamente");
     }
 
     @PostMapping("/pagar-infraccion")

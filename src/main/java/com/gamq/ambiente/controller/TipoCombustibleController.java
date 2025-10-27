@@ -46,6 +46,6 @@ public class TipoCombustibleController {
     @DeleteMapping("/{uuid}")
     public Response deleteTipoCombustible(@PathVariable("uuid") String uuid){
         tipoCombustibleService.eliminarTipoCombustible(uuid);
-        return Response.noContent().setPayload("El Tipo Combustible fue eliminado exitosamente");
+        return Response.ok().setPayload("El Tipo Combustible fue eliminado exitosamente");
     }
 }

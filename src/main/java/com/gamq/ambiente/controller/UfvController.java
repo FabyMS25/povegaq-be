@@ -47,6 +47,6 @@ public class UfvController {
     @DeleteMapping("/{uuid}")
     public Response deleteUfv(@PathVariable("uuid") String uuid){
         ufvService.eliminarUfv(uuid);
-        return Response.noContent().setPayload("El UFVs fue eliminado exitosamente");
+        return Response.ok().setPayload("El UFVs fue eliminado exitosamente");
     }
 }

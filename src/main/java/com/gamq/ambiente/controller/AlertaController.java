@@ -43,7 +43,7 @@ public class AlertaController {
     @DeleteMapping("/{uuid}")
     public Response deleteAlerta(@PathVariable("uuid") String uuid) {
         alertaService.eliminarAlerta(uuid);
-        return Response.noContent().setPayload("La alerta fue eliminada");
+        return Response.ok().setPayload("La alerta fue eliminada");
     }
     @GetMapping("/fecha-actual")
     public Response getAlertaByFechaActual(@RequestParam( value = "fechaActual") Date fechaActual){

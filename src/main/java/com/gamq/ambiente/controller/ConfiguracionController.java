@@ -52,7 +52,7 @@ public class ConfiguracionController {
     @DeleteMapping("/{uuid}")
     public Response deleteConfiguracion(@PathVariable("uuid") String uuid){
         configuracionService.eliminarConfiguracion(uuid);
-        return Response.noContent().setPayload("La Configuracion fue eliminado exitosamenete");
+        return Response.ok().setPayload("La Configuracion fue eliminado exitosamenete");
     }
 
     @GetMapping("/gestion")

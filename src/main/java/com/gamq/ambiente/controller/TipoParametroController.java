@@ -46,7 +46,7 @@ public class TipoParametroController {
     @DeleteMapping("/{uuid}")
     public Response deleteTipoParametro(@PathVariable("uuid") String uuid){
         tipoParametroService.eliminarTipoParametro(uuid);
-        return Response.noContent().setPayload("El Tipo Parametro fue eliminado exitosamente");
+        return Response.ok().setPayload("El Tipo Parametro fue eliminado exitosamente");
     }
 
     @PutMapping("/{uuid}/cambiar-activo")

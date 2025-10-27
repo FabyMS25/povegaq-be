@@ -46,6 +46,6 @@ public class EquipoController {
     @DeleteMapping("/{uuid}")
     public Response deleteEquipo(@PathVariable("uuid") String uuid){
         equipoService.eliminarEquipo(uuid);
-        return Response.noContent().setPayload("El Equipo fue eliminado exitosamente");
+        return Response.ok().setPayload("El Equipo fue eliminado exitosamente");
     }
 }

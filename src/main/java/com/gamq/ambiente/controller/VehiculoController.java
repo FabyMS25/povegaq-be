@@ -74,6 +74,6 @@ public class VehiculoController {
     @DeleteMapping("/{uuid}")
     public Response deleteVehiculo(@PathVariable("uuid") String uuid){
         vehiculoService.eliminarVehiculo(uuid);
-        return Response.noContent().setPayload("El Vehiculo fue eliminado exitosamente");
+        return Response.ok().setPayload("El Vehiculo fue eliminado exitosamente");
     }
 }

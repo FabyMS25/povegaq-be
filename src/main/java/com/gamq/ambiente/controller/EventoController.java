@@ -62,7 +62,7 @@ public class EventoController {
     @Operation(summary = "Eliminar Evento", description = "Elimina el evento por el uuid")
     public Response deleteEvento(@PathVariable("uuid") String uuid){
         eventoService.eliminarEvento(uuid);
-        return Response.noContent().setPayload("El Evento fue eliminado exitosamente");
+        return Response.ok().setPayload("El Evento fue eliminado exitosamente");
     }
 
     @GetMapping("/fechaFin")

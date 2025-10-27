@@ -47,7 +47,7 @@ public class TipoInfraccionController {
     @DeleteMapping("/{uuid}")
     public Response deleteTipoInfraccion(@PathVariable("uuid") String uuid){
         tipoInfraccionService.eliminarTipoInfraccion(uuid);
-        return Response.noContent().setPayload("El Tipo Infraccion fue eliminado exitosamente");
+        return Response.ok().setPayload("El Tipo Infraccion fue eliminado exitosamente");
     }
 
     @GetMapping("/no-automatico/{uuidTipoContribuyente}")

@@ -99,7 +99,7 @@ public class NotificacionController {
     )
     public Response deleteNotificacion(@PathVariable("uuid") String uuid){
         notificacionService.eliminarNotificacion(uuid);
-        return Response.noContent().setPayload("La notificacion fue eliminado exitosamente");
+        return Response.ok().setPayload("La notificacion fue eliminado exitosamente");
     }
 
     @GetMapping("/vencidas")

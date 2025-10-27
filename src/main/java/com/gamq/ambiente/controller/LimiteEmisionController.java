@@ -46,7 +46,7 @@ public class LimiteEmisionController {
     @DeleteMapping("/{uuid}")
     public Response deleteLimiteEmision(@PathVariable("uuid") String uuid){
         limiteEmisionService.eliminarLimiteEmision(uuid);
-        return Response.noContent().setPayload("El Limite emision fue eliminado eitosamente");
+        return Response.ok().setPayload("El Limite emision fue eliminado eitosamente");
     }
 
     @PutMapping("/{uuid}/cambiar-activo")

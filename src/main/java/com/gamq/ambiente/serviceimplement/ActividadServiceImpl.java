@@ -55,7 +55,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public ActividadDto crearActividad(ActividadDto actividadDto) {
         if(!actividadValidator.validateFechaInicioFinActividad(actividadDto)){
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la Fecha Fin debe ser mayor a la Fecha Inicio");
         }
         String tipoActividad = actividadDto.getTipoActividad();
         if(tipoActividad==null){ throw new ResourceNotFoundException("actividad","tipo actividad", tipoActividad);}
@@ -70,7 +70,7 @@ public class ActividadServiceImpl implements ActividadService {
     @Override
     public ActividadDto actualizarActividad(ActividadDto actividadDto) {
         if(!actividadValidator.validateFechaInicioFinActividad(actividadDto)){
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la Fecha Fin debe ser mayor a la Fecha Inicio");
         }
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(actividadDto.getUuid());
         if(actividadOptional.isPresent()) {
@@ -82,7 +82,7 @@ public class ActividadServiceImpl implements ActividadService {
                 throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el tipo de actividad ya existe");
             }
         }
-        throw new ResourceNotFoundException("tipo activdad", "uuid",actividadDto.getUuid());
+        throw new ResourceNotFoundException("tipo actividad", "uuid",actividadDto.getUuid());
     }
 
     @Override

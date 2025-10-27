@@ -56,6 +56,6 @@ public class MedicionAireController {
     @DeleteMapping("/{uuid}")
     public Response deleteMedicionAire(@PathVariable("uuid") String uuid){
         medicionAireService.eliminarMedicionAire(uuid);
-        return Response.noContent().setPayload("LaMedicion del Aire fue eliminado exitosamente");
+        return Response.ok().setPayload("LaMedicion del Aire fue eliminado exitosamente");
     }
 }

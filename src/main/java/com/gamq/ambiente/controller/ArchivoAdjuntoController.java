@@ -83,7 +83,7 @@ public class ArchivoAdjuntoController {
     public Response deleteArchivoAdjunto(@PathVariable("uuid") String uuid)
     {
         archivoAdjuntoService.eliminarArchivoAdjunto(uuid);
-        return Response.noContent().setPayload("El archivo adjunto fue eliminado exitosamente");
+        return Response.ok().setPayload("El archivo adjunto fue eliminado exitosamente");
     }
 
     @GetMapping("/descargar/{fileName:.+}")

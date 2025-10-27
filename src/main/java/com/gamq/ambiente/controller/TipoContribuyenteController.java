@@ -46,6 +46,6 @@ public class TipoContribuyenteController {
     @DeleteMapping("/{uuid}")
     public Response deleteTipoContribuyente(@PathVariable("uuid") String uuid){
         tipoContribuyenteService.eliminarTipoContribuyente(uuid);
-        return Response.noContent().setPayload("El Tipo Contribuyente fue eliminado exitosamente");
+        return Response.ok().setPayload("El Tipo Contribuyente fue eliminado exitosamente");
     }
 }

@@ -53,7 +53,7 @@ public class ActividadController {
     @DeleteMapping("/{uuid}")
     public Response deleteActividad(@PathVariable("uuid") String uuid){
         actividadService.eliminarActividad(uuid);
-        return Response.noContent().setPayload("La actividad fue eliminado exitosamente");
+        return Response.ok().setPayload("La actividad fue eliminado exitosamente");
     }
 
     @GetMapping("/gestion")

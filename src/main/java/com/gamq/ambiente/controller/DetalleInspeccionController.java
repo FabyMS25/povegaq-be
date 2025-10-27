@@ -62,7 +62,7 @@ public class DetalleInspeccionController {
     )
     public Response deleteDetalleInspeccion(@PathVariable("uuid") String uuid){
         detalleInspeccionService.eliminarDetalleInspeccion(uuid);
-        return Response.noContent().setPayload("El Detalle Inspeccion fue eliminado exitosamente");
+        return Response.ok().setPayload("El Detalle Inspeccion fue eliminado exitosamente");
     }
 
     @PutMapping("/add-detalle-inspecciones")

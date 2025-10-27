@@ -59,6 +59,6 @@ public class CategoriaAireController {
     @DeleteMapping("/{uuid}")
     public Response deleteCategoriaAire(@PathVariable("uuid") String uuid){
         categoriaAireService.eliminarCategoriaAire(uuid);
-        return Response.noContent().setPayload("La categoria fue eliminado exitosamente");
+        return Response.ok().setPayload("La categoria fue eliminado exitosamente");
     }
 }

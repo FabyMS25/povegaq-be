@@ -46,6 +46,6 @@ public class EstacionController {
     @DeleteMapping("/{uuid}")
     public Response deleteEstacion(@PathVariable("uuid") String uuid){
         estacionService.eliminarEstacion(uuid);
-        return Response.noContent().setPayload("La Estacion fue eliminado exitosamente");
+        return Response.ok().setPayload("La Estacion fue eliminado exitosamente");
     }
 }

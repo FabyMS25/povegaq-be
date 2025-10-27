@@ -64,6 +64,6 @@ public class PropietarioController {
     )
     public Response deletePropietario(@PathVariable("uuid") String uuid) {
         propietarioService.eliminarPropietario(uuid);
-        return Response.noContent().setPayload("El Propietario fue elimnado exitosamente");
+        return Response.ok().setPayload("El Propietario fue elimnado exitosamente");
     }
 }
