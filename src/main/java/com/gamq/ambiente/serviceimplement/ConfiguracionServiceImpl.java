@@ -53,7 +53,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     @Override
     public ConfiguracionDto crearConfiguracion(ConfiguracionDto configuracionDto) {
         if(!configuracionValidator.validateFechaInicioFinConfiguracion(configuracionDto)){
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la Fecha Fin debe ser mayor a la Fecha Inicio");
         }
         String clave = configuracionDto.getClave();
         if(clave==null){ throw new ResourceNotFoundException("configuracion","tipo configuracion", clave);}
@@ -68,7 +68,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     @Override
     public ConfiguracionDto actualizarConfiguracion(ConfiguracionDto configuracionDto) {
         if(!configuracionValidator.validateFechaInicioFinConfiguracion(configuracionDto)){
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la Fecha Fin debe ser mayor a la Fecha Inicio");
+            throw new BlogAPIException("409-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la Fecha Fin debe ser mayor a la Fecha Inicio");
         }
         Optional<Configuracion> configuracionOptional = configuracionRepository.findByUuid(configuracionDto.getUuid());
         if(configuracionOptional.isPresent()) {
@@ -113,7 +113,7 @@ public class ConfiguracionServiceImpl implements ConfiguracionService {
     @Override
     public ConfiguracionDto actualizarConfiguracionActivo(String uuid, boolean nuevoActivo) {
         Configuracion configuracion = configuracionRepository.findByUuid(uuid)
-                .orElseThrow(()-> new RuntimeException("la configuracion no encontrado"));
+                .orElseThrow(()-> new ResourceNotFoundException("Configuracion", "uuid", uuid));
         configuracion.setActivo(nuevoActivo);
         if(!nuevoActivo){
             configuracion.setFechaFin(new Date());

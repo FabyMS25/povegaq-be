@@ -22,6 +22,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +67,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
                 .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", detalleInspeccionDto.getTipoCombustibleDto().getUuid()));
 
         if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleInspeccionDto.getNroEjecucion(), detalleInspeccionDto.getTipoCombustibleDto().getUuid())) {
-               throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+               throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el tipo de parametro de la inspecion ya existe");
            }
            DetalleInspeccion nuevoDetalleInspeccion = DetalleInspeccionMapper.toDetalleInspeccion(detalleInspeccionDto);
            nuevoDetalleInspeccion.setTipoParametro(tipoParametro);
@@ -122,7 +123,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
             }
 
             if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleDto.getNroEjecucion(), detalleDto.getUuidTipoCombustible())) {
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el tipo de parametro de la inspecion ya existe");
             }
 
             //DetalleInspeccion detalle = new DetalleInspeccion(UUID.randomUUID().toString());
@@ -164,7 +165,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
             }
 
             if(detalleInspeccionRepository.exitsDetalleInspeccionByUuidTipoParametroAndUuidInspeccionAndNroEjecucionAndModoCombustion(tipoParametro.getUuid(),inspeccion.getUuid(), detalleDto.getNroEjecucion(), detalleDto.getUuidTipoCombustible())) {
-                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el tipo de parametro de la inspecion ya existe");
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el tipo de parametro de la inspecion ya existe");
             }
 
             //DetalleInspeccion detalle = new DetalleInspeccion(UUID.randomUUID().toString());
@@ -195,7 +196,7 @@ public class DetalleInspeccionServiceImpl implements DetalleInspeccionService {
 
     public void agregarEjecucion(String uuidInspeccion, List<DetalleInspeccion> nuevosDetalles) {
         Inspeccion inspeccion =  inspeccionRepository.findByUuid(uuidInspeccion)
-                .orElseThrow(() -> new RuntimeException("Inspección no encontrada"));
+                .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuid", uuidInspeccion));
 
         Integer ultimaEjecucion = detalleInspeccionRepository.findUltimaEjecucionByUuidInspeccion(uuidInspeccion);
         int nuevaEjecucion = (ultimaEjecucion == null) ? 1 : ultimaEjecucion + 1;

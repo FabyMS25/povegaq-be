@@ -45,7 +45,7 @@ public class ClaseVehiculoServiceImpl implements ClaseVehiculoService {
         String nombre = claseVehiculoDto.getNombre();
         if(nombre==null || nombre.isBlank()){ throw new ResourceNotFoundException("ClaseVehiculo","nombre", nombre);}
         if (claseVehiculoRepository.findByNombre(nombre).isPresent()) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "El claseVehiculo ya existe");
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La claseVehiculo ya existe");
         }
         ClaseVehiculo nuevoClaseVehiculo = ClaseVehiculoMapper.toClaseVehiculo(claseVehiculoDto);
         return ClaseVehiculoMapper.toClaseVehiculoDto(claseVehiculoRepository.save(nuevoClaseVehiculo));
@@ -55,7 +55,7 @@ public class ClaseVehiculoServiceImpl implements ClaseVehiculoService {
     public ClaseVehiculoDto actualizarClaseVehiculo(ClaseVehiculoDto claseVehiculoDto) {
         ClaseVehiculo claseVehiculo = obtenerClaseVehiculoPorUuidOThrow(claseVehiculoDto.getUuid());
         if (claseVehiculoRepository.exitsClaseVehiculoLikeNombre(claseVehiculoDto.getNombre().toLowerCase(), claseVehiculoDto.getUuid())) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el ClaseVehiculo ya existe");
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La ClaseVehiculo ya existe");
         }
         ClaseVehiculo updateClaseVehiculo = ClaseVehiculoMapper.toClaseVehiculo(claseVehiculoDto);
         updateClaseVehiculo.setIdClaseVehiculo(claseVehiculo.getIdClaseVehiculo());

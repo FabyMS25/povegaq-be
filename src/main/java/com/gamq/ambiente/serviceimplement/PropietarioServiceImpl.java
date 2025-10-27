@@ -96,14 +96,14 @@ public class PropietarioServiceImpl implements PropietarioService {
 
                 if (tienePlaca) {
                     if (placasVehiculo.contains(vehiculo.getPlaca().toLowerCase().trim())) {
-                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "la placa del vehiculo'" + vehiculo.getPlaca() + "' ya existe o es duplicado");
+                        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la placa del vehiculo'" + vehiculo.getPlaca() + "' ya existe o es duplicado");
                     }
                     placasVehiculo.add(vehiculo.getPlaca().toLowerCase().trim());
                 }
 
                 if (tienePinSinPlaca){
                     if (placasVehiculo.contains(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim())) {
-                        throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "el PIN o numero identificacion del vehiculo'" + vehiculo.getPinNumeroIdentificacion() + "' ya existe o es duplicado");
+                        throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el PIN o numero identificacion del vehiculo'" + vehiculo.getPinNumeroIdentificacion() + "' ya existe o es duplicado");
                     }
                     placasVehiculo.add(vehiculo.getPinNumeroIdentificacion().toLowerCase().trim());
                 }
@@ -170,7 +170,7 @@ public class PropietarioServiceImpl implements PropietarioService {
                 return PropietarioMapper.toPropietarioDto(propietario);
             }
             else {
-                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, uuid);
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, uuid);
             }
         }
         throw new ResourceNotFoundException("Propietario", "uuid", uuid);
