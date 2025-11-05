@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,10 +44,29 @@ public class ClaseVehiculoServiceImpl implements ClaseVehiculoService {
     @Override
     public ClaseVehiculoDto crearClaseVehiculo(ClaseVehiculoDto claseVehiculoDto) {
         String nombre = claseVehiculoDto.getNombre();
-        if(nombre==null || nombre.isBlank()){ throw new ResourceNotFoundException("ClaseVehiculo","nombre", nombre);}
-        if (claseVehiculoRepository.findByNombre(nombre).isPresent()) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La claseVehiculo ya existe");
+        if(nombre==null || nombre.isBlank()){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Defina un nombre valido");
         }
+
+        Optional<ClaseVehiculo> claseVehiculoOptional = claseVehiculoRepository.findByNombreIncluyendoEliminados(nombre);
+        if (claseVehiculoOptional.isPresent()) {
+            ClaseVehiculo claseVehiculo = claseVehiculoOptional.get();
+            if(claseVehiculo.isEstado()){
+                throw new BlogAPIException(
+                        "409-CONFLICT",
+                        HttpStatus.CONFLICT,
+                        "La claseVehiculo '" + nombre + "' fue eliminada anteriormente. "
+                                + "Consulte con el administrador si desea volver a habilitarla."
+                );
+            } else {
+                throw new BlogAPIException(
+                        "409-CONFLICT",
+                        HttpStatus.CONFLICT,
+                        "La claseVehiculo ya existe"
+                );
+            }
+        }
+
         ClaseVehiculo nuevoClaseVehiculo = ClaseVehiculoMapper.toClaseVehiculo(claseVehiculoDto);
         return ClaseVehiculoMapper.toClaseVehiculoDto(claseVehiculoRepository.save(nuevoClaseVehiculo));
     }

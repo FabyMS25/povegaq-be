@@ -61,7 +61,7 @@ public class CategoriaAireServiceImpl implements CategoriaAireService {
     public CategoriaAireDto actualizarCategoriaAire(CategoriaAireDto categoriaAireDto) {
         CategoriaAire categoriaAire = obtenerCategoriaAirePorUuidOThrow(categoriaAireDto.getUuid());
         if (categoriaAireRepository.exitsCategoriaAireLikeCategoriaAndColor(categoriaAireDto.getCategoria().toLowerCase(), categoriaAireDto.getColor().toLowerCase(), categoriaAireDto.getUuid())) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el CategoriaAire ya existe");
+            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "la CategoriaAire ya existe");
         }
         CategoriaAire updateCategoriaAire = CategoriaAireMapper.toCategoriaAire(categoriaAireDto);
         updateCategoriaAire.setIdCategoriaAire(categoriaAire.getIdCategoriaAire());

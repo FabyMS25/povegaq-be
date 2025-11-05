@@ -68,10 +68,10 @@ public class CertificadoServiceImpl implements CertificadoService {
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()) {
                 if (!inspeccionOptional.get().isResultado()){
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado por el resultado de la inspeccion  es Negativo(no paso la prueba)");
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado: la inspeccion tiene un resultado negativo(no aprobo la prueba)");
                 }
                 if (inspeccionOptional.get().getCertificadoList().size() > 0) {
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion ya tiene un certificado");
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion ya tiene un certificado asociado.");
                 }
                 if (inspeccionOptional.get().getDetalleInspeccionList().size()==0){
                     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion no tiene Detalles de inspeccion");
@@ -100,7 +100,7 @@ public class CertificadoServiceImpl implements CertificadoService {
             Optional<Inspeccion> inspeccionOptional = inspeccionRepository.findByUuid(certificadoDto.getInspeccionDto().getUuid());
             if (inspeccionOptional.isPresent()){
                 if (!inspeccionOptional.get().isResultado()){
-                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado por el resultado de la inspeccion  es Negativo(no paso la prueba)");
+                    throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "No puede emitir certificado: la inspeccion tiene un resultado negativo(no aprobo la prueba)");
                 }
                 if (inspeccionOptional.get().getDetalleInspeccionList().size()==0){
                     throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "La inspeccion no tiene Detalles de inspeccion");

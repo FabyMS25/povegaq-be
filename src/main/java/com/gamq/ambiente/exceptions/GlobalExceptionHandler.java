@@ -41,15 +41,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                WebRequest webRequest){
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false), exception.getCode());
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+     //  return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorDetails, exception.getStatus());
     }
-    /*
-        @ExceptionHandler(value = {DeniedPermissionException.class})
-        @ResponseStatus(HttpStatus.FORBIDDEN)
-        public String deniedPermissionException(DeniedPermissionException ex) {
-            return "Denied permission";
-        }
-    */
+
     @ExceptionHandler(value = {ConstraintViolationException.class})
     // @ResponseStatus(HttpStatus.BAD_REQUEST)
     public  ResponseEntity<ErrorDetails> constraintViolationException(ConstraintViolationException exception,

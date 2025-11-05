@@ -16,4 +16,7 @@ public interface ClaseVehiculoRepository extends JpaRepository<ClaseVehiculo, Lo
     @Query("SELECT case when count(c) > 0 then true else false end FROM ClaseVehiculo c WHERE lower(rtrim(ltrim(c.nombre))) = lower(rtrim(ltrim(:nombre))) AND c.uuid <> :uuidClaseVehiculo")
     boolean exitsClaseVehiculoLikeNombre(@Param("nombre") String nombre,
                                          @Param("uuidClaseVehiculo") String uuidClaseVehiculo);
+
+    @Query(value = "SELECT * FROM clase_vehiculo c WHERE LOWER(TRIM(c.nombre)) = LOWER(TRIM(:nombre))", nativeQuery = true)
+    Optional<ClaseVehiculo> findByNombreIncluyendoEliminados(@Param("nombre") String nombre);
 }
