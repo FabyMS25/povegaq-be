@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-//@ToString(exclude = {"inspeccionList", "fotoVehiculoList", "datoTecnico"}) // Evita el ciclo desde este lado
 @Entity
 @Table(name = "vehiculos", indexes = @Index(name = "idx_vehi", columnList = "uuid", unique = true))
 @SQLDelete(sql = "UPDATE vehiculos SET estado=true WHERE id_vehiculo=?")

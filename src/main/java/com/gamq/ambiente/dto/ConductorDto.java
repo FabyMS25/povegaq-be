@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +28,18 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConductorDto {
     private String uuid;
+    @NotBlank(message = "El apellido paterno es obligatorio")
     @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
     private String nombre;
     @NotBlank(message = "El apellido paterno es obligatorio")
     @Size(min= 1, max = 80)
     @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String primerApellido;
+    @Size(min= 1, max = 80)
+    @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String segundoApellido;
+    @Size(min= 1, max = 80)
+    @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String apellidoEsposo;
     @NotBlank(message = "El tipo de documento es obligatorio")
     private String tipoDocumento;
@@ -42,6 +48,7 @@ public class ConductorDto {
     @Size(max = 15, message = "El nro de documento no puede exceder los 15 caracteres")
     private String numeroDocumento;
     private Integer expedido;
+    @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "El correo electrónico no tiene un formato válido")
     @Size(max = 50, message = "El correo no puede exceder los 50  caracteres")
     private String email;
@@ -49,6 +56,7 @@ public class ConductorDto {
     private String nroTelefono;
     private boolean estado;
 
+    @NotNull(message = "El tipo de contribuyente es obligatorio.")
     private TipoContribuyenteDto tipoContribuyenteDto;
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
 }

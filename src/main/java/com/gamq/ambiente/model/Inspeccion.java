@@ -37,7 +37,6 @@ public class Inspeccion {
     private String observacion;
     @Column(name = "lugar_inspeccion", length = 250)
     private String lugarInspeccion;
-
     @Column(name = "nombreInspector", nullable = false, length = 100)
     private String nombreInspector;
     @Column(name = "uuid_usuario")

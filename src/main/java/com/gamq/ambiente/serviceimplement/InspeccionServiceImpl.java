@@ -74,9 +74,13 @@ public class InspeccionServiceImpl implements InspeccionService {
         if (uuidUsuario == null || uuidUsuario.trim().isEmpty()) {
             throw new ResourceNotFoundException("Inspeccion", "uuidUsuario", uuidUsuario);
         }
+
         String nombreInspector = inspeccionDto.getNombreInspector();
         if (nombreInspector == null || nombreInspector.trim().isEmpty()) {
             throw new ResourceNotFoundException("Inspeccion", "nombreInspector", nombreInspector);
+        }
+        if (inspeccionDto.getActividadDto() == null || inspeccionDto.getActividadDto().getUuid() == null) {
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "El campo actividadDto es obligatorio y debe contener un UUID válido.");
         }
 
         Actividad actividad = actividadRepository.findByUuid(inspeccionDto.getActividadDto().getUuid())

@@ -14,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +52,7 @@ public class VehiculoDto {
     private List<InspeccionDto> inspeccionDtoList = new ArrayList<InspeccionDto>();
     private List<FotoVehiculoDto> fotoVehiculoDtoList = new ArrayList<FotoVehiculoDto>();
 
+    @NotEmpty(message = "Debe ingresar al menos un tipo de combustible.")
     private List<VehiculoTipoCombustibleDto> vehiculoTipoCombustibleDtoList = new ArrayList<>();
   
 }

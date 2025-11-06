@@ -26,6 +26,7 @@ public class EquipoDto {
     @NotBlank(message = "El nombre es requerido")
     @Size(max = 250, message = "El nombre no puede exceder los 200 caracteres")
     private String nombre;
+    @NotNull
     @Size(max = 250, message = "El nombre no puede exceder los 100 caracteres")
     private String version;
     private boolean estado;

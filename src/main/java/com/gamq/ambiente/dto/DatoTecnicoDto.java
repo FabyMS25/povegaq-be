@@ -24,8 +24,6 @@ import java.time.Year;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DatoTecnicoDto {
     private String uuid;
-   // @NotBlank(message = "La clase no puede ser nula ni vacía")
-   // private String clase;
     @NotBlank(message = "La marca no puede ser nula ni vacía")
     private String marca; //no
     @NotBlank(message = "El pais no puede ser nula ni vacía")
@@ -63,6 +61,7 @@ public class DatoTecnicoDto {
 
     private VehiculoDto vehiculoDto;
 
+    @NotNull(message = "El tipo de clase vehiculo es obligatorio.")
     private TipoClaseVehiculoDto tipoClaseVehiculoDto;
 
     // Clase interna para obtener el año actual (puede actualizarse automáticamente en tiempo de compilación)

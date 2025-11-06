@@ -231,7 +231,7 @@ public class VehiculoServiceImpl implements VehiculoService {
 
             TipoCombustible tipoCombustible = tipoCombustibleRepository
                     .findByUuid(combustibleDTO.getTipoCombustibleDto().getUuid())
-                    .orElseThrow(() -> new RuntimeException("Tipo de combustible no encontrado"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Tipo Combustible", "uuid", combustibleDTO.getTipoCombustibleDto().getUuid()));
             Optional<VehiculoTipoCombustible> vehiculoTipoCombustibleModificable = vehiculoTipoCombustibleRepository.findByUuidIncluyendoEliminados(combustibleDTO.getUuid());
 
             VehiculoTipoCombustible vehiculoTipoCombustible;
@@ -281,7 +281,8 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     private void validarCombustibles(List<VehiculoTipoCombustibleDto> combustibleList) {
         if (combustibleList == null || combustibleList.isEmpty()) {
-            throw new IllegalArgumentException("Debe ingresar al menos un tipo de combustible.");
+            //throw new IllegalArgumentException("Debe ingresar al menos un tipo de combustible.");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Debe ingresar al menos un tipo de combustible.");
         }
 
         long primarios = combustibleList.stream()
@@ -289,14 +290,13 @@ public class VehiculoServiceImpl implements VehiculoService {
                 .count();
 
         if (primarios > 1) {
-            throw new IllegalArgumentException("Solo es permitido un tipo de combustible primario por vehículo.");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Solo es permitido un tipo de combustible primario por vehículo.");
         }
 
         for (VehiculoTipoCombustibleDto vehiculoTipoCombustibleDto : combustibleList) {
             if (vehiculoTipoCombustibleDto.getTipoCombustibleDto() == null || vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid() == null) {
-                throw new IllegalArgumentException("Cada tipo de combustible debe estar vinculado a un tipo válido.");
+                throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Cada tipo de combustible debe estar vinculado a un tipo válido.");
             }
-
             tipoCombustibleRepository.findByUuid(vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid())
                     .orElseThrow(()-> new ResourceNotFoundException("Tipo Combustible", "uuid", vehiculoTipoCombustibleDto.getTipoCombustibleDto().getUuid()));
         }
@@ -320,7 +320,7 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     private void validarDatosTecnicos(DatoTecnicoDto datoTecnicoDto) {
         if (datoTecnicoDto == null || !validarDatoTecnico(datoTecnicoDto)) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "Error en los datos técnicos");
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Los datos técnicos enviados son inválidos o están incompletos.");
         }
     }
 }

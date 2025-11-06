@@ -12,6 +12,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -62,6 +64,17 @@ public class VehiculoController {
 
     @PostMapping()
     public ResponseEntity<Response<VehiculoDto>> createVehiculo(@Valid @RequestBody VehiculoDto vehiculoDto, BindingResult result){
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error ->
+                    errors.put(error.getField(), error.getDefaultMessage())
+            );
+            Response<VehiculoDto> response = new Response<>();
+            response.setStatus(Status.BAD_REQUEST);
+            response.setErrors(errors);
+            return ResponseEntity.badRequest().body(response);
+        }
+
         Response<VehiculoDto> response = Response.<VehiculoDto>created().setStatus(Status.OK).setPayload(vehiculoService.crearVehiculo(vehiculoDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
