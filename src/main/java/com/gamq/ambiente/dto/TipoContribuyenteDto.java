@@ -8,6 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +19,7 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TipoContribuyenteDto {
     private String uuid;
+    @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
     private String codigo;
     private boolean estado;

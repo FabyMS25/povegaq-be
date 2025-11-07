@@ -8,6 +8,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,9 +20,11 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GrupoRiesgoDto {
     private String uuid;
+    @NotBlank(message = "El nombre del grupo es obligatorio")
     private String grupo;
     private String recomendacion;
     private boolean estado;
 
+    @NotNull(message = "La categoría de aire es obligatoria")
     private CategoriaAireDto categoriaAireDto;
 }

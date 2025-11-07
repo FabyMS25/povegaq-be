@@ -12,6 +12,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,10 +27,13 @@ import java.util.List;
 public class RequisitoInspeccionDto {
     private String uuid;
     private boolean cumple;
+    @NotNull(message = "La fecha de presentación es obligatoria")
     private Date fechaPresentacion;
     private boolean estado;
 
+    @NotNull(message = "El requisito es obligatorio")
     private RequisitoDto requisitoDto;
+    @NotNull(message = "La inspección es obligatoria")
     private InspeccionDto inspeccionDto;
     private List<ArchivoAdjuntoDto> archivoAdjuntoDtoList = new ArrayList<ArchivoAdjuntoDto>();
 }

@@ -9,6 +9,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,9 +21,11 @@ import lombok.experimental.Accessors;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TipoClaseVehiculoDto {
     private String uuid;
+    @NotBlank(message = "El nombre es obligatorio")
     private String nombre;
     private String descripcion;
     private boolean estado;
 
+    @NotNull(message = "La clase de vehículo es obligatoria")
     private ClaseVehiculoDto claseVehiculoDto;
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UfvDto {
     private String uuid;
+    @NotNull(message = "La fecha es obligatoria")
     private Date fecha;
     private BigDecimal valor;
     private boolean estado;
