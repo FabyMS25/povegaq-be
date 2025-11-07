@@ -21,6 +21,7 @@ public class TipoContribuyenteDto {
     private String uuid;
     @NotBlank(message = "La descripción es obligatoria")
     private String descripcion;
+    @NotBlank(message = "El codigo es obligatorio")
     private String codigo;
     private boolean estado;
 }

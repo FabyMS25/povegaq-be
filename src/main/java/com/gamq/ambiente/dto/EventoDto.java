@@ -11,6 +11,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalTime;
@@ -37,6 +38,7 @@ public class EventoDto {
     private LocalTime horaFin;
     private Double latitud;
     private Double longitud;
+    @NotBlank(message = "La dirección es obligatoria")
     private String direccion;
     private String descripcion;
     private String distrito;
@@ -44,5 +46,6 @@ public class EventoDto {
     private String titulo;
     private boolean estado;
 
+    @NotNull(message = "La actividad es obligatorio.")
     private ActividadDto actividadDto;
 }

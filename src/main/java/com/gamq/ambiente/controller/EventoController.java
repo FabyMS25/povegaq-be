@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @RestController
@@ -30,7 +32,8 @@ public class EventoController {
     @GetMapping("/institucion/{institucion}")
     @Operation(summary = "Buscar Evento por institucion", description = "Retorna los datos del evento")
     public Response getEventoByInstitucion(@PathVariable("institucion") String institucion){
-        return Response.ok().setPayload(eventoService.obtenerEventoPorInstitucion(institucion));
+        String institucionDecodificado = URLDecoder.decode(institucion, StandardCharsets.UTF_8);
+        return Response.ok().setPayload(eventoService.obtenerEventoPorInstitucion(institucionDecodificado));
     }
 
     @GetMapping("/fecha")

@@ -61,6 +61,9 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public EventoDto crearEvento(EventoDto eventoDto) {
+        if (eventoDto.getFechaInicio().after(eventoDto.getFechaFin())){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
         Optional<Actividad> actividadOptional = actividadRepository.findByUuid(eventoDto.getActividadDto().getUuid());
         if (actividadOptional.isPresent()) {
             Evento nuevoEvento = EventoMapper.toEvento(eventoDto);
@@ -74,6 +77,9 @@ public class EventoServiceImpl implements EventoService {
 
     @Override
     public EventoDto actualizarEvento(EventoDto eventoDto) {
+        if (eventoDto.getFechaInicio().after(eventoDto.getFechaFin())){
+            throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
         Optional<Evento> eventoOptional = eventoRepository.findByUuid(eventoDto.getUuid());
         if(eventoOptional.isPresent()) {
             Optional<Actividad> actividadOptional = actividadRepository.findByUuid(eventoDto.getActividadDto().getUuid());
