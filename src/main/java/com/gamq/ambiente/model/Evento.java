@@ -55,7 +55,7 @@ public class Evento {
     private String distrito;
     @Column(name = "altitud", nullable = true)
     private Integer altitud;
-    @Column(name = "titulo", length = 50)
+    @Column(name = "titulo", length = 100)
     private String titulo;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
