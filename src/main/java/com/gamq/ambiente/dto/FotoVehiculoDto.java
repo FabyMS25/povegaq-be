@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 
 @Getter
@@ -28,6 +29,7 @@ public class FotoVehiculoDto {
     private String nombre;
     private String ruta;
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
+    @Size(max = 100, message = "La direccion no puede superar 100 caracteres")
     private String nombreUsuario;
     @NotBlank(message = "El uuid de usuario no puede estar vacío")
     private String uuidUsuario;

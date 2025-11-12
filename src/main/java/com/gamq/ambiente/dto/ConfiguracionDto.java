@@ -26,10 +26,13 @@ public class ConfiguracionDto {
     private String clave;
     @NotBlank(message = "El valor no puede ser nula ni vacía")
     private String valor;
+    @Size(max = 100, message = "La unidad no puede exceder los 100 caracteres")
     private String unidad;
+    @Size(max = 250, message = "La descripcion no puede exceder los 250 caracteres")
     private String descripcion;
     private Date fechaInicio;
     private Date fechaFin;
+    @Size(max = 500, message = "La descripcion no puede exceder los 500 caracteres")
     private String resolucionApoyo;
     @NotBlank(message = "El nombre del registrador es requerido")
     @Size(max = 100, message = "El nombre del registrador no puede exceder los 100 caracteres")

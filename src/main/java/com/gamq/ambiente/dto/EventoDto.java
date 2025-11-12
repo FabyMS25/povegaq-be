@@ -39,7 +39,7 @@ public class EventoDto {
     private Double latitud;
     private Double longitud;
     @NotBlank(message = "La dirección es obligatoria")
-    @Size(max = 200, message = "La direccion no puede superar 200 caracteres")
+    @Size(max = 250, message = "La direccion no puede superar 250 caracteres")
     private String direccion;
     private String descripcion;
     @Size(max = 15, message = "El distrito no puede superar 15 caracteres")

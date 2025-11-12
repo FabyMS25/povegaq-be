@@ -31,7 +31,7 @@ public class Actividad {
     private Long idActividad;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "tipo_actividad", length = 50)
+    @Column(name = "tipo_actividad", length = 100)
     private String tipoActividad;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inicio")

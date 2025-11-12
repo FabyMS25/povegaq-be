@@ -78,7 +78,7 @@ public class LimiteEmision {
     private String tiempoMotor;
     @Column(name="ciclo_prueba", nullable = true, length =50)
     private String cicloPrueba;
-    @Column(name="normativa", nullable = true,length =50)
+    @Column(name="normativa", nullable = true,length =100)
     private String normativa;
 
 

@@ -12,6 +12,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +27,11 @@ import java.util.List;
 public class TipoParametroDto {
     private String uuid;
     @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
     private String nombre;
+    @Size(max = 250, message = "La descripcion no puede exceder los 250 caracteres")
     private String descripcion;
+    @Size(max = 50, message = "La unidad no puede exceder los 50 caracteres")
     private String unidad;
     private boolean activo;
     private boolean estado;

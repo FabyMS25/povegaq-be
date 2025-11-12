@@ -13,6 +13,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,9 +37,13 @@ public class PropietarioDto {
         @Size(min= 1, max = 80)
         @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
         private String primerApellido;
+        @Size(max = 80, message = "El segundo apellido no puede exceder los 80 caracteres")
         private String segundoApellido;
+        @Size(max = 80, message = "El apellido esposo no puede exceder los 80 caracteres")
         private String apellidoEsposo;
+        @Size(max = 15, message = "El estado civil no puede exceder los 15 caracteres")
         private String estadoCivil;
+        @Size(max = 3, message = "El genero no puede exceder los 3 caracteres")
         private String genero;
         private Date fechaNacimiento;
 
@@ -57,6 +62,7 @@ public class PropietarioDto {
         private String nroTelefono;
         private boolean estado;
 
+        @NotNull(message = "El tipo de contribuyente es obligatorio.")
         private TipoContribuyenteDto tipoContribuyenteDto;
         private List<VehiculoDto> vehiculoDtoList = new ArrayList<VehiculoDto>();
 }

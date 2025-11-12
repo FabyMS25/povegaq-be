@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -22,7 +23,9 @@ import javax.validation.constraints.NotNull;
 public class TipoClaseVehiculoDto {
     private String uuid;
     @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
     private String nombre;
+    @Size(max = 250, message = "La descripción no puede exceder los 250 caracteres")
     private String descripcion;
     private boolean estado;
 

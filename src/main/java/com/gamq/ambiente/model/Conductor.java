@@ -43,7 +43,7 @@ public class Conductor {
     private String numeroDocumento;
     @Column(name = "expedido", nullable = true)
     private Integer expedido;
-    @Column(name= "email", nullable = false, length = 50)
+    @Column(name= "email", nullable = false, length = 100)
     private String email;
     @Column(name = "nro_telefono", length = 15)
     private String nroTelefono;

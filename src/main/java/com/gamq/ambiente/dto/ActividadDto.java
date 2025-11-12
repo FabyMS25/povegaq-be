@@ -27,7 +27,7 @@ import java.util.List;
 public class ActividadDto {
     private String uuid;
     @NotBlank(message = "El tipo de actividad es obligatorio")
-    @Size(max = 50, message = "El tipo de actividad no puede superar los 50 caracteres")
+    @Size(max = 100, message = "El tipo de actividad no puede superar los 100 caracteres")
     private String tipoActividad;
     @NotNull(message = "La fecha de inicio es obligatoria")
     private Date fechaInicio;

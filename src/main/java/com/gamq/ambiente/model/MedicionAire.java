@@ -39,8 +39,6 @@ public class MedicionAire {
     private Integer dia;
     @Column(name = "valor",  nullable = false, precision = 20, scale = 4)
     private BigDecimal valor;
-    //@Column(name = "estacion",  nullable = true, length = 100)
-    //private String estacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estacion", nullable = false)

@@ -27,9 +27,9 @@ public class TipoClaseVehiculo {
     private Long idTipoClaseVehiculo;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "nombre", nullable = false, unique = true, length = 50)
+    @Column(name = "nombre", nullable = false, unique = true, length = 100)
     private String nombre;
-    @Column(name = "descripcion", length = 150)
+    @Column(name = "descripcion", length = 250)
     private String descripcion;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;

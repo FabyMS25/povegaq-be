@@ -24,10 +24,12 @@ public class EquipoDto {
     private String uuid;
     @NotNull
     @NotBlank(message = "El nombre es requerido")
-    @Size(max = 250, message = "El nombre no puede exceder los 200 caracteres")
+    @Size(max = 200, message = "El nombre no puede exceder los 200 caracteres")
     private String nombre;
     @NotNull
-    @Size(max = 250, message = "El nombre no puede exceder los 100 caracteres")
+    @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
     private String version;
+    @Size(max = 100, message = "La marca no puede exceder los 100 caracteres")
+    private String marca;
     private boolean estado;
 }

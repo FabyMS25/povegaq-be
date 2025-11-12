@@ -45,9 +45,6 @@ public class Certificado {
     private boolean estado;
 
 
-   // @OneToOne()
-   // @JoinColumn(name = "id_inspeccion", nullable = false)
-   // private Inspeccion inspeccion;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="id_inspeccion", nullable = false)
     private Inspeccion inspeccion;

@@ -25,7 +25,7 @@ import java.util.List;
 public class TipoCombustibleDto {
     private String uuid;
     @NotBlank(message = "El nombre de alerta es obligatorio")
-    @Size(max = 50, message = "El tipo de motor no puede exceder 50 caracteres")
+    @Size(max = 100, message = "El tipo de motor no puede exceder 100 caracteres")
     private String nombre;
     @NotBlank(message = "La descripcion no puede estar vacío")
     @Size(max = 250, message = "La descripcion no puede exceder 250 caracteres")

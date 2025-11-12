@@ -31,6 +31,8 @@ public class Equipo {
     private String nombre;
     @Column(name = "version", nullable = true, length = 100)
     private String version;
+    @Column(name = "marca", nullable = true, length = 100)
+    private String marca;
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
 

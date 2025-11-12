@@ -31,7 +31,7 @@ public class CategoriaAire {
     private Integer valorMinimo;
     @Column(name = "valor_maximo", nullable = false)
     private Integer valorMaximo;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     private String categoria;
     @Column(columnDefinition = "TEXT")
     private String descripcion;

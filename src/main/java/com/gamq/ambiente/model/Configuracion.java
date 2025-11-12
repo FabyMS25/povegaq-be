@@ -32,9 +32,9 @@ public class Configuracion {
     private String clave;
     @Column(name = "valor", nullable = false)
     private String valor;
-    @Column(name ="unidad", length = 50)
+    @Column(name ="unidad", length = 100)
     private String unidad;
-    @Column(name = "descripcion", length = 255)
+    @Column(name = "descripcion", length = 250)
     private String descripcion;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inicio")

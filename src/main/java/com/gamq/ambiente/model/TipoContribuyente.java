@@ -29,7 +29,7 @@ public class TipoContribuyente {
     private Long idTipoContribuyente;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "descripcion", nullable = false, length = 150)
+    @Column(name = "descripcion", nullable = false, length = 250)
     private String descripcion;
     @Column(name = "codigo", nullable = true, length = 15)
     private String codigo;

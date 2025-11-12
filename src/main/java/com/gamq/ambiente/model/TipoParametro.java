@@ -30,11 +30,11 @@ public class TipoParametro {
     private Long idTipoParametro;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "nombre", unique = false, nullable = false, length = 50)
+    @Column(name = "nombre", unique = false, nullable = false, length = 100)
     private String nombre;
     @Column(name = "descripcion", nullable = true, length = 250)
     private String descripcion;
-    @Column(name = "unidad", nullable = true, length = 20)
+    @Column(name = "unidad", nullable = true, length = 50)
     private String unidad;
     @Column(name = "activo", columnDefinition = "BOOLEAN NOT NULL DEFAULT '1'")
     private boolean activo;

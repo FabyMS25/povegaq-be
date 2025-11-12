@@ -32,9 +32,11 @@ public class InfraccionDto {
     @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal montoTotal;
     @NotNull
+    @Size(max = 30, message = "El estadoi de la infraccion no puede superar 30 caracteres")
     private StatusInfraccion statusInfraccion;
     private boolean estadoPago;
     private Date fechaPago;
+    @Size(max = 15, message = "El numero de tasa no puede superar 15 caracteres")
     private String numeroTasa;
     @NotNull
     @NotBlank(message = "El motivo es requerido")

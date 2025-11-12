@@ -27,7 +27,7 @@ import java.util.List;
 public class RequisitoDto {
     private String uuid;
     @NotEmpty(message = "La descripción no puede ser vacio")
-    @Size(max = 200, message = "La descripción no puede exceder los 200 caracteres")
+    @Size(max = 250, message = "La descripción no puede exceder los 250 caracteres")
     private String descripcion;
     @NotNull(message = "El campo obligatorio no puede ser vacio")
     @Column(name = "obligatorio", nullable = false)

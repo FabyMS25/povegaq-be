@@ -27,7 +27,7 @@ public class CategoriaAireDto {
     @NotNull(message = "El valor máximo es obligatorio")
     private Integer valorMaximo;
     @NotBlank(message = "La categoría es obligatoria")
-    @Size(max = 20, message = "La categoría no puede superar 20 caracteres")
+    @Size(max = 100, message = "La categoría no puede superar 100 caracteres")
     private String categoria;
     @NotBlank(message = "La descripcion es obligatoria")
     private String descripcion;

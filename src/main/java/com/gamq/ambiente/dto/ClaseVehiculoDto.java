@@ -24,8 +24,9 @@ import java.util.List;
 public class ClaseVehiculoDto {
     private String uuid;
     @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 50, message = "El nombre de Clase Vehiculo no puede superar los 50 caracteres")
+    @Size(max = 100, message = "El nombre de Clase Vehiculo no puede superar los 100 caracteres")
     private String nombre;
+    @Size(max = 250, message = "La descripcion no puede superar los 250 caracteres")
     private String descripcion;
     private boolean estado;
 

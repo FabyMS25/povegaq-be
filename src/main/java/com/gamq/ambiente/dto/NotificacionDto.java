@@ -14,10 +14,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,31 +31,44 @@ public class NotificacionDto {
     private String uuid;
 
     @NotBlank(message = "El número de notificación es obligatorio")
-    private String numeroNotificacion; // numero rojo de la boleta
-    private TipoNotificacion typeNotificacion;   //      REINSPECCION PENDIENTE, INFRACCION, RECORDATORIO
+    @Size(max = 15, message = "El numero de notificacion no puede exceder los 15 caracteres")
+    private String numeroNotificacion;
+    @Size(max = 30, message = "El tipo de notificacion no puede exceder los 30 caracteres")
+    private TipoNotificacion typeNotificacion;
+    @NotNull(message = "La fecha de asistencia es requerida")
     private Date fechaAsistencia;
     @NotNull(message = "La hora de notificación es obligatoria")
     private LocalTime horaAsistencia;
     private String observacion;
+    @NotNull(message = "La fecha de notificación es obligatoria")
     private Date fechaNotificacion;  // fecha en la que envia la notificacion
     @NotBlank(message = "El nombre del notificador es obligatorio")
+    @Size(max = 100, message = "El nombre del notificador no puede exceder los 100 caracteres")
     private String nombreNotificador;
     @NotBlank(message = "El UUID del usuario es obligatorio")
     private String uuidUsuario;
+    @Size(max = 30, message = "El estado de la notificacion no puede exceder los 30 caracteres")
     private EstadoNotificacion statusNotificacion;
     @NotNull(message = "La actividad es obligatorio")
+    @Size(max = 200, message = "La actividad no puede exceder los 200 caracteres")
     private String actividad;
     @NotNull(message = "La actividad es obligatorio")
+    @Size(max = 250, message = "La direccion no puede exceder los 250 caracteres")
     private String direccion;
     private int numeroIntento;
+    @Size(max = 250, message = "La actividad no puede exceder los 250 caracteres")
     private String sancion;
     @NotNull(message = "Si es Denuncia es true caso contrario es una Observacion")
     private boolean esDenuncia;
+    @NotNull(message = "El nombre de la persona notificada es obligatorio")
+    @Size(max = 100, message = "El nombre persona notificada no puede exceder los 100 caracteres")
     private String nombrePersonaNotificada;
+    @NotNull(message = "La placa es obligatorio")
     private String placa;
     private boolean generadoSistema;
     private boolean estado;
 
+    @NotNull(message = "La inspeccion es obligatorio.")
     private InspeccionDto inspeccionDto;
     private List<InfraccionDto> infraccionDtoList = new ArrayList<InfraccionDto>();
 }

@@ -50,7 +50,7 @@ public class ConductorDto {
     private Integer expedido;
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Email(message = "El correo electrónico no tiene un formato válido")
-    @Size(max = 50, message = "El correo no puede exceder los 50  caracteres")
+    @Size(max = 100, message = "El correo no puede exceder los 100  caracteres")
     private String email;
     @Size(max = 15, message = "El numero de telefono no puede exceder los 15  caracteres")
     private String nroTelefono;

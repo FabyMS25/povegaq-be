@@ -9,6 +9,7 @@ public class EquipoMapper {
                 .setUuid(equipo.getUuid())
                 .setNombre(equipo.getNombre())
                 .setVersion(equipo.getVersion())
+                .setMarca(equipo.getMarca())
                 .setEstado(equipo.isEstado());
     }
     public static  Equipo toEquipo(EquipoDto equipoDto){
@@ -16,6 +17,7 @@ public class EquipoMapper {
                 .setUuid(equipoDto.getUuid())
                 .setNombre(equipoDto.getNombre())
                 .setVersion(equipoDto.getVersion())
+                .setMarca(equipoDto.getMarca())
                 .setEstado(equipoDto.isEstado());
     }
 

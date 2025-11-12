@@ -43,8 +43,10 @@ public class TipoInfraccionDto {
     private BigDecimal valorUFV;
     private boolean esAutomatico;
     @NotNull(message = "El articulo es obligatorio")
+    @Size(max = 20, message = "El articulo no puede exceder los 20 caracteres")
     private String articulo;
     @NotNull(message = "El numero de tasa es obligatorio")
+    @Size(max = 15, message = "El articulo no puede exceder los 15 caracteres")
     private String conceptoRuat;
     private boolean estado;
 

@@ -22,6 +22,8 @@ public class VehiculoTipoCombustibleDto {
     private Boolean esPrimario;
     private boolean estado;
 
+    @NotNull(message = "El vehículo es obligatoria")
     private VehiculoDto vehiculoDto;
+    @NotNull(message = "El tipo combustible es obligatoria")
     private TipoCombustibleDto tipoCombustibleDto;
 }

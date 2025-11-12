@@ -30,7 +30,7 @@ public class Reglamento {
     private Long idReglamento;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name="codigo", nullable = false, length = 15)
+    @Column(name="codigo", nullable = false, length = 100)
     private String codigo;
     @Column(name = "descripcion", nullable = false, length = 250)
     private String descripcion;
