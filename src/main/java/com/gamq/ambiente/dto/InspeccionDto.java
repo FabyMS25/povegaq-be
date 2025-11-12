@@ -2,6 +2,7 @@ package com.gamq.ambiente.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gamq.ambiente.model.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InspeccionDto {
     private String uuid;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String codigo;
     @NotNull(message = "La fecha de inspección es obligatoria.")
     private Date fechaInspeccion;
     private boolean resultado;

@@ -12,6 +12,7 @@ public class InspeccionMapper {
     public static InspeccionDto toInspeccionDto(Inspeccion inspeccion){
         return new InspeccionDto()
                 .setUuid(inspeccion.getUuid())
+                .setCodigo(inspeccion.getCodigo())
                 .setResultado(inspeccion.isResultado())
                 .setObservacion(inspeccion.getObservacion())
                 .setFechaInspeccion(inspeccion.getFechaInspeccion())
@@ -166,6 +167,7 @@ public class InspeccionMapper {
     public static Inspeccion toInspeccion(InspeccionDto inspeccionDto){
         return new Inspeccion()
                 .setUuid(inspeccionDto.getUuid())
+                .setCodigo(inspeccionDto.getCodigo())
                 .setResultado(inspeccionDto.isResultado())
                 .setObservacion(inspeccionDto.getObservacion())
                 .setFechaInspeccion(inspeccionDto.getFechaInspeccion())

@@ -28,6 +28,8 @@ public class Inspeccion {
     private Long idInspeccion;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
+    @Column(name = "codigo", nullable = false, unique = true, length = 30)
+    private String codigo;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inspeccion", nullable = false)
     private Date fechaInspeccion;

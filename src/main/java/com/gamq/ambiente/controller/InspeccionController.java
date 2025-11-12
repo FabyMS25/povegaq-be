@@ -26,6 +26,11 @@ public class InspeccionController {
         return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorUuid(uuid));
     }
 
+    @GetMapping("/codigo/{codigo}")
+    public Response getInspeccionByCodigo(@PathVariable("codigo") String codigo){
+        return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorCodigo(codigo));
+    }
+
     @GetMapping("/placa/{placa}")
     public Response getInspeccionByPlaca(@PathVariable("placa") String placa){
         return Response.ok().setPayload(inspeccionService.obtenerInspeccionPorPlaca(placa));

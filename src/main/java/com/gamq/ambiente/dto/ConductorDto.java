@@ -35,10 +35,10 @@ public class ConductorDto {
     @Size(min= 1, max = 80)
     @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String primerApellido;
-    @Size(min= 1, max = 80)
+    @Size(min= 0, max = 80)
     @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String segundoApellido;
-    @Size(min= 1, max = 80)
+    @Size(min= 0, max = 80)
     @Size(max = 80, message = "El apellido paterno no puede exceder los 80 caracteres")
     private String apellidoEsposo;
     @NotBlank(message = "El tipo de documento es obligatorio")

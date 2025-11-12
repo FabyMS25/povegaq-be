@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface InspeccionService {
     InspeccionDto obtenerInspeccionPorUuid(String uuid);
+    InspeccionDto obtenerInspeccionPorCodigo(String codigo);
     List<InspeccionDto> obtenerInspeccionPorPlaca(String uuid);
     List<InspeccionDto> obtenerInspeccionPorUuidUsuario(String uuidUsuario);
     List<InspeccionDto> obtenerInspecciones();

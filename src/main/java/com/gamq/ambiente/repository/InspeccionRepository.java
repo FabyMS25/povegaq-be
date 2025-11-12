@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     Optional<Inspeccion> findByUuid(String uuid);
+    Optional<Inspeccion> findByCodigo(String codigo);
     List<Inspeccion> findByUuidUsuario(String uuidUsuario);
     @Query("SELECT i FROM Inspeccion i WHERE LOWER(rtrim(ltrim(i.vehiculo.placa))) = LOWER(rtrim(ltrim(:placa)))")
     List<Inspeccion> findByPlacaVehiculo(@Param("placa") String placa);
@@ -32,4 +33,12 @@ public interface InspeccionRepository extends JpaRepository<Inspeccion, Long> {
     boolean exitsInspeccionWithUuidEquipo(@Param("uuidEquipo") String uuidEquipo);
 
     List<Inspeccion> findByVehiculoAndEstado(Vehiculo vehiculo, boolean estado);
+
+    @Query(value = "SELECT codigo FROM inspecciones WHERE codigo LIKE :prefijoAnio ORDER BY codigo DESC LIMIT 1",
+            nativeQuery = true
+    )
+ //   @Query("SELECT i.codigo FROM Inspeccion i " +
+ //           "WHERE i.codigo LIKE :prefijoAnio% " +
+ //           "ORDER BY i.codigo DESC")
+    Optional<String> findUltimoCodigoPorPrefijo(@Param("prefijoAnio") String prefijoAnio);
 }

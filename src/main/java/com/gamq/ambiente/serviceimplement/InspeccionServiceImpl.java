@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,12 @@ public class InspeccionServiceImpl implements InspeccionService {
     @Override
     public InspeccionDto obtenerInspeccionPorUuid(String uuid) {
         Inspeccion inspeccion = obtenerInspeccionPorUuidOThrow(uuid);
+        return InspeccionMapper.toInspeccionDto(inspeccion);
+    }
+
+    @Override
+    public InspeccionDto obtenerInspeccionPorCodigo(String codigo) {
+        Inspeccion inspeccion = obtenerInspeccionPorCodigoOThrow(codigo);
         return InspeccionMapper.toInspeccionDto(inspeccion);
     }
 
@@ -70,6 +77,8 @@ public class InspeccionServiceImpl implements InspeccionService {
 
     @Override
     public InspeccionDto crearInspeccion(InspeccionDto inspeccionDto) {
+        String codigo = generarCodigoInspeccion();
+        inspeccionDto.setCodigo(codigo);
         String uuidUsuario = inspeccionDto.getUuidUsuario();
         if (uuidUsuario == null || uuidUsuario.trim().isEmpty()) {
             throw new ResourceNotFoundException("Inspeccion", "uuidUsuario", uuidUsuario);
@@ -152,6 +161,7 @@ public class InspeccionServiceImpl implements InspeccionService {
         updateInspeccion.setIdInspeccion(inspeccion.getIdInspeccion());
         updateInspeccion.setActividad(actividad);
         updateInspeccion.setVehiculo(vehiculo);
+        updateInspeccion.setCodigo(inspeccion.getCodigo());
 
         if (inspeccionDto.getConductorDto() != null &&
             inspeccionDto.getConductorDto().getUuid() != null){
@@ -201,6 +211,11 @@ public class InspeccionServiceImpl implements InspeccionService {
         return InspeccionMapper.toInspeccionDto(inspeccion);
     }
 
+    private Inspeccion obtenerInspeccionPorCodigoOThrow(String codigo) {
+        return inspeccionRepository.findByCodigo(codigo)
+                .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "codigo", codigo));
+    }
+
     private Inspeccion obtenerInspeccionPorUuidOThrow(String uuid) {
         return inspeccionRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuid", uuid));
@@ -210,22 +225,29 @@ public class InspeccionServiceImpl implements InspeccionService {
         return inspeccionRepository.findFirstByVehiculoUuidOrderByFechaInspeccionDesc(uuidVehiculo)
                 .orElseThrow(() -> new ResourceNotFoundException("Inspeccion", "uuidVehiculo", uuidVehiculo));
     }
-/*
-    public int obtenerNumeroIntentoActual(Vehiculo vehiculo) {
-        List<Inspeccion> inspecciones = inspeccionRepository
-                .findByVehiculoAndResultadoFalseOrderByFechaInspeccionDesc(vehiculo);
 
-        for (Inspeccion inspeccion : inspecciones) {
-            boolean tieneNotificacionActiva = inspeccion.getNotificacionList().stream()
-                    .anyMatch(n -> n.getStatusNotificacion() != EstadoNotificacion.CUMPLIDA &&
-                            n.getStatusNotificacion() != EstadoNotificacion.FALLIDA
-                    );
+    public String generarCodigoInspeccion() {
+        int anioActual = Year.now().getValue();
+        String prefijoAnio = "INS-" + anioActual + "-";
 
-            if (tieneNotificacionActiva) {
-                return 2; //segunda
+        Optional<String> ultimoCodigo = inspeccionRepository.findUltimoCodigoPorPrefijo(prefijoAnio + "%");
+
+        int siguienteNumero = 1;
+
+        if (ultimoCodigo.isPresent()) {
+            String codigo = ultimoCodigo.get(); // Ej: INS-2025-000012
+            String[] partes = codigo.split("-");
+            if (partes.length == 3) {
+                try {
+                    siguienteNumero = Integer.parseInt(partes[2]) + 1;
+                } catch (NumberFormatException e) {
+                    // Si algo falla, se queda en 1
+                }
             }
         }
-        return 1; //primera
-    }*/
+
+        // Devuelve INS-2025-0001
+        return String.format("%s%04d", prefijoAnio, siguienteNumero);
+    }
 
 }
