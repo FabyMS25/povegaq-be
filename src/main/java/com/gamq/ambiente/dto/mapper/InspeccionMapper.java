@@ -28,6 +28,7 @@ public class InspeccionMapper {
                         .setUuid(inspeccion.getEquipo().getUuid())
                         .setNombre(inspeccion.getEquipo().getNombre())
                         .setVersion(inspeccion.getEquipo().getVersion())
+                        .setMarca(inspeccion.getEquipo().getMarca())
                         .setEstado(inspeccion.getEquipo().isEstado())
                 )
                 .setActividadDto(inspeccion.getActividad() == null? null: new ActividadDto()

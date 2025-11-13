@@ -29,6 +29,7 @@ public class NotificacionMapper {
                 .setEstado(notificacion.isEstado())
                 .setInspeccionDto(notificacion.getInspeccion()== null? null : new InspeccionDto()
                         .setUuid(notificacion.getInspeccion().getUuid())
+                        .setCodigo(notificacion.getInspeccion().getCodigo())
                         .setResultado(notificacion.getInspeccion().isResultado())
                         .setObservacion(notificacion.getInspeccion().getObservacion())
                         .setFechaInspeccion(notificacion.getInspeccion().getFechaInspeccion())
@@ -44,6 +45,7 @@ public class NotificacionMapper {
                                 .setUuid(notificacion.getInspeccion().getEquipo().getUuid())
                                 .setNombre(notificacion.getInspeccion().getEquipo().getNombre())
                                 .setVersion(notificacion.getInspeccion().getEquipo().getVersion())
+                                .setMarca(notificacion.getInspeccion().getEquipo().getMarca())
                                 .setEstado(notificacion.getInspeccion().getEquipo().isEstado())
                         )
 

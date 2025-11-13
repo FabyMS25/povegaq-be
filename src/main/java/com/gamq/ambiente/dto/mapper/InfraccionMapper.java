@@ -60,6 +60,7 @@ public class InfraccionMapper {
 
                 .setInspeccionDto(infraccion.getInspeccion()==null? null: new InspeccionDto()
                         .setUuid(infraccion.getInspeccion().getUuid())
+                        .setCodigo(infraccion.getInspeccion().getCodigo())
                         .setResultado(infraccion.getInspeccion().isResultado())
                         .setObservacion(infraccion.getInspeccion().getObservacion())
                         .setFechaInspeccion(infraccion.getInspeccion().getFechaInspeccion())

@@ -33,6 +33,7 @@ public class DetalleInspeccionMapper {
                 )
                 .setInspeccionDto(detalleInspeccion.getInspeccion() == null? null: new InspeccionDto()
                         .setUuid(detalleInspeccion.getInspeccion().getUuid())
+                        .setCodigo(detalleInspeccion.getInspeccion().getCodigo())
                         .setFechaInspeccion(detalleInspeccion.getInspeccion().getFechaInspeccion())
                         .setLugarInspeccion(detalleInspeccion.getInspeccion().getLugarInspeccion())
                         .setNombreInspector(detalleInspeccion.getInspeccion().getNombreInspector())

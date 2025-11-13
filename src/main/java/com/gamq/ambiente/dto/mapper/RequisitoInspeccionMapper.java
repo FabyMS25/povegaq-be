@@ -18,6 +18,7 @@ public class RequisitoInspeccionMapper {
                 .setEstado(requisitoInspeccion.isEstado())
                 .setInspeccionDto(requisitoInspeccion.getInspeccion() == null? null: new InspeccionDto()
                         .setUuid(requisitoInspeccion.getInspeccion().getUuid())
+                        .setCodigo(requisitoInspeccion.getInspeccion().getCodigo())
                         .setFechaInspeccion(requisitoInspeccion.getInspeccion().getFechaInspeccion())
                         .setLugarInspeccion(requisitoInspeccion.getInspeccion().getLugarInspeccion())
                         .setNombreInspector(requisitoInspeccion.getInspeccion().getNombreInspector())
