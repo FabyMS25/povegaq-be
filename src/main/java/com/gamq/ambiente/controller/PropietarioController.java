@@ -57,6 +57,18 @@ public class PropietarioController {
         return Response.ok().setPayload(propietarioService.actualizarPropietario(propietarioDto));
     }
 
+    @GetMapping("/puede-quitar/{uuidPropietario}/vehiculo/{uuidVehiculo}")
+    @Operation(
+            summary = "Verificar si el vehiculo pude ser quitado de un propietario",
+            description = "Consulta si un vehículo asociado a un propietario puede ser removido de la lista, si no está relacionado con ninguna inspección"
+    )
+    public Response puedeQuitarVehiculo(
+            @PathVariable String uuidPropietario,
+            @PathVariable String uuidVehiculo) {
+        boolean puedeQuitar = propietarioService.puedeQuitarVehiculo(uuidPropietario, uuidVehiculo);
+        return Response.ok().setPayload(puedeQuitar);
+    }
+
     @DeleteMapping("/{uuid}")
     @Operation(
             summary = "Eliminar Propietario por uuid",

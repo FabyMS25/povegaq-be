@@ -12,6 +12,7 @@ import com.gamq.ambiente.repository.PropietarioRepository;
 import com.gamq.ambiente.repository.TipoContribuyenteRepository;
 import com.gamq.ambiente.repository.VehiculoRepository;
 import com.gamq.ambiente.service.PropietarioService;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -157,6 +158,24 @@ public class PropietarioServiceImpl implements PropietarioService {
         updatePropietario.setVehiculoList(vehiculoList);
 
         return PropietarioMapper.toPropietarioDto(propietarioRepository.save(updatePropietario));
+    }
+
+    @Override
+    public boolean puedeQuitarVehiculo(String uuidPropietario, String uuidVehiculo) {
+
+        Vehiculo vehiculo = vehiculoRepository.findByUuid(uuidVehiculo)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehículo", "uuid", uuidVehiculo));
+
+        if (vehiculo.getPropietario() == null)
+        { return  true;}
+
+        if ( !vehiculo.getPropietario().getUuid().equals(uuidPropietario)) {
+            return false;  // No pertenece o no existe relación
+        }
+
+        // Si tiene inspecciones, no puede quitarse
+        return vehiculo.getInspeccionList() == null || vehiculo.getInspeccionList().isEmpty();
+
     }
 
     @Override

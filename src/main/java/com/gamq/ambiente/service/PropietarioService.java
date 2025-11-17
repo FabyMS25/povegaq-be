@@ -10,5 +10,6 @@ public interface PropietarioService {
     List<PropietarioDto> obtenerPropietarios();
     PropietarioDto crearPropietario(PropietarioDto propietarioDto);
     PropietarioDto actualizarPropietario(PropietarioDto propietarioDto);
+    boolean puedeQuitarVehiculo(String uuidPropietario, String uuidVehiculo);
     PropietarioDto eliminarPropietario(String uuid);
 }
