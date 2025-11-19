@@ -29,8 +29,7 @@ public class MedicionAireDto {
     @NotBlank(message = "El mes es obligatorio")
     @Size(max = 100, message = "El mes no puede exceder los 100 caracteres")
     private String mes;
-    @NotBlank(message = "El dia es obligatorio")
-    @Size(max = 100, message = "El dia no puede exceder los 100 caracteres")
+    @NotNull(message = "El dia es obligatorio")
     private Integer dia;
     @NotNull(message = "El valor es requerido")
     @DecimalMin(value = "0.0000", inclusive = true, message = "El valor no puede ser negativo")
