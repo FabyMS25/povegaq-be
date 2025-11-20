@@ -11,6 +11,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 
 @Getter
@@ -23,9 +24,9 @@ import javax.validation.constraints.Size;
 public class CategoriaAireDto {
     private String uuid;
     @NotNull(message = "El valor mínimo es obligatorio")
-    private Integer valorMinimo;
+    private BigDecimal valorMinimo;
     @NotNull(message = "El valor máximo es obligatorio")
-    private Integer valorMaximo;
+    private BigDecimal valorMaximo;
     @NotBlank(message = "La categoría es obligatoria")
     @Size(max = 100, message = "La categoría no puede superar 100 caracteres")
     private String categoria;
@@ -34,7 +35,6 @@ public class CategoriaAireDto {
     @NotBlank(message = "La categoría es obligatoria")
     private String color;
     private String norma;
-    @NotBlank(message = "La recomendacion es obligatoria")
     private String recomendacion;
     private boolean activo;
     private boolean estado;

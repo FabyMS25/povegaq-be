@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Setter
@@ -27,10 +28,10 @@ public class CategoriaAire {
     private Long idCategoriaAire;
     @Column(name = "uuid", unique = true, nullable = false, length = 64)
     private String uuid;
-    @Column(name = "valor_minimo", nullable = false)
-    private Integer valorMinimo;
-    @Column(name = "valor_maximo", nullable = false)
-    private Integer valorMaximo;
+    @Column(name = "valor_minimo", nullable = false, precision = 20, scale = 4)
+    private BigDecimal valorMinimo;
+    @Column(name = "valor_maximo", nullable = false, precision = 20, scale = 4)
+    private BigDecimal valorMaximo;
     @Column(nullable = false, length = 100)
     private String categoria;
     @Column(columnDefinition = "TEXT")
