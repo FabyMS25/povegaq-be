@@ -52,7 +52,7 @@ public class InspeccionMapper {
                         .setPinNumeroIdentificacion(inspeccion.getVehiculo().getPinNumeroIdentificacion())
                         .setNroCopiasPlaca(inspeccion.getVehiculo().getNroCopiasPlaca())
                         .setPlacaAnterior(inspeccion.getVehiculo().getPlacaAnterior())
-                        .setChasis(inspeccion.getVehiculo().getChasis())
+                   //     .setChasis(inspeccion.getVehiculo().getChasis())
                         .setEstado(inspeccion.getVehiculo().isEstado())
                         .setDatoTecnicoDto( inspeccion.getVehiculo().getDatoTecnico() == null? null: new DatoTecnicoDto()
                                 .setUuid(inspeccion.getVehiculo().getDatoTecnico().getUuid())

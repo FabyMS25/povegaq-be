@@ -26,7 +26,7 @@ public class VehiculoMapper {
                 .setPinNumeroIdentificacion(vehiculo.getPinNumeroIdentificacion())
                 .setNroCopiasPlaca(vehiculo.getNroCopiasPlaca())
                 .setPlacaAnterior(vehiculo.getPlacaAnterior())
-                .setChasis(vehiculo.getChasis())
+             //   .setChasis(vehiculo.getChasis())
                 .setDatoTecnicoDto(vehiculo.getDatoTecnico()== null? null: new DatoTecnicoDto()
                         .setUuid(vehiculo.getDatoTecnico().getUuid())
                         .setTipoVehiculo(vehiculo.getDatoTecnico().getTipoVehiculo())
@@ -127,7 +127,7 @@ public class VehiculoMapper {
                 .setPinNumeroIdentificacion(vehiculoDto.getPinNumeroIdentificacion())
                 .setNroCopiasPlaca(vehiculoDto.getNroCopiasPlaca())
                 .setPlacaAnterior(vehiculoDto.getPlacaAnterior())
-                .setChasis(vehiculoDto.getChasis())
+             //   .setChasis(vehiculoDto.getChasis())
                 ;
     }
 }

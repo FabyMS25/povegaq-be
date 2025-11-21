@@ -47,10 +47,10 @@ public class VehiculoController {
         return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorPinNumeroIdentificacion(pin));
     }
 
-    @GetMapping("/chasis/{chasis}")
-    public Response getVehiculoByChasis(@PathVariable("chasis") String chasis){
-        return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorChasis(chasis));
-    }
+  //  @GetMapping("/chasis/{chasis}")
+  //  public Response getVehiculoByChasis(@PathVariable("chasis") String chasis){
+  //      return Response.ok().setPayload(vehiculoService.obtenerVehiculoPorChasis(chasis));
+  //  }
 
     @GetMapping("/placaAnterior/{placaAnterior}")
     public Response getVehiculoByPlacaAnterior(@PathVariable("placaAnterior") String placaAnterior){

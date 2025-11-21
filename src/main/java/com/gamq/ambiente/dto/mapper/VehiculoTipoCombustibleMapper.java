@@ -32,7 +32,7 @@ public class VehiculoTipoCombustibleMapper {
                         .setPinNumeroIdentificacion(vehiculoTipoCombustible.getVehiculo().getPinNumeroIdentificacion())
                         .setNroCopiasPlaca(vehiculoTipoCombustible.getVehiculo().getNroCopiasPlaca())
                         .setPlacaAnterior(vehiculoTipoCombustible.getVehiculo().getPlacaAnterior())
-                        .setChasis(vehiculoTipoCombustible.getVehiculo().getChasis())
+                     //   .setChasis(vehiculoTipoCombustible.getVehiculo().getChasis())
                 )
                 .setTipoCombustibleDto(vehiculoTipoCombustible.getTipoCombustible()==null? null: new TipoCombustibleDto()
                         .setUuid(vehiculoTipoCombustible.getTipoCombustible().getUuid())

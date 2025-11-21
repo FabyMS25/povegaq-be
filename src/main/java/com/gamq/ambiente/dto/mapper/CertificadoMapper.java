@@ -59,7 +59,7 @@ public class CertificadoMapper {
                                 .setPinNumeroIdentificacion(certificado.getInspeccion().getVehiculo().getPinNumeroIdentificacion())
                                 .setNroCopiasPlaca(certificado.getInspeccion().getVehiculo().getNroCopiasPlaca())
                                 .setPlacaAnterior(certificado.getInspeccion().getVehiculo().getPlacaAnterior())
-                                .setChasis(certificado.getInspeccion().getVehiculo().getChasis())
+                              //  .setChasis(certificado.getInspeccion().getVehiculo().getChasis())
                                 .setEstado(certificado.getInspeccion().getVehiculo().isEstado())
                                 .setDatoTecnicoDto( certificado.getInspeccion().getVehiculo().getDatoTecnico() == null? null: new DatoTecnicoDto()
                                         .setUuid(certificado.getInspeccion().getVehiculo().getDatoTecnico().getUuid())

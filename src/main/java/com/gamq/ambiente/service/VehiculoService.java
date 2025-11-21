@@ -10,7 +10,7 @@ public interface VehiculoService {
     VehiculoDto obtenerVehiculoPorPoliza(String poliza);
     VehiculoDto obtenerVehiculoPorVinNumeroIdentificacion(String vinNumeroIdentificacion);
     VehiculoDto obtenerVehiculoPorPinNumeroIdentificacion(String pinNumeroIdentificacion);
-    VehiculoDto obtenerVehiculoPorChasis(String chasis);
+    //VehiculoDto obtenerVehiculoPorChasis(String chasis);
     VehiculoDto obtenerVehiculoPorPlacaAnterior(String placaAnterior);
 
     List<VehiculoDto> obtenerVehiculos();

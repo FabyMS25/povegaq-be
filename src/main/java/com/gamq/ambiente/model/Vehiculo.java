@@ -51,8 +51,8 @@ public class Vehiculo {
     private Integer nroCopiasPlaca;
     @Column(name = "placa_anterior")
     private String placaAnterior;
-    @Column(name = "chasis")
-    private String chasis;
+  //  @Column(name = "chasis")
+  //  private String chasis;
 
     @Column(name = "estado", columnDefinition = "BOOLEAN NOT NULL DEFAULT '0'")
     private boolean estado;
@@ -101,7 +101,7 @@ public class Vehiculo {
                 ", pinNumeroIdentificacion='" + pinNumeroIdentificacion + '\'' +
                 ", nroCopiasPlaca=" + nroCopiasPlaca +
                 ", placaAnterior='" + placaAnterior + '\'' +
-                ", chasis='" + chasis + '\'' +
+             //   ", chasis='" + chasis + '\'' +
                 ", estado=" + estado +
                 '}';
     }

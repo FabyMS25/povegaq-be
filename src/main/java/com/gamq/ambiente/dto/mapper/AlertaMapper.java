@@ -27,7 +27,7 @@ public class AlertaMapper {
                         .setPinNumeroIdentificacion(alerta.getVehiculo().getPinNumeroIdentificacion())
                         .setNroCopiasPlaca(alerta.getVehiculo().getNroCopiasPlaca())
                         .setPlacaAnterior(alerta.getVehiculo().getPlacaAnterior())
-                        .setChasis(alerta.getVehiculo().getChasis())
+                      //  .setChasis(alerta.getVehiculo().getChasis())
 
                         .setPropietarioDto(alerta.getVehiculo().getPropietario() == null ? null : new PropietarioDto()
                                 .setUuid(alerta.getVehiculo().getPropietario().getUuid())

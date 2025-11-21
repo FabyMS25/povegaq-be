@@ -70,7 +70,7 @@ public class NotificacionMapper {
                                 .setPinNumeroIdentificacion(notificacion.getInspeccion().getVehiculo().getPinNumeroIdentificacion())
                                 .setNroCopiasPlaca(notificacion.getInspeccion().getVehiculo().getNroCopiasPlaca())
                                 .setPlacaAnterior(notificacion.getInspeccion().getVehiculo().getPlacaAnterior())
-                                .setChasis(notificacion.getInspeccion().getVehiculo().getChasis())
+                       //         .setChasis(notificacion.getInspeccion().getVehiculo().getChasis())
 
                                 .setPropietarioDto(notificacion.getInspeccion().getVehiculo().getPropietario()== null? null: new PropietarioDto()
                                         .setUuid(notificacion.getInspeccion().getVehiculo().getPropietario().getUuid())

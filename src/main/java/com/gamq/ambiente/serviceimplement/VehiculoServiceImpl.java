@@ -77,12 +77,12 @@ public class VehiculoServiceImpl implements VehiculoService {
         return VehiculoMapper.toVehiculoDto(vehiculo);
     }
 
-    @Override
-    public VehiculoDto obtenerVehiculoPorChasis(String chasis) {
-        Vehiculo vehiculo = vehiculoRepository.findByChasis(chasis)
-                .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "chasis", chasis));
-        return VehiculoMapper.toVehiculoDto(vehiculo);
-    }
+  //  @Override
+  //  public VehiculoDto obtenerVehiculoPorChasis(String chasis) {
+  //      Vehiculo vehiculo = vehiculoRepository.findByChasis(chasis)
+  //              .orElseThrow(()-> new ResourceNotFoundException("Vehiculo", "chasis", chasis));
+  //      return VehiculoMapper.toVehiculoDto(vehiculo);
+  //  }
 
     @Override
     public VehiculoDto obtenerVehiculoPorPlacaAnterior(String placaAnterior) {
