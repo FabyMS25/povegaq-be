@@ -33,7 +33,7 @@ public class NotificacionDto {
     @NotBlank(message = "El número de notificación es obligatorio")
     @Size(max = 15, message = "El numero de notificacion no puede exceder los 15 caracteres")
     private String numeroNotificacion;
-    @Size(max = 30, message = "El tipo de notificacion no puede exceder los 30 caracteres")
+    @NotNull(message = "El tipo de notificación es requerido")
     private TipoNotificacion typeNotificacion;
     @NotNull(message = "La fecha de asistencia es requerida")
     private Date fechaAsistencia;
@@ -47,7 +47,7 @@ public class NotificacionDto {
     private String nombreNotificador;
     @NotBlank(message = "El UUID del usuario es obligatorio")
     private String uuidUsuario;
-    @Size(max = 30, message = "El estado de la notificacion no puede exceder los 30 caracteres")
+    @NotNull(message = "El estado de notificación es requerido")
     private EstadoNotificacion statusNotificacion;
     @NotNull(message = "La actividad es obligatorio")
     @Size(max = 200, message = "La actividad no puede exceder los 200 caracteres")
