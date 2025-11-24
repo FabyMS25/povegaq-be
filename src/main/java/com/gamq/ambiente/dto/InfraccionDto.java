@@ -11,7 +11,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
-import javax.validation.Valid;
+
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,8 +31,7 @@ public class InfraccionDto {
     @NotNull
     @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal montoTotal;
-    @NotNull
-    @Size(max = 30, message = "El estadoi de la infraccion no puede superar 30 caracteres")
+    @NotNull(message = "El estado de la infraccion es requerido")
     private StatusInfraccion statusInfraccion;
     private boolean estadoPago;
     private Date fechaPago;

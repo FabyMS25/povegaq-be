@@ -4,16 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gamq.ambiente.enumeration.EstadoNotificacion;
 import com.gamq.ambiente.enumeration.TipoNotificacion;
-import com.gamq.ambiente.model.Infraccion;
-import com.gamq.ambiente.model.Inspeccion;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalTime;
 import java.util.ArrayList;

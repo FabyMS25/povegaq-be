@@ -115,7 +115,9 @@ and p.estado = false]]>
 "Actividad: <u>" + $F{actividad} + "</u>                                                     <br/>" +
 "Dirección: <u>" + $F{direccion} + "</u>                                                     <br/>" +
 "Observaciones: <u>" + $F{observacion} + "</u>                                                     <br/>" +
-"En caso de incumplimiento, sera pasible a: <u>" + $F{sancion} +"</u>                   <br/>" +
+"En caso de incumplimiento, sera pasible a: " + ($F{sancion} == null || $F{sancion}.trim().length() == 0 
+    ? "<br/>" 
+    : "<u>" + $F{sancion} + "</u><br/>") +
 "Conforme señala la ley 1333 y sus Reglamentos. <br/> "]]></textFieldExpression>
 			</textField>
 			<textField>
