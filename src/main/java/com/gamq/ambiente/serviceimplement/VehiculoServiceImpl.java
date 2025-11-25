@@ -181,9 +181,8 @@ public class VehiculoServiceImpl implements VehiculoService {
     @Transactional
     public VehiculoDto actualizarVehiculo(VehiculoDto vehiculoDto) {
         Vehiculo vehiculo = obtenerVehiculoPorUuidOThrow(vehiculoDto.getUuid());
-        if (vehiculoRepository.exitsVehiculoLikePlaca(vehiculoDto.getPlaca().toLowerCase(), vehiculoDto.getUuid())) {
-            throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "el Vehiculo ya existe");
-        }
+        validarVehiculoUnico(vehiculoDto);
+
         if (vehiculoDto.getDatoTecnicoDto() == null || !validarDatoTecnico(vehiculoDto.getDatoTecnicoDto())) {
             throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT, "error en los datos tecnicos");
         }
@@ -323,4 +322,40 @@ public class VehiculoServiceImpl implements VehiculoService {
             throw new BlogAPIException("400-BAD_REQUEST", HttpStatus.BAD_REQUEST, "Los datos técnicos enviados son inválidos o están incompletos.");
         }
     }
+
+    public void validarVehiculoUnico(VehiculoDto vehiculoDto) {
+
+        String placa = normalizar(vehiculoDto.getPlaca());
+        String vin = normalizar(vehiculoDto.getVinNumeroIdentificacion());
+        String poliza = normalizar(vehiculoDto.getPoliza());
+
+        if (placa != null) {
+            if (vehiculoRepository.exitsVehiculoLikePlaca(placa, vehiculoDto.getUuid())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                        "Ya existe un vehículo con esta placa");
+            }
+            return;
+        }
+
+        if (vin != null) {
+            if (vehiculoRepository.exitsVehiculoLikeVinNumeroIdentificacion(vin, vehiculoDto.getUuid())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                        "Ya existe un vehículo con este VIN");
+            }
+            return;
+        }
+
+        if (poliza != null) {
+            if (vehiculoRepository.exitsVehiculoLikePoliza(poliza, vehiculoDto.getUuid())) {
+                throw new BlogAPIException("409-CONFLICT", HttpStatus.CONFLICT,
+                        "Ya existe un vehículo con esta póliza");
+            }
+        }
+    }
+
+    private String normalizar(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        return valor.trim().toLowerCase();
+    }
+
 }
