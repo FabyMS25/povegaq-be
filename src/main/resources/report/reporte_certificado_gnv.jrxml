@@ -3,8 +3,8 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="468"/>
-	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="520"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="698"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="290"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="206"/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="786"/>
 	<property name="com.jaspersoft.studio.unit." value="cm"/>
@@ -34,74 +34,61 @@
 	<parameter name="opacidad" class="java.lang.String"/>
 	<parameter name="fechaActual" class="java.util.Date"/>
 	<queryString>
-		<![CDATA[SELECT 
+		<![CDATA[
+    WITH detalle_pivot AS (
+  SELECT
+    d.id_inspeccion,
+    d.id_tipo_parametro,
+    d.id_tipo_combustible,
+    MAX(CASE WHEN d.nro_ejecucion = 1 THEN d.valor END) AS medicion_1ra,
+    MAX(CASE WHEN d.nro_ejecucion = 2 THEN d.valor END) AS medicion_2da,
+    MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
+    MAX(CASE WHEN d.nro_ejecucion = 4 THEN d.valor END) AS medicion_4ta,
+    MAX(CASE WHEN d.nro_ejecucion = 5 THEN d.valor END) AS medicion_5ta,
+    MAX(d.limite_permisible) AS limite_permisible
+  FROM detalle_inspecciones d
+  WHERE d.estado = false
+  GROUP BY d.id_inspeccion, d.id_tipo_parametro, d.id_tipo_combustible
+)
+
+SELECT
   eq.nombre AS equipo,
   t.nombre, t.descripcion, t.unidad, 
   dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion, v.placa,
-
   tc_vehiculo.nombre AS tipo_combustion,
   tc_inspeccion.nombre AS tipo_combustion_usada,
-
-  MAX(CASE WHEN d.nro_ejecucion = 1 THEN d.valor END) AS medicion_1ra,
-  MAX(CASE WHEN d.nro_ejecucion = 2 THEN d.valor END) AS medicion_2da,
-  MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
-  MAX(CASE WHEN d.nro_ejecucion = 4 THEN d.valor END) AS medicion_4ta,
-  MAX(CASE WHEN d.nro_ejecucion = 5 THEN d.valor END) AS medicion_5ta,
-
-  d.limite_permisible
-
-FROM certificados AS c
-INNER JOIN inspecciones AS i ON c.id_inspeccion = i.id_inspeccion
-INNER JOIN equipos AS eq ON eq.id_equipo = i.id_equipo
-INNER JOIN actividades AS a ON a.id_actividad = i.id_actividad
-INNER JOIN detalle_inspecciones AS d ON i.id_inspeccion = d.id_inspeccion
-INNER JOIN tipo_parametros AS t ON t.id_tipo_parametro = d.id_tipo_parametro  
-
-INNER JOIN tipo_combustibles AS tc_inspeccion ON tc_inspeccion.id_tipo_combustible = d.id_tipo_combustible
-
-
-INNER JOIN vehiculos AS v ON v.id_vehiculo = i.id_vehiculo
-INNER JOIN vehiculo_tipo_combustible AS vtc ON vtc.id_vehiculo = v.id_vehiculo AND vtc.es_primario = true
-INNER JOIN tipo_combustibles AS tc_vehiculo ON tc_vehiculo.id_tipo_combustible = vtc.id_tipo_combustible
-
-INNER JOIN datos_tecnicos AS dt ON dt.id_vehiculo = v.id_vehiculo
-
-WHERE  c.uuid = $P{uuidCertificado}
+  dp.medicion_1ra,
+  dp.medicion_2da,
+  dp.medicion_3ra,
+  dp.medicion_4ta,
+  dp.medicion_5ta,
+  dp.limite_permisible
+FROM certificados c
+INNER JOIN inspecciones i ON c.id_inspeccion = i.id_inspeccion
+INNER JOIN equipos eq ON eq.id_equipo = i.id_equipo
+INNER JOIN actividades a ON a.id_actividad = i.id_actividad
+INNER JOIN detalle_pivot dp
+       ON dp.id_inspeccion = i.id_inspeccion
+INNER JOIN tipo_parametros t ON t.id_tipo_parametro = dp.id_tipo_parametro
+INNER JOIN tipo_combustibles tc_inspeccion ON tc_inspeccion.id_tipo_combustible = dp.id_tipo_combustible
+INNER JOIN vehiculos v ON v.id_vehiculo = i.id_vehiculo
+INNER JOIN vehiculo_tipo_combustible vtc 
+       ON vtc.id_vehiculo = v.id_vehiculo AND vtc.es_primario = true
+INNER JOIN tipo_combustibles tc_vehiculo ON tc_vehiculo.id_tipo_combustible = vtc.id_tipo_combustible
+INNER JOIN datos_tecnicos dt ON dt.id_vehiculo = v.id_vehiculo
+WHERE c.uuid = $P{uuidCertificado}
   AND c.estado = false
   AND i.estado = false
   AND eq.estado = false
   AND a.estado = false
-  AND d.estado = false
   AND t.estado = false
   AND tc_inspeccion.estado = false
   AND v.estado = false
-  AND c.es_valido = true
   AND vtc.estado = false
   AND tc_vehiculo.estado = false
   AND dt.estado = false
-
-GROUP BY
-  t.nombre, t.descripcion, t.unidad,
-  eq.nombre, v.placa, dt.tipo_vehiculo,
-  dt.modelo, dt.marca, dt.year_fabricacion,
-  tc_vehiculo.nombre,
-  tc_inspeccion.nombre,
-  d.limite_permisible
-
-ORDER BY
-  tc_inspeccion.nombre, t.nombre;
-
-
-
-
-
-
-
-
-
-
-
-]]>
+  AND c.es_valido = true
+ORDER BY tc_inspeccion.nombre, t.nombre;]]>
 	</queryString>
 	<field name="equipo" class="java.lang.String"/>
 	<field name="nombre" class="java.lang.String"/>
