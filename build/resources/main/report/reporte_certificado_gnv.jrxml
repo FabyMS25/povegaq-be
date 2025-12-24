@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="modulo" pageWidth="612" pageHeight="792" whenNoDataType="AllSectionsNoDetail" columnWidth="556" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="713be2b6-181a-418c-9785-f5bc46850e84">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter7.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="698"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="290"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="206"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="786"/>
+	<property name="com.jaspersoft.studio.unit." value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="cm"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="cm"/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<parameter name="logo64" class="java.lang.String">
+		<defaultValueExpression><![CDATA["iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="]]></defaultValueExpression>
+	</parameter>
+	<parameter name="titulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Título de Reporte"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuario" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Usuario Default"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="uuidCertificado" class="java.lang.String"/>
+	<parameter name="subtitulo" class="java.lang.String">
+		<defaultValueExpression><![CDATA["subtitulo"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="qr" class="java.lang.String"/>
+	<parameter name="opacidad" class="java.lang.String"/>
+	<parameter name="fechaActual" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[
+    WITH detalle_pivot AS (
+  SELECT
+    d.id_inspeccion,
+    d.id_tipo_parametro,
+    d.id_tipo_combustible,
+    MAX(CASE WHEN d.nro_ejecucion = 1 THEN d.valor END) AS medicion_1ra,
+    MAX(CASE WHEN d.nro_ejecucion = 2 THEN d.valor END) AS medicion_2da,
+    MAX(CASE WHEN d.nro_ejecucion = 3 THEN d.valor END) AS medicion_3ra,
+    MAX(CASE WHEN d.nro_ejecucion = 4 THEN d.valor END) AS medicion_4ta,
+    MAX(CASE WHEN d.nro_ejecucion = 5 THEN d.valor END) AS medicion_5ta,
+    MAX(d.limite_permisible) AS limite_permisible
+  FROM detalle_inspecciones d
+  WHERE d.estado = false
+  GROUP BY d.id_inspeccion, d.id_tipo_parametro, d.id_tipo_combustible
+)
+
+SELECT
+  eq.nombre AS equipo,
+  t.nombre, t.descripcion, t.unidad, 
+  dt.tipo_vehiculo, dt.modelo, dt.marca, dt.year_fabricacion, v.placa,
+  tc_vehiculo.nombre AS tipo_combustion,
+  tc_inspeccion.nombre AS tipo_combustion_usada,
+  dp.medicion_1ra,
+  dp.medicion_2da,
+  dp.medicion_3ra,
+  dp.medicion_4ta,
+  dp.medicion_5ta,
+  dp.limite_permisible
+FROM certificados c
+INNER JOIN inspecciones i ON c.id_inspeccion = i.id_inspeccion
+INNER JOIN equipos eq ON eq.id_equipo = i.id_equipo
+INNER JOIN actividades a ON a.id_actividad = i.id_actividad
+INNER JOIN detalle_pivot dp
+       ON dp.id_inspeccion = i.id_inspeccion
+INNER JOIN tipo_parametros t ON t.id_tipo_parametro = dp.id_tipo_parametro
+INNER JOIN tipo_combustibles tc_inspeccion ON tc_inspeccion.id_tipo_combustible = dp.id_tipo_combustible
+INNER JOIN vehiculos v ON v.id_vehiculo = i.id_vehiculo
+INNER JOIN vehiculo_tipo_combustible vtc 
+       ON vtc.id_vehiculo = v.id_vehiculo AND vtc.es_primario = true
+INNER JOIN tipo_combustibles tc_vehiculo ON tc_vehiculo.id_tipo_combustible = vtc.id_tipo_combustible
+INNER JOIN datos_tecnicos dt ON dt.id_vehiculo = v.id_vehiculo
+WHERE c.uuid = $P{uuidCertificado}
+  AND c.estado = false
+  AND i.estado = false
+  AND eq.estado = false
+  AND a.estado = false
+  AND t.estado = false
+  AND tc_inspeccion.estado = false
+  AND v.estado = false
+  AND vtc.estado = false
+  AND tc_vehiculo.estado = false
+  AND dt.estado = false
+  AND c.es_valido = true
+ORDER BY tc_inspeccion.nombre, t.nombre;]]>
+	</queryString>
+	<field name="equipo" class="java.lang.String"/>
+	<field name="nombre" class="java.lang.String"/>
+	<field name="descripcion" class="java.lang.String"/>
+	<field name="unidad" class="java.lang.String"/>
+	<field name="tipo_vehiculo" class="java.lang.String"/>
+	<field name="modelo" class="java.lang.String"/>
+	<field name="marca" class="java.lang.String"/>
+	<field name="year_fabricacion" class="java.lang.Integer"/>
+	<field name="placa" class="java.lang.String"/>
+	<field name="tipo_combustion" class="java.lang.String"/>
+	<field name="medicion_1ra" class="java.math.BigDecimal"/>
+	<field name="medicion_2da" class="java.math.BigDecimal"/>
+	<field name="medicion_3ra" class="java.math.BigDecimal"/>
+	<field name="medicion_4ta" class="java.math.BigDecimal"/>
+	<field name="medicion_5ta" class="java.math.BigDecimal"/>
+	<field name="limite_permisible" class="java.math.BigDecimal"/>
+	<field name="tipo_combustion_usada" class="java.lang.String"/>
+	<variable name="count_fila" class="java.lang.Integer" resetType="None" incrementType="Column" calculation="Count">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="417" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement x="9" y="3" width="81" height="73" uuid="ad25f395-71df-4a2a-9ff0-3abddb322900">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{logo64}))]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="37" y="128" width="482" height="50" uuid="9e79428c-1d59-4ea5-bd00-07bd4bc3c1c8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICACION]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement key="" x="440" y="60" width="85" height="85" uuid="229c4c17-9cc6-4eba-a403-e4fdce04d0a5"/>
+				<imageExpression><![CDATA[net.sf.jasperreports.engine.util.JRImageLoader.getInstance(new SimpleJasperReportsContext()).loadAwtImageFromBytes(Base64.getDecoder().decode($P{qr}))]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="260" y="183" width="125" height="20" uuid="b1d8e5f5-9091-48a4-ad62-7c4d93f043eb"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Acorde a:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="261" y="205" width="244" height="16" uuid="9cf1a081-e791-4774-94c6-beac2fe903f2"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ley de medio Ambiente N 1333]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="261" y="223" width="198" height="39" uuid="1077f88b-d7bb-4e75-ad00-901f39323a03"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ley de transporte N 165 art 102 Inciso III]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="261" y="255" width="198" height="40" uuid="6ffd649a-3e5d-41de-806c-dc6fd2812a06"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[El Reglamento en materia de contaminacion atmosferica]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="262" y="288" width="244" height="16" uuid="727de670-2a8f-4e30-82d9-160dc1033589"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Decreto supremo N 28139]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="261" y="306" width="259" height="16" uuid="8753af97-bb34-40ae-8b3e-0422780f2041"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Normativa Boliviana NB 62002]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" isPrintRepeatedValues="false" x="38" y="326" width="480" height="91" isRemoveLineWhenBlank="true" uuid="5dcef4d6-e212-4826-85ae-78a5b8b548b0">
+					<property name="com.jaspersoft.studio.unit.y" value="cm"/>
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Se emite la <b>certificación de control de emisión de gases vehiculares </b> para :  <br/> " +
+"<i><b>Vehículo: </b>" + $F{marca} + " " + $F{modelo} + "</i><br/>" +
+"<i><b>Placa: </b> " + $F{placa} + "</i><br/>" +
+"<i><b>Modelo: </b> " + $F{year_fabricacion} + "</i><br/>" +
+"<i><b>Cuadro de verificación: </b>"+ $F{tipo_combustion} + "</i> <br/>"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="90" y="5" width="460" height="19" uuid="bb79b022-9892-454b-988b-d0dacf690655"/>
+				<textElement textAlignment="Left">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[GOBIERNO AUTONOMO MUNICIPAL DE QUILLACOLLO]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="ElementGroupHeight" x="90" y="23" width="460" height="20" uuid="ecb4fd4b-602e-45b2-a030-35023fc7582e">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement stretchType="ElementGroupHeight" x="89" y="43" width="458" height="21" uuid="ed200f89-6182-487d-bd8f-59c6da660b20">
+					<property name="com.jaspersoft.studio.unit.height" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{subtitulo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="53" y="0" width="102" height="20" uuid="9e1c9cf3-7855-4294-9255-a4f6b8385aa6">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<text><![CDATA[Parametro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="154" y="0" width="188" height="14" uuid="01a688fb-3114-4c5a-a6c0-1dd726ac635c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<text><![CDATA[Medicion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="379" y="0" width="91" height="19" uuid="e6d9b421-2d39-4f61-967b-c76f3df95c47">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a92e7692-ea75-467a-a4ba-dd95b9eb2b91"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Limite Permisible]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="154" y="10" width="45" height="15" uuid="a7bb5af7-f9e0-41b3-b104-148dede4bc73">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622b468f-e453-4c7e-a566-bbb7376d39ee"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[1ra]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="199" y="10" width="45" height="15" uuid="ba4b1f3d-cb42-4919-b797-a09a12655646"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{medicion_2da} != null ? "2da" : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="244" y="10" width="45" height="15" uuid="76272208-a149-4eda-942f-c1554b652a71">
+					<property name="com.jaspersoft.studio.unit.width" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{medicion_3ra} != null ? "3ra" : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="289" y="10" width="45" height="15" uuid="3fe03582-512c-4e17-81c6-e702aeb532ba">
+					<property name="com.jaspersoft.studio.unit.width" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{medicion_4ta} != null ? "4ta" : ""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="334" y="10" width="45" height="15" uuid="31835005-6916-487a-8364-6948175786bf">
+					<property name="com.jaspersoft.studio.unit.width" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{medicion_5ta} != null ? "5ta" : ""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="475" y="0" width="76" height="20" uuid="bfc181aa-b9c3-466c-8ade-7247ed2e4534">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[T. Combustible]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="54" y="0" width="60" height="14" uuid="4e5851f8-3d7c-4923-a807-0d15b5398ea8">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d4fc2e10-417a-43da-af24-56f5c5880ef3"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="379" y="0" width="91" height="14" uuid="caf30809-6041-4ada-ad8f-a5f55d05cd07">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a92e7692-ea75-467a-a4ba-dd95b9eb2b91"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{limite_permisible} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{limite_permisible})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="154" y="0" width="45" height="14" uuid="0fd3ed95-2121-4535-9533-75a2077faa8b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="622b468f-e453-4c7e-a566-bbb7376d39ee"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{medicion_1ra} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_1ra})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="199" y="0" width="45" height="14" isRemoveLineWhenBlank="true" uuid="ed024d74-abda-46c7-95bf-75727be32fe9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36eb23c1-5a6d-4bb9-adf5-9177a8c61595"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{medicion_2da} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_2da})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="98" y="0" width="58" height="14" uuid="63d86cd5-61d2-490c-8773-a57e962e30d1">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="1251606c-aab6-4d33-a659-af6d77d2db33"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+$F{unidad}+")"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="244" y="0" width="45" height="14" isRemoveLineWhenBlank="true" uuid="faad4007-9bd3-497d-83c6-a4d71775824a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36eb23c1-5a6d-4bb9-adf5-9177a8c61595"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{medicion_3ra} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_3ra})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="289" y="0" width="45" height="14" isRemoveLineWhenBlank="true" uuid="826a1d52-ddca-4954-b49f-9d81646135d2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36eb23c1-5a6d-4bb9-adf5-9177a8c61595"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{medicion_4ta} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_4ta})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="334" y="0" width="45" height="14" isRemoveLineWhenBlank="true" uuid="229b8777-f67a-41ec-bd77-a9ead383071b">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="36eb23c1-5a6d-4bb9-adf5-9177a8c61595"/>
+					<property name="com.jaspersoft.studio.unit.width" value="cm"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[($F{medicion_5ta} != null ? new java.text.DecimalFormat("#,##0.00").format( new java.math.BigDecimal(String.valueOf($F{medicion_5ta})).setScale(2, java.math.RoundingMode.HALF_UP)):"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="478" y="0" width="74" height="14" uuid="5ceb3d3e-d94a-47da-b1e1-fa39b509b37f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0e5f887f-c697-4b25-8753-b8563892e756"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{tipo_combustion_usada}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="172">
+			<textField>
+				<reportElement x="38" y="130" width="480" height="30" uuid="cd4e2661-01ce-469c-acf2-78ed8a6a7c61"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quillacollo," + new java.text.SimpleDateFormat("d 'de' MMMM 'de' yyyy", new java.util.Locale("es", "ES")).format(new java.util.Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="37" y="0" width="480" height="120" uuid="2e9d3c47-f1fa-4a6b-9d07-2f78169bdd10"/>
+				<textElement textAlignment="Justified" markup="html">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Por tanto, se encuentra dentro los límites permisibles establecidos en normativa ambiental vigente. Con esta finalidad se adjunta hoja de verificación vehicular realizada en ambientes del Gobierno Autónomo Municipal de Quillacollo con el equipo " + $F{equipo} + " <br/> " +
+
+"Es cuanto se tiene a bien detallar para fines que vea por conveniente el interesado.  <br/> "]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</band>
+	</summary>
+</jasperReport>
