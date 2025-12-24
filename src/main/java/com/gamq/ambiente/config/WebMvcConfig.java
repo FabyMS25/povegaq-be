@@ -45,7 +45,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "http://localhost:4201",
                         "http://200.58.81.34:4210", // frontend
                         "http://quillacollopage.test",
-                        "http://quillacollo.gob.bo"
+                        "http://quillacollo.gob.bo",
+                        "https://quillacollo.gob.bo"
 
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
