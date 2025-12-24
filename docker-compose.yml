@@ -18,7 +18,7 @@ services:
     image: dpage/pgadmin4
     container_name: provegaq-pg
     ports:
-      - "5060:80"
+      - "5061:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=provegaq@admin.com
       - PGADMIN_DEFAULT_PASSWORD=provegaq123
