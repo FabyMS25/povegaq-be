@@ -43,7 +43,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:4200",
                         "http://localhost:4201",
-                        "http://200.58.81.34:4210" //Endfront
+                        "http://200.58.81.34:4210", // frontend
+                        "http://quillacollopage.test",
+                        "http://quillacollo.gob.bo"
+
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
